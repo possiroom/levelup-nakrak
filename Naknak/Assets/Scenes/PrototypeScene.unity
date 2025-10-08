@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 33174158}
   - component: {fileID: 33174163}
   - component: {fileID: 33174162}
+  - component: {fileID: 33174164}
   m_Layer: 0
   m_Name: ColTester
   m_TagString: Untagged
@@ -290,7 +291,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 33174157}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc9853c076e5e4155a8846e97e21c3ed, type: 3}
   m_Name: 
@@ -319,6 +320,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &33174164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 33174157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82531d805b1a24ea68691aa6656e1525, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveDuration: 0.2
+  moveDistance: 1
+  sameInputTime: 0.7
 --- !u!1 &423959772
 GameObject:
   m_ObjectHideFlags: 0
