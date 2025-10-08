@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerMoveController2 : MonoBehaviour
 {
-    [SerializeField] private float moveDuration = 0.3f; // (1 / 1타일 이동 시간)
+    public float moveDuration = 0.3f; // (1 / 1타일 이동 시간)
     [SerializeField] private float moveDistance = 1f;
     [SerializeField] private float sameInputTime = 0.7f;
     Animator anim;
