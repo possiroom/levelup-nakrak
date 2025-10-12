@@ -1,116 +1,219 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 // enum Direction 은 PlayerMoveController 의 enum 을 따릅니다.
 
 public class PlayerMoveController3 : MonoBehaviour
 {
-    public float moveDuration = 0.3f; // (1 / 1타일 이동 시간)
+    #region Define AxisMoveController Class
+    /// <summary>
+    /// X축과 Y축 이동 로직 통합 컨트롤러 클래스
+    /// </summary>
+    class AxisMoveController
+    { 
+        // 어느 축을 담당할지 설정하는 열거형
+        internal enum Axis { X, Y }
+        private readonly Axis moveAxis;
+        private readonly string inputAxisName;
+
+        static internal PlayerMoveController3 owner;
+
+        // 이동 관련 내부 변수
+        private Vector2 startPos;
+        private Vector2 targetPos;
+        internal Vector2 currentDirection;
+
+        private Vector2 _queuedDirection;
+        private Vector2 queuedDirection
+        {
+            get { return _queuedDirection; }
+            set
+            {
+                if (value != currentDirection || nextInput) _queuedDirection = value;
+            }
+        }
+
+        private bool nextInput = false;
+        internal bool isMoving = false;
+        private float elapsedTime = 0f;
+
+        // 생성자에서 어느 축을 담당할지 전달
+        public AxisMoveController(Axis axis)
+        {
+            moveAxis = axis;
+            // 축 이름 설정 (LastInputManager에 사용)
+            inputAxisName = (moveAxis == Axis.X) ? "Horizontal" : "Vertical"; // X, Y
+            startPos = owner.transform.position;
+            targetPos = owner.transform.position;
+        }
+
+        public void Update()
+        {
+            enqueueMove();
+
+            if (!isMoving && queuedDirection != Vector2.zero)
+            {
+                startMove();
+            }
+
+            if (isMoving)
+            {
+                elapsedTime += Time.deltaTime;
+
+                float t = Mathf.Clamp01(elapsedTime / owner.moveDuration);
+
+
+                Vector2 newPos;
+                if (moveAxis == Axis.X) // X, Y
+                {
+                    newPos = new Vector2(Mathf.Lerp(startPos.x, targetPos.x, t), owner.transform.position.y);
+                }
+                else // Axis.Y
+                {
+                    newPos = new Vector2(owner.transform.position.x, Mathf.Lerp(startPos.y, targetPos.y, t));
+                }
+                owner.transform.position = newPos;
+
+                if (t >= owner.sameInputTime) nextInput = true;
+
+                // 축에 따라 도착 여부 체크 및 위치 Snap
+                bool arrived = false;
+                if (moveAxis == Axis.X) // X, Y
+                {
+                    if (Mathf.Abs(owner.transform.position.x - targetPos.x) <= 0.001f)
+                    {
+                        owner.transform.position = new Vector2(targetPos.x, owner.transform.position.y);
+                        arrived = true;
+                    }
+                }
+                else // Axis.Y
+                {
+                    if (Mathf.Abs(owner.transform.position.y - targetPos.y) <= 0.001f)
+                    {
+                        owner.transform.position = new Vector2(owner.transform.position.x, targetPos.y);
+                        arrived = true;
+                    }
+                }
+
+                if (arrived)
+                {
+                    startPos = targetPos;
+
+                    if (queuedDirection != Vector2.zero) startMove();
+                    else isMoving = false; // 해당 축 이동 완료
+                }
+            }
+        }
+
+        private void enqueueMove()
+        {
+            float moveValue = owner.lastInputManager.GetAxisRaw(inputAxisName);
+
+            if (Mathf.Abs(moveValue) == 1f)
+            {
+                queuedDirection = (moveAxis == Axis.X) ? new Vector2(moveValue, 0f) : new Vector2(0f, moveValue); // X, Y
+            }
+        }
+
+        private void startMove()
+        {
+            currentDirection = queuedDirection;
+            startPos = owner.currentPosition;
+
+            RaycastHit2D hit = Physics2D.Raycast(startPos - new Vector2(0, 0.5f), currentDirection, owner.moveDistance, owner.layer);
+            // Ray draw
+            Debug.DrawRay(startPos - new Vector2(0, 0.5f), currentDirection * owner.moveDistance, Color.red);
+
+            if (hit.collider != null)
+            {
+                if (!owner.isMoving) owner.anim.SetFloat("direction", (float)owner.vector2Dir(currentDirection));
+                isMoving = false;
+                nextInput = true;
+                elapsedTime = 0f;
+                queuedDirection = Vector2.zero;
+            }
+            else
+            {
+                targetPos = startPos + currentDirection * owner.moveDistance;
+                owner.currentPosition = targetPos;
+
+                isMoving = true;
+                nextInput = false;
+                elapsedTime = 0f;
+                queuedDirection = Vector2.zero;
+            }
+        }
+    }
+    #endregion
+
+    public float moveDuration = 0.3f;
     [SerializeField] private float moveDistance = 1f;
     [SerializeField] private float sameInputTime = 0.7f;
     Animator anim;
+    LastInputManager lastInputManager;
 
-    Vector2 startPos;
-    Vector2 targetPos;
-    Vector2 currentDirection;
+    Vector2 currentPosition;
 
-    Vector2 _queuedDirection; // backing field
-    Vector2 queuedDirection { 
-        get { return _queuedDirection; }
+    // 플레이어 애니메이션 우선 순위를 위함
+    bool xFirst = false, yFirst = false;
+
+    private bool _isMoving;
+    private bool isMoving
+    {
+        get => _isMoving;
         set
         {
-            if (value != currentDirection || nextInput) _queuedDirection = value;
+            anim.SetBool("isMoving", value);
+            _isMoving = value;
         }
-    }
+    } // backing field로 불필요한 GetBool 메소드 사용 수정
 
-    private bool isMoving // animator의 parameter와 연동
+
+    // 플레이어 충돌 판정을 위해 일단 추가
+    public int floor = 1;
+    int layer
     {
-        get { return anim.GetBool("isMoving"); }
-        set { anim.SetBool("isMoving", value); }
+        get
+        {
+            if (floor == 1) return LayerMask.GetMask("Col 1F");
+            else if (floor == 2) return LayerMask.GetMask("Col 2F");
+            else if (floor == 3) return LayerMask.GetMask("Col 3F");
+            else return LayerMask.GetMask("Col 1F");
+        }
+        set { return; }
     }
-
-    bool nextInput = false;
-    float elapsedTime = 0f;
-
-
+    
+    private AxisMoveController moveCtrlX;
+    private AxisMoveController moveCtrlY;
     void Start()
     {
         anim = GetComponent<Animator>();
-        targetPos = transform.position;
-        startPos = transform.position;
+        lastInputManager = GetComponent<LastInputManager>();
+        // X축과 Y축을 각각 담당하도록 지정하여 인스턴스 생성
+        AxisMoveController.owner = this;
+        moveCtrlX = new(AxisMoveController.Axis.X);
+        moveCtrlY = new(AxisMoveController.Axis.Y);
+        currentPosition = transform.position;
     }
 
     void Update()
     {
-        // 입력 Enqueue는 상시
-        enqueueMove();
+        moveCtrlX.Update();
+        moveCtrlY.Update();
 
-        // 입력 큐에 방향이 들어오면 해당 방향으로 이동 시작
-        if (!isMoving && queuedDirection != Vector2.zero)
-        {
-            startMove();
-        }
+        isMoving = moveCtrlX.isMoving || moveCtrlY.isMoving;
 
-        // 이동 알고리즘
-        if (isMoving)
-        {
-            // 이동 타이머
-            elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsedTime / moveDuration); // t 값이 0~1로 이동하며 move progress
-            transform.position = Vector2.Lerp(startPos, targetPos, t);
+        // 플레이어 애니메이션
+        // X, Y 완전히 동시에 눌리면 X 우선순위
+        if (xFirst && !moveCtrlX.isMoving) xFirst = false;
+        if (yFirst && !moveCtrlY.isMoving) yFirst = false;
 
-            // 같은 키 입력 배제 시간
-            if (t >= sameInputTime) nextInput = true;
+        if (!yFirst && moveCtrlX.isMoving) xFirst = true;
+        else if (!xFirst && moveCtrlY.isMoving) yFirst = true;
 
-            // 해당 칸에 거의 근접했을 때, 위치 고정 및 이동 완료
-            if (Vector2.Distance(transform.position, targetPos) <= 0.001f)
-            {
-                transform.position = targetPos;
-                startPos = targetPos;
-
-                // 대기 큐가 있으면 멈추지 않고 다시 이동 시작, 없으면 정지
-                if (queuedDirection != Vector2.zero) startMove();
-                else isMoving = false;
-            }
-        }
-    }
-
-    void enqueueMove()
-    {
-        float moveX = Input.GetAxisRaw("Horizontal"); // -1 ~ 1
-        float moveY = Input.GetAxisRaw("Vertical");   // -1 ~ 1
-
-        if (Mathf.Abs(moveX) == 1f && moveY == 0f)
-        {
-            queuedDirection = new(moveX, 0f);
-        }
-        else if (moveX == 0f && Mathf.Abs(moveY) == 1f)
-        {
-            queuedDirection = new(0f, moveY);
-        }
-    }
-
-    void startMove()
-    {
-        /*
-            아마 여기 어딘가에 이동 가능한 위치인지 판별하는 로직이 들어가지 않을까요
-        */
-
-        currentDirection = queuedDirection; // 다음 방향 저장
-
-        targetPos += currentDirection * moveDistance; // 목표 위치 설정
-        startPos = transform.position; // 시작 위치 저장 (Lerp 함수 사용 위함)
-
-        // 플레이어의 왼쪽 오른쪽 콜라이더 확인 (RayCast)
-        RaycastHit2D hitLeft = Physics2D.Raycast(startPos, Quaternion.Euler(0f, 0f, 90f) * currentDirection, moveDistance);
-        RaycastHit2D hitRight = Physics2D.Raycast(startPos, Quaternion.Euler(0f, 0f, -90f) * currentDirection, moveDistance);
-
-        anim.SetFloat("direction", (float)vector2Dir(currentDirection)); // 애니메이터 방향 연동
-
-        isMoving = true;
-        nextInput = false;
-        elapsedTime = 0f;
-
-        queuedDirection = Vector2.zero; // Clear Queue
+        if (xFirst && moveCtrlX.isMoving) anim.SetFloat("direction", (float)vector2Dir(moveCtrlX.currentDirection));
+        else if (yFirst && moveCtrlY.isMoving) anim.SetFloat("direction", (float)vector2Dir(moveCtrlY.currentDirection));
+          
     }
 
     Direction vector2Dir(Vector2 vec)
@@ -119,6 +222,6 @@ public class PlayerMoveController3 : MonoBehaviour
         if (vec.x == 1f) return Direction.Right;
         if (vec.y == -1f) return Direction.Down;
         if (vec.x == -1f) return Direction.Left;
-        return Direction.Down; // 기본값: 아래 방향
+        return Direction.Down;
     }
 }

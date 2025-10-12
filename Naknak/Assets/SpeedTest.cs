@@ -6,7 +6,7 @@ public class SpeedTest : MonoBehaviour
 {
     public TextMeshProUGUI text;
 
-    public PlayerMoveController2 player;
+    public PlayerMoveController3 player;
 
     void Start()
     {
