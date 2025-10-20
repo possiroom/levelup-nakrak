@@ -1,3 +1,6 @@
+using System.Linq;
+using NUnit.Framework;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // enum Direction 은 PlayerMoveController 의 enum 을 따릅니다.
@@ -7,6 +10,9 @@ public class PlayerMoveController3 : MonoBehaviour
     public float moveDuration = 0.3f; // (1 / 1타일 이동 시간)
     [SerializeField] private float moveDistance = 1f;
     [SerializeField] private float sameInputTime = 0.7f;
+
+    [SerializeField] public LayerMask targetLayer; //특정 레이어만 선택해서 검사할 수 있게하는 변수
+
     Animator anim;
 
     Vector2 startPos;
@@ -91,19 +97,23 @@ public class PlayerMoveController3 : MonoBehaviour
 
     void startMove()
     {
-        /*
-            아마 여기 어딘가에 이동 가능한 위치인지 판별하는 로직이 들어가지 않을까요
-        */
+
+        //아마 여기 어딘가에 이동 가능한 위치인지 판별하는 로직이 들어가지 않을까요
+        if (!checkCollider(transform.position, queuedDirection)) {
+             // 이동 시작하지 않음
+        isMoving = false;
+        // queuedDirection을 유지하면 다음 프레임에 다시 시도함(원하면 0으로 비워도 됨)
+        nextInput = false;
+        return;
+        }
 
         currentDirection = queuedDirection; // 다음 방향 저장
 
         targetPos += currentDirection * moveDistance; // 목표 위치 설정
         startPos = transform.position; // 시작 위치 저장 (Lerp 함수 사용 위함)
 
-        // 플레이어의 왼쪽 오른쪽 콜라이더 확인 (RayCast)
-        RaycastHit2D hitLeft = Physics2D.Raycast(startPos, Quaternion.Euler(0f, 0f, 90f) * currentDirection, moveDistance);
-        RaycastHit2D hitRight = Physics2D.Raycast(startPos, Quaternion.Euler(0f, 0f, -90f) * currentDirection, moveDistance);
-
+        
+    
         anim.SetFloat("direction", (float)vector2Dir(currentDirection)); // 애니메이터 방향 연동
 
         isMoving = true;
@@ -112,7 +122,14 @@ public class PlayerMoveController3 : MonoBehaviour
 
         queuedDirection = Vector2.zero; // Clear Queue
     }
-
+bool checkCollider(Vector2 from, Vector2 dir)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(from, dir, moveDistance, targetLayer);
+        if (dir == Vector2.zero || hit.collider != null && hit.distance <= moveDistance - 1e-4f)
+            return false;
+        return true;
+    }
+    
     Direction vector2Dir(Vector2 vec)
     {
         if (vec.y == 1f) return Direction.Up;
