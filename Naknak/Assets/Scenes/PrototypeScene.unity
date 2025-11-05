@@ -135,10 +135,7 @@ GameObject:
   - component: {fileID: 33174162}
   - component: {fileID: 33174164}
   - component: {fileID: 33174165}
-<<<<<<< Updated upstream
-=======
   - component: {fileID: 33174166}
->>>>>>> Stashed changes
   m_Layer: 0
   m_Name: ColTester
   m_TagString: Untagged
@@ -355,11 +352,6 @@ MonoBehaviour:
   moveDuration: 0.3
   moveDistance: 1
   sameInputTime: 0.7
-<<<<<<< Updated upstream
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 64
-=======
   floor: 1
 --- !u!114 &33174166
 MonoBehaviour:
@@ -373,7 +365,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16e9786cc95644701aa0ba36d5738df7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
->>>>>>> Stashed changes
 --- !u!1 &158703558
 GameObject:
   m_ObjectHideFlags: 0
