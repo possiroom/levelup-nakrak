@@ -352,7 +352,9 @@ MonoBehaviour:
   moveDuration: 0.3
   moveDistance: 1
   sameInputTime: 0.7
-  floor: 1
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &33174166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9367,7 +9369,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 1683822827}
-  player: {fileID: 33174165}
+  player: {fileID: 33174164}
 --- !u!4 &1502378939
 Transform:
   m_ObjectHideFlags: 0

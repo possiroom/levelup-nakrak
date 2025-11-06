@@ -34,7 +34,8 @@ public class PlayerMoveController3 : MonoBehaviour
         set { anim.SetBool("isMoving", value); }
     }
 
-    bool nextInput = false;
+    // 시작 시 입력 받음
+    bool nextInput = true;
     float elapsedTime = 0f;
 
 
@@ -43,6 +44,7 @@ public class PlayerMoveController3 : MonoBehaviour
         anim = GetComponent<Animator>();
         targetPos = transform.position;
         startPos = transform.position;
+        nextInput = true;
     }
 
     void Update()
@@ -100,10 +102,11 @@ public class PlayerMoveController3 : MonoBehaviour
 
         //아마 여기 어딘가에 이동 가능한 위치인지 판별하는 로직이 들어가지 않을까요
         if (!checkCollider(transform.position, queuedDirection)) {
-             // 이동 시작하지 않음
+            // 이동 시작하지 않음
             isMoving = false;
-            
-            nextInput = false;
+        
+            // 움직일 수 없다면 다음 입력 받음
+            nextInput = true;
             return;
         }
 
