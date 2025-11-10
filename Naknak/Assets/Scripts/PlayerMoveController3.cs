@@ -99,23 +99,22 @@ public class PlayerMoveController3 : MonoBehaviour
 
     void startMove()
     {
+        currentDirection = queuedDirection; // 다음 방향 저장
+        anim.SetFloat("direction", (float)vector2Dir(currentDirection)); // 애니메이터 방향 연동   
 
-        //아마 여기 어딘가에 이동 가능한 위치인지 판별하는 로직이 들어가지 않을까요
-        if (!checkCollider(transform.position, queuedDirection)) {
+        // 이동 가능 판별
+        if (!checkCollider(transform.position, queuedDirection))
+        {
             // 이동 시작하지 않음
             isMoving = false;
-        
+
             // 움직일 수 없다면 다음 입력 받음
             nextInput = true;
             return;
         }
 
-        currentDirection = queuedDirection; // 다음 방향 저장
-
         targetPos += currentDirection * moveDistance; // 목표 위치 설정
         startPos = transform.position; // 시작 위치 저장 (Lerp 함수 사용 위함)
-
-        anim.SetFloat("direction", (float)vector2Dir(currentDirection)); // 애니메이터 방향 연동   
 
         isMoving = true;
         nextInput = false;
@@ -123,7 +122,8 @@ public class PlayerMoveController3 : MonoBehaviour
 
         queuedDirection = Vector2.zero; // Clear Queue
     }
-bool checkCollider(Vector2 from, Vector2 dir)
+
+    bool checkCollider(Vector2 from, Vector2 dir)
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position - new Vector3(0f, 0.5f, 0f), dir, moveDistance, targetLayer);
         Debug.DrawRay(transform.position - new Vector3(0f, 0.5f, 0f), dir * moveDistance, Color.red, 0.1f);
