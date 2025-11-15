@@ -1,143 +1,319 @@
-using System.Linq;
-using NUnit.Framework;
-using Unity.VisualScripting;
 using UnityEngine;
 
 // enum Direction 은 PlayerMoveController 의 enum 을 따릅니다.
 
 public class PlayerMoveController3 : MonoBehaviour
 {
-    public float moveDuration = 0.3f; // (1 / 1타일 이동 시간)
+    public float moveDuration = 0.3f;
     [SerializeField] private float moveDistance = 1f;
     [SerializeField] private float sameInputTime = 0.7f;
-
-    [SerializeField] public LayerMask targetLayer; //특정 레이어만 선택해서 검사할 수 있게하는 변수
-
     Animator anim;
+    LastInputManager lastInputManager;
 
-    Vector2 startPos;
-    Vector2 targetPos;
-    Vector2 currentDirection;
+    Vector2 currentPosition;
 
-    Vector2 _queuedDirection; // backing field
-    Vector2 queuedDirection { 
-        get { return _queuedDirection; }
+    // 플레이어 애니메이션 우선 순위를 위함
+    bool xFirst = false, yFirst = false;
+
+    private bool _isMoving;
+    private bool isMoving
+    {
+        get => _isMoving;
         set
         {
-            if (value != currentDirection || nextInput) _queuedDirection = value;
+            anim.SetBool("isMoving", value);
+            _isMoving = value;
+        }
+    } // backing field로 불필요한 GetBool 메소드 사용 수정
+
+
+    // 플레이어 충돌 판정을 위해 일단 추가
+    public int floor = 1;
+    int layer
+    {
+        get
+        {
+            if (floor == 1) return LayerMask.GetMask("Col 1F");
+            else if (floor == 2) return LayerMask.GetMask("Col 2F");
+            else if (floor == 3) return LayerMask.GetMask("Col 3F");
+            else return LayerMask.GetMask("Col 1F");
+        }
+        set { return; }
+    }
+
+    // --- X축 이동 변수 ---
+    private Vector2 startPosX;
+    private Vector2 targetPosX;
+    private bool[] canMoveXY = {true, true}; // 0번은 top, 1번은 bottom
+    internal Vector2 currentDirectionX;
+    private Vector2 _queuedDirectionX;
+    private Vector2 queuedDirectionX
+    {
+        get { return _queuedDirectionX; }
+        set
+        {
+            if (value != currentDirectionX || nextInputX) _queuedDirectionX = value;
         }
     }
+    private bool nextInputX = false;
+    internal bool isMovingX = false;
+    private float elapsedTimeX = 0f;
 
-    private bool isMoving // animator의 parameter와 연동
+    // --- Y축 이동 변수 ---
+    private Vector2 startPosY;
+    private Vector2 targetPosY;
+    private bool[] canMoveYX = {true, true}; // 0번은 left, 1번은 right
+    internal Vector2 currentDirectionY;
+    private Vector2 _queuedDirectionY;
+    private Vector2 queuedDirectionY
     {
-        get { return anim.GetBool("isMoving"); }
-        set { anim.SetBool("isMoving", value); }
+        get { return _queuedDirectionY; }
+        set
+        {
+            if (value != currentDirectionY || nextInputY) _queuedDirectionY = value;
+        }
     }
+    private bool nextInputY = false;
+    internal bool isMovingY = false;
+    private float elapsedTimeY = 0f;
 
-    // 시작 시 입력 받음
-    bool nextInput = true;
-    float elapsedTime = 0f;
 
+    Vector3 gridPreset;
 
     void Start()
     {
         anim = GetComponent<Animator>();
-        targetPos = transform.position;
-        startPos = transform.position;
-        nextInput = true;
+        lastInputManager = GetComponent<LastInputManager>();
+        
+        currentPosition = transform.position;
+
+        // X, Y축 변수 초기화
+        startPosX = transform.position;
+        targetPosX = transform.position;
+        startPosY = transform.position;
+        targetPosY = transform.position;
+
+        gridPreset = MapManager.Instance.World2Grid(transform.position);
     }
 
     void Update()
     {
-        // 입력 Enqueue는 상시
-        enqueueMove();
+        UpdateMoveX();
+        UpdateMoveY();
 
-        // 입력 큐에 방향이 들어오면 해당 방향으로 이동 시작
-        if (!isMoving && queuedDirection != Vector2.zero)
+        Debug.Log("canMove XY" + canMoveXY[0] + " " + canMoveXY[1]);
+        Debug.Log("canMove YX" + canMoveYX[0] + " " + canMoveYX[1]);
+
+        isMoving = isMovingX || isMovingY;
+
+        // 플레이어 애니메이션
+        // X, Y 완전히 동시에 눌리면 X 우선순위
+        if (xFirst && !isMovingX) xFirst = false;
+        if (yFirst && !isMovingY) yFirst = false;
+
+        if (!yFirst && isMovingX) xFirst = true;
+        else if (!xFirst && isMovingY) yFirst = true;
+
+        if (xFirst && isMovingX) anim.SetFloat("direction", (float)vector2Dir(currentDirectionX));
+        else if (yFirst && isMovingY) anim.SetFloat("direction", (float)vector2Dir(currentDirectionY));
+    }
+
+    // --- X축 로직 ---
+    void UpdateMoveX()
+    {
+        EnqueueMoveX();
+
+        if (!isMovingX && queuedDirectionX != Vector2.zero)
         {
-            startMove();
+            StartMoveX();
         }
-           
-        // 이동 알고리즘
-        if (isMoving)
+
+        if (isMovingX)
         {
-            // 이동 타이머
-            elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsedTime / moveDuration); // t 값이 0~1로 이동하며 move progress
-            transform.position = Vector2.Lerp(startPos, targetPos, t);
+            elapsedTimeX += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTimeX / moveDuration);
 
-            // 같은 키 입력 배제 시간
-            if (t >= sameInputTime) nextInput = true;
+            Vector2 newPos = new Vector2(Mathf.Lerp(startPosX.x, targetPosX.x, t), transform.position.y);
+            transform.position = newPos;
 
-            // 해당 칸에 거의 근접했을 때, 위치 고정 및 이동 완료
-            if (Vector2.Distance(transform.position, targetPos) <= 0.001f)
+            if (t >= sameInputTime) nextInputX = true;
+
+            bool arrived = false;
+            if (Mathf.Abs(transform.position.x - targetPosX.x) <= 0.001f)
             {
-                transform.position = targetPos;
-                startPos = targetPos;
+                transform.position = new Vector2(targetPosX.x, transform.position.y);
+                arrived = true;
+            }
 
-                // 대기 큐가 있으면 멈추지 않고 다시 이동 시작, 없으면 정지
-                if (queuedDirection != Vector2.zero) startMove();
-                else isMoving = false;
+            if (arrived)
+            {
+                startPosX = targetPosX;
+
+                canMoveXY[0] = !checkCollider(targetPosX, Vector2.up);
+                canMoveXY[1] = !checkCollider(targetPosX, Vector2.down);
+
+                if (!isMovingY)
+                {
+                    canMoveYX[0] = !checkCollider(targetPosX, Vector2.left);
+                    canMoveYX[1] = !checkCollider(targetPosX, Vector2.right);
+                }
+
+                if (queuedDirectionX != Vector2.zero) StartMoveX();
+                else isMovingX = false;
             }
         }
     }
 
-    void enqueueMove()
+    private void EnqueueMoveX()
     {
-        float moveX = Input.GetAxisRaw("Horizontal"); // -1 ~ 1
-        float moveY = Input.GetAxisRaw("Vertical");   // -1 ~ 1
-
-        if (Mathf.Abs(moveX) == 1f && moveY == 0f)
+        float moveValue = Input.GetAxisRaw("Horizontal");
+        if (Mathf.Abs(moveValue) == 1f)
         {
-            queuedDirection = new(moveX, 0f);
-        }
-        else if (moveX == 0f && Mathf.Abs(moveY) == 1f)
-        {
-            queuedDirection = new(0f, moveY);
+            queuedDirectionX = new Vector2(moveValue, 0f);
         }
     }
 
-    void startMove()
+    private void StartMoveX()
     {
-        currentDirection = queuedDirection; // 다음 방향 저장
-        anim.SetFloat("direction", (float)vector2Dir(currentDirection)); // 애니메이터 방향 연동   
+        currentDirectionX = queuedDirectionX;
+        startPosX = currentPosition;
 
-        // 이동 가능 판별
-        if (!checkCollider(transform.position, queuedDirection))
+        // 수직 방향 충돌 계산
+        canMoveXY[0] = !checkCollider(currentPosition, Vector2.up);
+        canMoveXY[1] = !checkCollider(currentPosition, Vector2.down);
+
+        bool diagonalBlocked = false;
+        if (queuedDirectionX == Vector2.left && !canMoveYX[0])
         {
-            // 이동 시작하지 않음
-            isMoving = false;
-
-            // 움직일 수 없다면 다음 입력 받음
-            nextInput = true;
-            return;
+            diagonalBlocked = true;
+        }
+        else if (queuedDirectionX == Vector2.right && !canMoveYX[1])
+        {
+            diagonalBlocked = true;
         }
 
-        targetPos += currentDirection * moveDistance; // 목표 위치 설정
-        startPos = transform.position; // 시작 위치 저장 (Lerp 함수 사용 위함)
+        if (checkCollider(currentPosition, currentDirectionX) || diagonalBlocked) {
+            if (!isMoving) anim.SetFloat("direction", (float)vector2Dir(currentDirectionX));
+            isMovingX = false;
+            nextInputX = true;
+            elapsedTimeX = 0f;
+            queuedDirectionX = Vector2.zero;
+        }
+        else
+        {
+            targetPosX = startPosX + currentDirectionX * moveDistance;
+            currentPosition.x = targetPosX.x;
 
-        isMoving = true;
-        nextInput = false;
-        elapsedTime = 0f;
-
-        queuedDirection = Vector2.zero; // Clear Queue
+            isMovingX = true;
+            nextInputX = false;
+            elapsedTimeX = 0f;
+            queuedDirectionX = Vector2.zero;
+        }
     }
 
-    bool checkCollider(Vector2 from, Vector2 dir)
+    // --- Y축 로직 ---
+    void UpdateMoveY()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position - new Vector3(0f, 0.5f, 0f), dir, moveDistance, targetLayer);
-        Debug.DrawRay(transform.position - new Vector3(0f, 0.5f, 0f), dir * moveDistance, Color.red, 0.1f);
-        if (dir == Vector2.zero || hit.collider != null && hit.distance <= moveDistance - 1e-4f)
-            return false;
-        return true;
+        EnqueueMoveY();
+
+        if (!isMovingY && queuedDirectionY != Vector2.zero)
+        {
+            StartMoveY();
+        }
+
+        if (isMovingY)
+        {
+            elapsedTimeY += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTimeY / moveDuration);
+
+            Vector2 newPos = new Vector2(transform.position.x, Mathf.Lerp(startPosY.y, targetPosY.y, t));
+            transform.position = newPos;
+
+            if (t >= sameInputTime) nextInputY = true;
+
+            bool arrived = false;
+            if (Mathf.Abs(transform.position.y - targetPosY.y) <= 0.001f)
+            {
+                transform.position = new Vector2(transform.position.x, targetPosY.y);
+                arrived = true;
+            }
+
+            if (arrived)
+            {
+                startPosY = targetPosY;
+
+                canMoveYX[0] = !checkCollider(targetPosY, Vector2.left);
+                canMoveYX[1] = !checkCollider(targetPosY, Vector2.right);
+                if (!isMovingX)
+                {
+                    canMoveXY[0] = !checkCollider(targetPosY, Vector2.up);
+                    canMoveXY[1] = !checkCollider(targetPosY, Vector2.down);
+                }
+
+                if (queuedDirectionY != Vector2.zero) StartMoveY();
+                else isMovingY = false;
+            }
+        }
     }
-    
+
+    private void EnqueueMoveY()
+    {
+        float moveValue = Input.GetAxisRaw("Vertical");
+        if (Mathf.Abs(moveValue) == 1f)
+        {
+            queuedDirectionY = new Vector2(0f, moveValue);
+        }
+    }
+
+    private void StartMoveY()
+    {
+        currentDirectionY = queuedDirectionY;
+        startPosY = currentPosition;
+
+        canMoveYX[0] = !checkCollider(currentPosition, Vector2.left);
+        canMoveYX[1] = !checkCollider(currentPosition, Vector2.right);
+
+        bool diagonalBlocked = false;
+        if (queuedDirectionY == Vector2.up && !canMoveXY[0])
+        {
+            diagonalBlocked = true;
+        }
+        else if (queuedDirectionY == Vector2.down && !canMoveXY[1])
+        {
+            diagonalBlocked = true;
+        }
+
+        if (checkCollider(currentPosition, currentDirectionY) || diagonalBlocked) {
+            if (!isMoving) anim.SetFloat("direction", (float)vector2Dir(currentDirectionY));
+            isMovingY = false;
+            nextInputY = true;
+            elapsedTimeY = 0f;
+            queuedDirectionY = Vector2.zero;
+        }
+        else
+        {
+            targetPosY = startPosY + currentDirectionY * moveDistance;
+            currentPosition.y = targetPosY.y;
+
+            isMovingY = true;
+            nextInputY = false;
+            elapsedTimeY = 0f;
+            queuedDirectionY = Vector2.zero;
+        }
+    }
+
+    bool checkCollider(Vector3 from, Vector3 dir)
+    {
+        return MapManager.Instance.IsCollision(from - new Vector3(0f, 0.5f, 0f) + dir * moveDistance - gridPreset);
+    }
+
+    // --- 공용 메소드 ---
     Direction vector2Dir(Vector2 vec)
     {
         if (vec.y == 1f) return Direction.Up;
         if (vec.x == 1f) return Direction.Right;
         if (vec.y == -1f) return Direction.Down;
         if (vec.x == -1f) return Direction.Left;
-        return Direction.Down; // 기본값: 아래 방향
+        return Direction.Down;
     }
 }
