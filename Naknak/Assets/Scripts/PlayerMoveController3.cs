@@ -5,11 +5,12 @@ using UnityEngine;
 public class PlayerMoveController3 : MonoBehaviour
 {
     public float moveDuration = 0.3f;
-    [SerializeField] private float moveDistance = 1f;
-    [SerializeField] private float sameInputTime = 0.7f;
+    private readonly float moveDistance = 1f;
+    private readonly float sameInputTime = 0.85f;
     Animator anim;
     LastInputManager lastInputManager;
 
+    // 추상 현재 위치
     Vector2 currentPosition;
 
     // 플레이어 애니메이션 우선 순위를 위함
@@ -45,7 +46,7 @@ public class PlayerMoveController3 : MonoBehaviour
     private Vector2 startPosX;
     private Vector2 targetPosX;
     private bool[] canMoveXY = {true, true}; // 0번은 top, 1번은 bottom
-    internal Vector2 currentDirectionX;
+    private Vector2 currentDirectionX;
     private Vector2 _queuedDirectionX;
     private Vector2 queuedDirectionX
     {
@@ -63,7 +64,7 @@ public class PlayerMoveController3 : MonoBehaviour
     private Vector2 startPosY;
     private Vector2 targetPosY;
     private bool[] canMoveYX = {true, true}; // 0번은 left, 1번은 right
-    internal Vector2 currentDirectionY;
+    private Vector2 currentDirectionY;
     private Vector2 _queuedDirectionY;
     private Vector2 queuedDirectionY
     {
@@ -76,7 +77,6 @@ public class PlayerMoveController3 : MonoBehaviour
     private bool nextInputY = false;
     internal bool isMovingY = false;
     private float elapsedTimeY = 0f;
-
 
     Vector3 gridPreset;
 
@@ -93,16 +93,13 @@ public class PlayerMoveController3 : MonoBehaviour
         startPosY = transform.position;
         targetPosY = transform.position;
 
-        gridPreset = MapManager.Instance.World2Grid(transform.position);
+        gridPreset = MapManager.Instance.World2Grid(Vector3.zero);
     }
 
     void Update()
     {
         UpdateMoveX();
         UpdateMoveY();
-
-        Debug.Log("canMove XY" + canMoveXY[0] + " " + canMoveXY[1]);
-        Debug.Log("canMove YX" + canMoveYX[0] + " " + canMoveYX[1]);
 
         isMoving = isMovingX || isMovingY;
 
@@ -149,24 +146,24 @@ public class PlayerMoveController3 : MonoBehaviour
             {
                 startPosX = targetPosX;
 
-                canMoveXY[0] = !checkCollider(targetPosX, Vector2.up);
-                canMoveXY[1] = !checkCollider(targetPosX, Vector2.down);
+                syncCanMoveXY(targetPosX);
+                syncCanMoveYX(targetPosX);
 
-                if (!isMovingY)
-                {
-                    canMoveYX[0] = !checkCollider(targetPosX, Vector2.left);
-                    canMoveYX[1] = !checkCollider(targetPosX, Vector2.right);
+                if (queuedDirectionX != Vector2.zero &&                                     // (1-1) 입력 큐에 원소가 존재한다면
+                    (lastInputManager.GetLastInputAxis() == "Horizontal" ||                 // (2-1) 마지막 입력 방향이 수평 방향이거나
+                    (lastInputManager.GetAxisRaw("Vertical") == 1f && !canMoveXY[0])||      // (2-2) 마지막 입력이 수직, 위 방향인데 위로 움직일 수 없거나
+                    (lastInputManager.GetAxisRaw("Vertical") == -1f && !canMoveXY[1])))     // (2-3) 마지막 입력이 수직, 아래 방향인데 아래로 움직일 수 없다면
+                    { StartMoveX(); }
+                else {
+                    isMovingX = false;
                 }
-
-                if (queuedDirectionX != Vector2.zero) StartMoveX();
-                else isMovingX = false;
             }
         }
     }
 
     private void EnqueueMoveX()
     {
-        float moveValue = Input.GetAxisRaw("Horizontal");
+        float moveValue = lastInputManager.GetAxisRaw("Horizontal");
         if (Mathf.Abs(moveValue) == 1f)
         {
             queuedDirectionX = new Vector2(moveValue, 0f);
@@ -178,19 +175,11 @@ public class PlayerMoveController3 : MonoBehaviour
         currentDirectionX = queuedDirectionX;
         startPosX = currentPosition;
 
-        // 수직 방향 충돌 계산
-        canMoveXY[0] = !checkCollider(currentPosition, Vector2.up);
-        canMoveXY[1] = !checkCollider(currentPosition, Vector2.down);
+        syncCanMoveXY(currentPosition);
 
-        bool diagonalBlocked = false;
-        if (queuedDirectionX == Vector2.left && !canMoveYX[0])
-        {
-            diagonalBlocked = true;
-        }
-        else if (queuedDirectionX == Vector2.right && !canMoveYX[1])
-        {
-            diagonalBlocked = true;
-        }
+        bool diagonalBlocked = queuedDirectionX == Vector2.left && !canMoveYX[0] ||     // (1-1) 입력 큐의 방향이 왼쪽인데 왼쪽으로 움직일 수 없거나 
+                               queuedDirectionX == Vector2.right && !canMoveYX[1];      // (1-2) 입력 큐의 방향이 오른쪽인데 오른쪽으로 움직일 수 없다면
+                                                                                        // -> 대각선 이동 불가 상황
 
         if (checkCollider(currentPosition, currentDirectionX) || diagonalBlocked) {
             if (!isMoving) anim.SetFloat("direction", (float)vector2Dir(currentDirectionX));
@@ -242,23 +231,25 @@ public class PlayerMoveController3 : MonoBehaviour
             {
                 startPosY = targetPosY;
 
-                canMoveYX[0] = !checkCollider(targetPosY, Vector2.left);
-                canMoveYX[1] = !checkCollider(targetPosY, Vector2.right);
-                if (!isMovingX)
-                {
-                    canMoveXY[0] = !checkCollider(targetPosY, Vector2.up);
-                    canMoveXY[1] = !checkCollider(targetPosY, Vector2.down);
-                }
+                syncCanMoveXY(targetPosY);
+                syncCanMoveYX(targetPosY);
 
-                if (queuedDirectionY != Vector2.zero) StartMoveY();
-                else isMovingY = false;
+                if (queuedDirectionY != Vector2.zero &&                                     // (1-1) 입력 큐에 원소가 존재한다면
+                    (lastInputManager.GetLastInputAxis() == "Vertical" ||                   // (2-1) 마지막 입력이 수직 방향이거나          
+                    (lastInputManager.GetAxisRaw("Horizontal") == -1f && !canMoveYX[0]) ||  // (2-2) 마지막 입력이 수평, 왼쪽 방향인데 왼쪽으로 움직일 수 없거나
+                    (lastInputManager.GetAxisRaw("Horizontal") == 1f && !canMoveYX[1])))    // (2-3) 마지막 입력이 수평, 오른쪽 방향인데 오른쪽으로 움직일 수 없다면
+                    { StartMoveY(); }                                                 
+                else
+                {
+                    isMovingY = false;
+                }
             }
         }
     }
 
     private void EnqueueMoveY()
     {
-        float moveValue = Input.GetAxisRaw("Vertical");
+        float moveValue = lastInputManager.GetAxisRaw("Vertical");
         if (Mathf.Abs(moveValue) == 1f)
         {
             queuedDirectionY = new Vector2(0f, moveValue);
@@ -270,18 +261,11 @@ public class PlayerMoveController3 : MonoBehaviour
         currentDirectionY = queuedDirectionY;
         startPosY = currentPosition;
 
-        canMoveYX[0] = !checkCollider(currentPosition, Vector2.left);
-        canMoveYX[1] = !checkCollider(currentPosition, Vector2.right);
+        syncCanMoveYX(currentPosition);
 
-        bool diagonalBlocked = false;
-        if (queuedDirectionY == Vector2.up && !canMoveXY[0])
-        {
-            diagonalBlocked = true;
-        }
-        else if (queuedDirectionY == Vector2.down && !canMoveXY[1])
-        {
-            diagonalBlocked = true;
-        }
+        bool diagonalBlocked = queuedDirectionY == Vector2.up && !canMoveXY[0] ||       // (1-1) 입력 큐의 방향이 위쪽인데 위쪽으로 움직일 수 없거나
+                               queuedDirectionY == Vector2.down && !canMoveXY[1];       // (1-2) 입력 큐의 방향이 아래쪽인데 아래쪽으로 움직일 수 없다면
+                                                                                        // -> 대각선 이동 불가 상황
 
         if (checkCollider(currentPosition, currentDirectionY) || diagonalBlocked) {
             if (!isMoving) anim.SetFloat("direction", (float)vector2Dir(currentDirectionY));
@@ -302,9 +286,22 @@ public class PlayerMoveController3 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// NPC의 위치를 파악하기 위해 이미 RayCast가 필요한 상황이라서
+    /// 아마 다시 RayCast로 콜라이더를 감지하는 것으로 수정할 것 같습니다.
+    /// </summary>
     bool checkCollider(Vector3 from, Vector3 dir)
     {
-        return MapManager.Instance.IsCollision(from - new Vector3(0f, 0.5f, 0f) + dir * moveDistance - gridPreset);
+        bool check = false;
+        
+        RaycastHit2D hit = Physics2D.Raycast(from - new Vector3(0f, 0.5f, 0f), dir, moveDistance, layer);
+        Debug.DrawRay(from - new Vector3(0f, 0.5f, 0f), dir * moveDistance, Color.red);
+
+        // Delayed Evaluation
+        check = MapManager.Instance.IsCollision(from - new Vector3(0f, 0.5f, 0f) + dir * moveDistance - gridPreset)
+            || (hit.collider != null && hit.collider.CompareTag("Interactable"));
+
+        return check;
     }
 
     // --- 공용 메소드 ---
@@ -315,5 +312,15 @@ public class PlayerMoveController3 : MonoBehaviour
         if (vec.y == -1f) return Direction.Down;
         if (vec.x == -1f) return Direction.Left;
         return Direction.Down;
+    }
+
+    void syncCanMoveXY(Vector2 pos){
+        canMoveXY[0] = !checkCollider(pos, Vector2.up);
+        canMoveXY[1] = !checkCollider(pos, Vector2.down);
+    }
+
+    void syncCanMoveYX(Vector2 pos){
+        canMoveYX[0] = !checkCollider(pos, Vector2.left);
+        canMoveYX[1] = !checkCollider(pos, Vector2.right);
     }
 }

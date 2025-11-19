@@ -31,7 +31,7 @@ public class MapManager : MonoBehaviour
     public bool IsCollision(Vector3 position) {
         if (!grid)
         {
-            Debug.Log("[MapManager] Grid가 지정되지 않았습니다.");
+            Debug.LogWarning("[MapManager] Grid가 지정되지 않았습니다.");
             return true; // 기본은 이동 가능
         }
 
@@ -45,7 +45,7 @@ public class MapManager : MonoBehaviour
     public Vector3Int World2Grid(Vector3 worldPosition) {
         if (!grid)
         {
-            Debug.Log("[MapManager] Grid가 지정되지 않았습니다.");
+            Debug.LogWarning("[MapManager] Grid가 지정되지 않았습니다.");
             return Vector3Int.zero;
         }
         return grid.WorldToCell(worldPosition);
@@ -54,7 +54,7 @@ public class MapManager : MonoBehaviour
     public Vector3 Grid2World(Vector3Int gridPosition) {
         if (!grid)
         {
-            Debug.Log("[MapManager] Grid가 지정되지 않았습니다.");
+            Debug.LogWarning("[MapManager] Grid가 지정되지 않았습니다.");
             return Vector3.zero;
         }
         return grid.GetCellCenterWorld(gridPosition);

@@ -6,8 +6,32 @@ using UnityEngine;
 /// </summary>
 public class LastInputManager : MonoBehaviour
 {
-    private float lastHorizontal = 0f;
-    private float lastVertical = 0f;
+    private float _lastHorizontal = 0f;
+    private float lastHorizontal
+    {
+        set
+        {
+            if (value != 0f) lastInputAxis = LastInputAxis.Horizontal;
+            else if (_lastVertical != 0f) lastInputAxis = LastInputAxis.Vertical;
+            _lastHorizontal = value;
+        }
+        get { return _lastHorizontal; }
+    }
+
+    private float _lastVertical = 0f;
+    private float lastVertical
+    {
+        set
+        {
+            if (value != 0f) lastInputAxis = LastInputAxis.Vertical;
+            else if (_lastHorizontal != 0f) lastInputAxis = LastInputAxis.Horizontal;
+            _lastVertical = value;
+        }
+        get { return _lastVertical; }
+    }
+    enum LastInputAxis { Horizontal, Vertical }
+
+    private LastInputAxis lastInputAxis = LastInputAxis.Horizontal;
 
     void Update()
     {
@@ -56,5 +80,10 @@ public class LastInputManager : MonoBehaviour
             return lastVertical;
         }
         return 0f;
+    }
+
+    public string GetLastInputAxis()
+    {
+        return lastInputAxis.ToString();
     }
 }
