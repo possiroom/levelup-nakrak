@@ -54,7 +54,7 @@ public class DialogManager : MonoBehaviour
     private readonly StoryTextData test4 = new StoryTextData(
         storyID:        "test4", 
         text:           "진짜네? 함부로 만지면 위험하니까 조심해.", 
-        name:           "민수", 
+        name:           "진수", 
         activatedImage: 2, 
         isSelect:       false, 
         nextStoryID:    "<END>"
