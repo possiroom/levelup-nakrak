@@ -86,4 +86,9 @@ public class LastInputManager : MonoBehaviour
     {
         return lastInputAxis.ToString();
     }
+
+    public bool GetKeyDownInteract()
+    {
+        return Input.GetKeyDown(KeyCode.Z);
+    }
 }

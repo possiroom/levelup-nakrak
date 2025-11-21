@@ -98,8 +98,11 @@ public class PlayerMoveController3 : MonoBehaviour
 
     void Update()
     {
-        UpdateMoveX();
-        UpdateMoveY();
+        if (!DialogManager.Instance.IsDialogActivate)
+        {
+            UpdateMoveX();
+            UpdateMoveY();
+        }
 
         isMoving = isMovingX || isMovingY;
 
@@ -113,6 +116,35 @@ public class PlayerMoveController3 : MonoBehaviour
 
         if (xFirst && isMovingX) anim.SetFloat("direction", (float)vector2Dir(currentDirectionX));
         else if (yFirst && isMovingY) anim.SetFloat("direction", (float)vector2Dir(currentDirectionY));
+
+        if (lastInputManager.GetKeyDownInteract() && !isMoving) TryInteract();
+
+    }
+
+    void TryInteract()
+    {   
+        if (DialogManager.Instance.IsDialogActivate)
+        {
+            GameEventBase evt = GameEventFactory.CreateNextDialogEvent();
+            GameEventManager.Instance.Submit(evt);
+        } 
+        else
+        {
+            // 현재 바라보는 방향을 기록하는 변수가 없어서 우선 dir를 right로 설정했어요.
+            // dir = currentDirectionX + currentDirectionY;
+            // 하려고 시도 했는데, 논리상으로 틀린 식이더라구요. 새로운 변수를 만들어야 할 것 같습니다.
+            Vector2 dir = Vector2.right;
+            Vector3 from = transform.position;
+            
+            RaycastHit2D hit = Physics2D.Raycast(from - new Vector3(0f, 0.5f, 0f), dir, moveDistance, layer);
+            Debug.DrawRay(from - new Vector3(0f, 0.5f, 0f), dir * moveDistance, Color.red);
+
+            if (hit.collider != null && hit.collider.CompareTag("Interactable"))
+            {
+                Debug.Log("[PlayerMoveController3] Interact : " + hit.collider.name);
+                hit.collider.GetComponent<IInteractable>().Interact();
+            }
+        }
     }
 
     // --- X축 로직 ---
