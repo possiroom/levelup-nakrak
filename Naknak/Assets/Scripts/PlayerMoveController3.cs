@@ -98,7 +98,7 @@ public class PlayerMoveController3 : MonoBehaviour
 
     void Update()
     {
-        if (!DialogManager.Instance.IsDialogActivate)
+        if (GameStateManager.Instance.GameState == GameState.Gameplay)
         {
             UpdateMoveX();
             UpdateMoveY();
@@ -123,12 +123,13 @@ public class PlayerMoveController3 : MonoBehaviour
 
     void TryInteract()
     {   
-        if (DialogManager.Instance.IsDialogActivate)
+        GameState gameState = GameStateManager.Instance.GameState;
+        if (gameState == GameState.Dialog)
         {
             GameEventBase evt = GameEventFactory.CreateNextDialogEvent();
             GameEventManager.Instance.Submit(evt);
         } 
-        else
+        else if (gameState == GameState.Gameplay)
         {
             // 현재 바라보는 방향을 기록하는 변수가 없어서 우선 dir를 right로 설정했어요.
             // dir = currentDirectionX + currentDirectionY;

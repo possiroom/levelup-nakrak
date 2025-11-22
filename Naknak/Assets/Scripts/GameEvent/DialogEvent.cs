@@ -10,6 +10,6 @@ public class DialogEvent : GameEventBase
     
     public override void Execute()
     {
-        if (!DialogManager.Instance.IsDialogActivate) DialogManager.Instance.ShowDialog(storyID);
+        DialogManager.Instance.ShowDialog(storyID);
     }
 }

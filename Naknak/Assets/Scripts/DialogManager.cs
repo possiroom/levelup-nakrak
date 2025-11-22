@@ -72,8 +72,7 @@ public class DialogManager : MonoBehaviour
 
     private StoryTextData currentStory = null;
 
-    // OverLoading, 여기 수정 필요
-    public void ShowDialog()
+    private void ChangeUI()
     {
         view.ChangeName(currentStory.name);
         view.ChangeStoryText(currentStory.text);
@@ -83,10 +82,15 @@ public class DialogManager : MonoBehaviour
 
     public void ShowDialog(string storyID)
     {
-        view.gameObject.SetActive(true); _isDialogActivate = true;
+        view.gameObject.SetActive(true); 
+        _isDialogActivate = true;
+
+        GameEventBase evt = GameEventFactory.CreateGameStateChangeEvent(GameState.Dialog);
+        GameEventManager.Instance.Submit(evt);
+
         currentStory = GetStoryTextData(storyID);
 
-        ShowDialog();
+        ChangeUI();
     }
 
     public void NextDialog()
@@ -99,15 +103,20 @@ public class DialogManager : MonoBehaviour
         {
             currentStory = GetStoryTextData(currentStory.nextStoryID);
             Debug.Log("[DialogManager] Story ID: " + currentStory.storyID);
-            ShowDialog();
+            ChangeUI();
         }
     }
 
-    public void EndDialog()
+    private void EndDialog()
     {
         view.ChangeName("");
         view.ChangeStoryText("");
-        view.gameObject.SetActive(false); _isDialogActivate = false;
+        view.gameObject.SetActive(false); 
+        
+        _isDialogActivate = false;
+
+        GameEventBase evt = GameEventFactory.CreateGameStateChangeEvent(GameState.Gameplay);
+        GameEventManager.Instance.Submit(evt);
     }
 
     private StoryTextData GetStoryTextData(string storyID)

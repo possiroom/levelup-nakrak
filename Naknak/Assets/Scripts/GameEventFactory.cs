@@ -13,4 +13,9 @@ public static class GameEventFactory
     {
         return new NextDialogEvent();
     }
+
+    public static GameEventBase CreateGameStateChangeEvent(GameState gameState)
+    {
+        return new GameStateChangeEvent(gameState);
+    }
 }
