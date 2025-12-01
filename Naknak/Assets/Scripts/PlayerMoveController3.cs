@@ -7,6 +7,8 @@ public class PlayerMoveController3 : MonoBehaviour
     public float moveDuration = 0.3f;
     private readonly float moveDistance = 1f;
     private readonly float sameInputTime = 0.85f;
+
+    public LayerMask floorLayer;
     Animator anim;
     LastInputManager lastInputManager;
 
@@ -28,8 +30,18 @@ public class PlayerMoveController3 : MonoBehaviour
     } // backing field로 불필요한 GetBool 메소드 사용 수정
 
 
-    // 플레이어 충돌 판정을 위해 일단 추가
-    public int floor = 1;
+    //플레이어 층수
+    int floor
+    {
+        get
+        {
+            if (floorLayer.Equals("Col 1F")) return 1;
+            else if (floorLayer.Equals("Col 2F")) return 2;
+            else if (floorLayer.Equals("Col 3F")) return 3;
+            else return 1;  
+        }
+        set { return; }
+    }
     int layer
     {
         get
