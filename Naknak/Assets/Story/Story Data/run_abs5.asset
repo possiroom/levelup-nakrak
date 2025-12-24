@@ -16,6 +16,6 @@ MonoBehaviour:
   text: "\uD06C\uC544\uC544\uC5452"
   activatedImage: 1
   isSelect: 0
-  isEnd: 1
+  isEnd: 0
   selects: []
-  nextData: {fileID: 11400000, guid: d8ef948cc5a6a486cba71853b5b2f600, type: 2}
+  nextData: {fileID: 11400000, guid: 4f9d669cd548543af9a3ab958c466651, type: 2}
