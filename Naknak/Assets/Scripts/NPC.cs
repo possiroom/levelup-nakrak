@@ -8,7 +8,7 @@ public class NPC : MonoBehaviour, IInteractable
     {
         if (dialogContainer == null)
         {
-            Debug.LogWarning($"[NPC] DialogContainer is not set for {gameObject.name}");
+            Debug.LogWarning($"[NPC] 올바른 Container가 아닙니다. {gameObject.name}");
             return;
         }
 
@@ -16,13 +16,13 @@ public class NPC : MonoBehaviour, IInteractable
 
         if (storyData != null)
         {
-            Debug.Log("[NPC] Interact -> storyID: " + storyData.name);
+            Debug.Log("[NPC] 상호작용 storyID: " + storyData.name);
             GameEventBase evt = GameEventFactory.CreateDialogEvent(storyData);
             GameEventManager.Instance.Submit(evt);
         }
         else
         {
-            Debug.LogWarning($"[NPC] No matching dialog found in DialogContainer for {gameObject.name}");
+            Debug.LogWarning($"[NPC] 컨테이너 내부 조건에 맞는 슬롯이 없습니다. {gameObject.name}");
         }
     }
 }

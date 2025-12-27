@@ -12,7 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33dad9c7368764146a3e52da044785c8, type: 3}
   m_Name: Container_test2
   m_EditorClassIdentifier: 
-  dialogSlots:
-  - memo: Start
-    condition: {fileID: 0}
-    headStoryData: {fileID: 11400000, guid: aaa67be0e21884be5b4d4a7bccbb8d5b, type: 2}
+  dialogSlots: []

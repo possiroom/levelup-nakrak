@@ -9,7 +9,6 @@ public class StoryData : ScriptableObject
     [TextArea(3, 10)]
     public string text;
     
-    [Header("설정")]
     public int activatedImage;    // 이미지 번호
     public bool isSelect;         // 선택지 여부
     public bool isEnd;            // 종료 여부
@@ -18,4 +17,6 @@ public class StoryData : ScriptableObject
     [Header("연결")]
     public List<StorySelectData> selects;
     public StoryData nextData; 
+
+    public List<DialogAction> endActions = new List<DialogAction>();
 }

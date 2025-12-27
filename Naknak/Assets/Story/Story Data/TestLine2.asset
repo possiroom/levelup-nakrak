@@ -12,14 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: TestLine2
   m_EditorClassIdentifier: 
-  charName: "\uBBFC\uC218"
-  text: "\uB0B4 \uC774\uB984\uC740 \uC9C4\uC218\uC57C. \uB124 \uC774\uB984\uC740?"
+  charName: npc1
+  text: "\uC0DD\uAC01\uD574 \uBCF4\uB2C8 \uC1E0\uC0AC\uC2AC \uC18C\uB9AC\uAC00 \uC544\uB2C8\uB77C,
+    \uBB54\uAC00 \uB454\uD0C1\uD55C \uAC78 \uB044\uB294 \uC18C\uB9AC \uAC19\uAE30\uB3C4
+    \uD558\uACE0..."
   activatedImage: 1
   isSelect: 1
   isEnd: 0
   selects:
-  - text: "\uBBFC\uC11C"
-    nextData: {fileID: 11400000, guid: 652211cef05ad46ea9b3ec5f515463c5, type: 2}
-  - text: "\uBBFC\uC218"
-    nextData: {fileID: 11400000, guid: 2eef9668e98ba4548bf48053bebcfe00, type: 2}
+  - text: "\uB354 \uC790\uC138\uD788 \uB9D0\uD574\uBD10."
+    nextData: {fileID: 11400000, guid: 19b340c8c69f84eb8b1217a0366f3707, type: 2}
   nextData: {fileID: 0}
+  endActions: []

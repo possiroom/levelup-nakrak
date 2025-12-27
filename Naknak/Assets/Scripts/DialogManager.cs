@@ -27,63 +27,6 @@ public class DialogManager : MonoBehaviour
         }
     }
 
-    private static List<StoryData> storyStore = new();
-
-    private readonly StoryTextData test1 = new StoryTextData(
-        storyID:        "test1", 
-        text:           "안녕 네 이름은 뭐니?",
-        name:           "민서", 
-        activatedImage: 2, 
-        isSelect:       false, 
-        nextStoryID:    "test2"
-    );
-
-    private StoryTextData test2 = new StoryTextData(
-        storyID:        "test2", 
-        text:           "내 이름은 진수야. 네 이름은?",
-        name:           "진수", 
-        activatedImage: 1, 
-        isSelect:       true, 
-        nextStoryID:    "<SELECT>",
-        selects:        new List<StorySelectData>()
-    );
-
-    private readonly StoryTextData test3 =new StoryTextData(
-        storyID:        "test3", 
-        text:           "오 네 이름은 민서구나 반가워.",
-        name:           "진수", 
-        activatedImage: 1, 
-        isSelect:       false, 
-        nextStoryID:    "test4"
-    );
-
-    private readonly StoryTextData test4 = new StoryTextData(
-        storyID:        "test4", 
-        text:           "그래 반가워 진수야.", 
-        name:           "민서", 
-        activatedImage: 2, 
-        isSelect:       false, 
-        nextStoryID:    "<END>"
-    );
-
-    private readonly StoryTextData test5 =new StoryTextData(
-        storyID:        "test5", 
-        text:           "거짓말 치지 마. 너 이름 민서인 거 다 보여.",
-        name:           "진수", 
-        activatedImage: 1, 
-        isSelect:       false, 
-        nextStoryID:    "test6"
-    );
-
-    private readonly StoryTextData test6 = new StoryTextData(
-        storyID:        "test6", 
-        text:           "헐 들켰네. 거짓말 쳐서 미안해.", 
-        name:           "민서", 
-        activatedImage: 2, 
-        isSelect:       false, 
-        nextStoryID:    "<END>"
-    );
-
     void Start()
     {
         elapedTime = 0f;
@@ -135,6 +78,8 @@ public class DialogManager : MonoBehaviour
             selectView.gameObject.SetActive(false);
             return;
         }
+
+        TryExecuteActions();
 
         if (currentStory.isEnd)
         {
@@ -194,13 +139,13 @@ public class DialogManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 // 원형 인덱스
-                selectIndex = selectIndex + 1 > currentStory.selects.Count ? 1 : selectIndex + 1;
+                selectIndex = selectIndex - 1 < 1 ? currentStory.selects.Count : selectIndex - 1;
                 selectView.ChangeSelectIndex(selectIndex);
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 // 원형 인덱스
-                selectIndex = selectIndex - 1 < 1 ? currentStory.selects.Count : selectIndex - 1;
+                selectIndex = selectIndex + 1 > currentStory.selects.Count ? 1 : selectIndex + 1;
                 selectView.ChangeSelectIndex(selectIndex);
             }
         }
@@ -225,5 +170,15 @@ public class DialogManager : MonoBehaviour
 
         GameEventBase evt = GameEventFactory.CreateGameStateChangeEvent(GameState.Gameplay);
         GameEventManager.Instance.Submit(evt);
+    }
+
+    // Action 실행
+    private void TryExecuteActions()
+    {
+        if (currentStory != null && currentStory.endActions != null && currentStory.endActions.Count > 0)
+        {
+            ConditionManager.Instance.ExecuteActions(currentStory.endActions);
+            Debug.Log($"[DialogManager] Action Executed for: {currentStory.name}");
+        }
     }
 }

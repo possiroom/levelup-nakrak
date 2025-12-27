@@ -27,6 +27,7 @@ public class DialogViewer : MonoBehaviour
         speakerName.text = name;
     }
 
+    // 추후 이미지로 선택으로 변경 (darker가 될 필요가 없어보임)
     public void ChangeActivateImage(int code)
     {
         switch (code)

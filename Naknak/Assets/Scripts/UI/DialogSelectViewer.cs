@@ -59,21 +59,21 @@ public class DialogSelectViewer : MonoBehaviour
         for (int i = 0; i < selectionCount; i++)
         {
             selectBoxes[i].SetActive(true);
-            texts[i].text = selects[i].text;
+            texts[i].text = selects[selectionCount - 1 - i].text;
         }
-
-        OnlyActivateBox(1);
     }
 
     public void ChangeSelectIndex(int index)
     {
+        // index는 1부터 시작, 화면 위에서 아래 순서
         if (index > selectionCount || index <= 0)
         {
             Debug.LogError("[DialogSelectViewer] invaild index");
             return;
         }
 
-        OnlyActivateBox(index);
+        int boxIndex = selectionCount - index + 1;
+        OnlyActivateBox(boxIndex);
     }
 
     public void SelectDeactivate()

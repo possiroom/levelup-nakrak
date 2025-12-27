@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: TestLine3
   m_EditorClassIdentifier: 
-  charName: "\uC9C4\uC218"
-  text: "\uC624 \uB124 \uC774\uB984\uC740 \uBBFC\uC11C\uAD6C\uB098 \uBC18\uAC00\uC6CC."
-  activatedImage: 1
+  charName: 
+  text: 
+  activatedImage: 0
   isSelect: 0
   isEnd: 0
   selects: []
-  nextData: {fileID: 11400000, guid: 0145f3c3fc3d34246b8cbed8c085a42d, type: 2}
+  nextData: {fileID: 0}
+  endActions: []
