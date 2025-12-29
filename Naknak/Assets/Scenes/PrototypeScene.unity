@@ -136,9 +136,9 @@ GameObject:
   - component: {fileID: 33174164}
   - component: {fileID: 33174165}
   - component: {fileID: 33174166}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ColTester
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -352,7 +352,8 @@ MonoBehaviour:
   moveDuration: 0.3
   floorLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
+  col: {fileID: 33174158}
 --- !u!114 &33174166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3038,6 +3039,7 @@ GameObject:
   - component: {fileID: 1266013614}
   - component: {fileID: 1266013617}
   - component: {fileID: 1266013616}
+  - component: {fileID: 1266013618}
   m_Layer: 7
   m_Name: Sample Map Col 2F
   m_TagString: Untagged
@@ -3434,6 +3436,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1463ca6e0cb6a46c2af38c379b99f39a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1266013618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1266013612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9beff1ac5535904f9b90b1d440c5b21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floor:
+    serializedVersion: 2
+    m_Bits: 0
+  player: {fileID: 33174165}
 --- !u!1 &1339246761
 GameObject:
   m_ObjectHideFlags: 0
@@ -10428,6 +10446,7 @@ GameObject:
   - component: {fileID: 1576579713}
   - component: {fileID: 1576579716}
   - component: {fileID: 1576579715}
+  - component: {fileID: 1576579717}
   m_Layer: 6
   m_Name: Sample Map Col 1F
   m_TagString: Untagged
@@ -10974,6 +10993,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1463ca6e0cb6a46c2af38c379b99f39a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1576579717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1576579711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9beff1ac5535904f9b90b1d440c5b21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floor:
+    serializedVersion: 2
+    m_Bits: 0
+  player: {fileID: 33174165}
 --- !u!1 &1629353238
 GameObject:
   m_ObjectHideFlags: 0

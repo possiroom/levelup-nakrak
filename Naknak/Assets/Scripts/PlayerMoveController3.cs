@@ -9,8 +9,11 @@ public class PlayerMoveController3 : MonoBehaviour
     private readonly float sameInputTime = 0.85f;
 
     public LayerMask floorLayer;
+    
     Animator anim;
     LastInputManager lastInputManager;
+
+    public BoxCollider2D col;
 
     // 추상 현재 위치
     Vector2 currentPosition;
@@ -96,6 +99,7 @@ public class PlayerMoveController3 : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         lastInputManager = GetComponent<LastInputManager>();
+        col = GetComponent<BoxCollider2D>();
         
         currentPosition = transform.position;
 
@@ -367,5 +371,28 @@ public class PlayerMoveController3 : MonoBehaviour
     void syncCanMoveYX(Vector2 pos){
         canMoveYX[0] = !checkCollider(pos, Vector2.left);
         canMoveYX[1] = !checkCollider(pos, Vector2.right);
+    }
+
+    /// <summary>
+    /// 플레이어의 현재 층(floor)을 설정합니다.
+    /// </summary>
+    public void SetFloor(int newFloor)
+    {
+        if (newFloor >= 1 && newFloor <= 3)
+        {
+            // floor property 대신 직접 내부 상태 관리 필요
+            // 현재 구조상 floorLayer와 floor의 관계를 정의해야 함
+        }
+    }
+
+    /// <summary>
+    /// 플레이어의 현재 층(floor) 번호를 반환합니다.
+    /// </summary>
+    public int GetCurrentFloor()
+    {
+        if (floorLayer == LayerMask.GetMask("Col 1F")) return 1;
+        else if (floorLayer == LayerMask.GetMask("Col 2F")) return 2;
+        else if (floorLayer == LayerMask.GetMask("Col 3F")) return 3;
+        else return 1;
     }
 }
