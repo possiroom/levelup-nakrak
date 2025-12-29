@@ -20,4 +20,7 @@ MonoBehaviour:
   isEnd: 1
   selects: []
   nextData: {fileID: 0}
-  endActions: []
+  endActions:
+  - id: {fileID: 11400000, guid: e95894321c0804eb18bd108f4c2533f6, type: 2}
+    type: 0
+    value: 2

@@ -19,12 +19,15 @@ MonoBehaviour:
       compare: 2
       value: 0
     headStoryData: {fileID: 11400000, guid: 7e31002b9f331409bbcb1aa71f3543f0, type: 2}
-  - memo: "\uAE30\uBCF8"
+  - memo: "\uB450 \uBC88\uC9F8 \uB300\uD654"
     conditions:
     - id: {fileID: 11400000, guid: e95894321c0804eb18bd108f4c2533f6, type: 2}
       compare: 2
       value: 1
     headStoryData: {fileID: 11400000, guid: 2030d72fbb25b4355ae7ae2c2d23591c, type: 2}
-  - memo: "\uAE30\uBCF8"
-    conditions: []
+  - memo: "\uC138 \uBC88\uC9F8 \uC774\uC0C1 \uB300\uD654"
+    conditions:
+    - id: {fileID: 11400000, guid: e95894321c0804eb18bd108f4c2533f6, type: 2}
+      compare: 5
+      value: 2
     headStoryData: {fileID: 11400000, guid: 652211cef05ad46ea9b3ec5f515463c5, type: 2}

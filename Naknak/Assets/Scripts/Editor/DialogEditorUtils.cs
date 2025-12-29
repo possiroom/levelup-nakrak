@@ -62,8 +62,8 @@ public static class DialogEditorUtils
     public static StoryData CreateStoryInSlot(DialogContainer container)
     {
         EnsureFolderStructure();
-        string defaultName = $"{container.name}_Slot";
-        string path = EditorUtility.SaveFilePanelInProject("Create New Slot", defaultName, "asset", "Save", PATH_STORY);
+        string defaultName = $"{container.name}_1";
+        string path = EditorUtility.SaveFilePanelInProject("Create Head Story Data", defaultName, "asset", "Save", PATH_STORY);
         
         if (string.IsNullOrEmpty(path) || CheckDuplicate(path)) return null;
 
@@ -160,6 +160,22 @@ public static class DialogEditorUtils
         slotProp.serializedObject.ApplyModifiedProperties();
     }
 
+    public static StoryData CreateOnlyStory()
+    {
+        EnsureFolderStructure();
+        
+        string path = EditorUtility.SaveFilePanelInProject("Create New Story Data", "NewStory", "asset", "Save", PATH_STORY);
+        if (string.IsNullOrEmpty(path) || CheckDuplicate(path)) return null;
+
+        StoryData newData = ScriptableObject.CreateInstance<StoryData>();
+        newData.isEnd = true; // 독립된 스토리는 isEnd
+
+        AssetDatabase.CreateAsset(newData, path);
+        AssetDatabase.SaveAssets();
+        
+        return newData;
+    }
+
     // 제네릭 생성
     public static T CreateAsset<T>(string folderPath, string defaultName) where T : ScriptableObject
     {
@@ -172,6 +188,43 @@ public static class DialogEditorUtils
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         return asset;
+    }
+
+    public static void RenameAsset(Object asset, string newName)
+    {
+        // 유효성 검사
+        if (asset == null || string.IsNullOrEmpty(newName)) return;
+        if (asset.name == newName) return; // 이름이 같으면 패스
+
+        string path = AssetDatabase.GetAssetPath(asset);
+        
+        // 3. 이름 변경 실행 (성공 시 빈 문자열, 실패 시 에러 메시지 반환)
+        string error = AssetDatabase.RenameAsset(path, newName);
+
+        if (string.IsNullOrEmpty(error))
+        {
+            AssetDatabase.SaveAssets(); // 저장
+        }
+        else
+        {
+            // 실패
+            EditorUtility.DisplayDialog("Error", error, "OK");
+        }
+    }
+
+    public static bool DeleteContainer(DialogContainer container)
+    {
+        if (container == null) return false;
+
+        if (EditorUtility.DisplayDialog("Delete Container", 
+                $"정말로 삭제할까요? '{container.name}'\n\n(연결된 스토리는 삭제되지 않고 연결 해제됩니다.)", "Delete", "Cancel"))
+        {
+            string path = AssetDatabase.GetAssetPath(container);
+            bool success = AssetDatabase.DeleteAsset(path);
+            if (success) AssetDatabase.SaveAssets();
+            return success;
+        }
+        return false;
     }
 
     public static void DeleteStory(StoryData story)
