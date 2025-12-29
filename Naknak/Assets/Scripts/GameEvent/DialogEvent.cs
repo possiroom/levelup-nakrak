@@ -1,10 +1,9 @@
 public class DialogEvent : GameEventBase
 {
-    public string storyID;
-    public StoryTextData storyTextData;
+    public StoryData storyID;
 
     // 생성자
-    public DialogEvent(string storyID){
+    public DialogEvent(StoryData storyID){
         this.storyID = storyID;
     }
     

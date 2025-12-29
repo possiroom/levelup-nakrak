@@ -4,7 +4,7 @@
 /// </summary>
 public static class GameEventFactory
 {
-    public static GameEventBase CreateDialogEvent(string storyID)
+    public static GameEventBase CreateDialogEvent(StoryData storyID)
     {
         return new DialogEvent(storyID);
     }

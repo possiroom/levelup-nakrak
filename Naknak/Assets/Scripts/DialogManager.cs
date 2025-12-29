@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.UI;
 
 public class DialogManager : MonoBehaviour
 {
     public static DialogManager Instance { get; private set; }
-
 
     [SerializeField] private DialogViewer view;
     [SerializeField] private DialogSelectViewer selectView;
@@ -29,91 +27,8 @@ public class DialogManager : MonoBehaviour
         }
     }
 
-    private static List<StoryTextData> storyStore = new();
-
-    private readonly StoryTextData test1 = new StoryTextData(
-        storyID:        "test1", 
-        text:           "안녕 네 이름은 뭐니?",
-        name:           "민서", 
-        activatedImage: 2, 
-        isSelect:       false, 
-        nextStoryID:    "test2"
-    );
-
-    private StorySelectData text2_1 = new StorySelectData(
-        text:       "민서",
-        nextStoryID: "test3"
-    );
-
-    private StorySelectData text2_2 = new StorySelectData(
-        text:       "민수",
-        nextStoryID: "test5"
-    );
-
-    private StoryTextData test2 = new StoryTextData(
-        storyID:        "test2", 
-        text:           "내 이름은 진수야. 네 이름은?",
-        name:           "진수", 
-        activatedImage: 1, 
-        isSelect:       true, 
-        nextStoryID:    "<SELECT>",
-        selects:        new List<StorySelectData>()
-    );
-
-    private readonly StoryTextData test3 =new StoryTextData(
-        storyID:        "test3", 
-        text:           "오 네 이름은 민서구나 반가워.",
-        name:           "진수", 
-        activatedImage: 1, 
-        isSelect:       false, 
-        nextStoryID:    "test4"
-    );
-
-    private readonly StoryTextData test4 = new StoryTextData(
-        storyID:        "test4", 
-        text:           "그래 반가워 진수야.", 
-        name:           "민서", 
-        activatedImage: 2, 
-        isSelect:       false, 
-        nextStoryID:    "<END>"
-    );
-
-    private readonly StoryTextData test5 =new StoryTextData(
-        storyID:        "test5", 
-        text:           "거짓말 치지 마. 너 이름 민서인 거 다 보여.",
-        name:           "진수", 
-        activatedImage: 1, 
-        isSelect:       false, 
-        nextStoryID:    "test6"
-    );
-
-    private readonly StoryTextData test6 = new StoryTextData(
-        storyID:        "test6", 
-        text:           "헐 들켰네. 거짓말 쳐서 미안해.", 
-        name:           "민서", 
-        activatedImage: 2, 
-        isSelect:       false, 
-        nextStoryID:    "<END>"
-    );
-
     void Start()
     {
-        storyStore.Add(test1);
-
-        test2.AddSelect(text2_1);
-        test2.AddSelect(text2_2);
-
-        text2_1.SetNextData(test3);
-        text2_2.SetNextData(test5);
-
-        storyStore.Add(test2);
-        storyStore.Add(test3);
-        storyStore.Add(test4);
-        storyStore.Add(test5);
-        storyStore.Add(test6);
-        
-        MatchStoryData();
-
         elapedTime = 0f;
         showingText = "";
         isPlaying = false;
@@ -121,27 +36,27 @@ public class DialogManager : MonoBehaviour
         selectIndex = 1;
     }
 
-    private StoryTextData currentStory = null;
+    private StoryData currentStory = null;
 
     private void ChangeUI()
     {
         isPlaying = true;
         elapedTime = 0f;
         showingText = "";
-        view.ChangeName(currentStory.name);
+        view.ChangeName(currentStory.charName);
         view.ChangeActivateImage(currentStory.activatedImage);
         view.ActivateEndMark(false);
         Debug.Log("[DialogManager] Show Dialog : " + currentStory.text);
     }
 
-    public void ShowDialog(string storyID)
+    public void ShowDialog(StoryData storyData)
     {
         view.gameObject.SetActive(true);
 
         GameEventBase evt = GameEventFactory.CreateGameStateChangeEvent(GameState.Dialog);
         GameEventManager.Instance.Submit(evt);
 
-        currentStory = GetStoryTextData(storyID);
+        currentStory = storyData;
 
         ChangeUI();
     }
@@ -151,8 +66,10 @@ public class DialogManager : MonoBehaviour
     /// </summary>
     public void NextDialog()
     {
+        // 대사 스킵
         if (isPlaying) { TextSkip(); return; }
 
+        // 선택지 선택
         if (isSelectActivate)
         {
             Select();
@@ -162,24 +79,29 @@ public class DialogManager : MonoBehaviour
             return;
         }
 
-        if (currentStory.nextData != null)
+        TryExecuteActions();
+
+        if (currentStory.isEnd)
         {
-            currentStory = currentStory.nextData;
-            Debug.Log("[DialogManager] Story ID: " + currentStory.storyID);
-            ChangeUI();
+            // 대사 종료
+            EndDialog();
         } 
+        else if (currentStory.isSelect)
+        {
+            // 선택지 활성화
+            isSelectActivate = true;
+            selectView.gameObject.SetActive(true);
+            selectView.SelectActivate(currentStory.selects);
+
+            selectIndex = 1;
+            selectView.ChangeSelectIndex(selectIndex);
+        }
         else
         {
-            if (currentStory.nextStoryID == "<SELECT>")
-            {
-                selectView.gameObject.SetActive(true);
-                selectView.SelectActivate(currentStory.selects);
-                isSelectActivate = true;
-            }
-            else
-            {
-                EndDialog();
-            }
+            // 다음 대사
+            currentStory = currentStory.nextData;
+            Debug.Log("[DialogManager] Story ID: " + currentStory.name);
+            ChangeUI();
         }
     }
 
@@ -216,13 +138,14 @@ public class DialogManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                // Modulation
-                selectIndex = selectIndex + 1 > currentStory.selects.Count ? 1 : selectIndex + 1;
+                // 원형 인덱스
+                selectIndex = selectIndex - 1 < 1 ? currentStory.selects.Count : selectIndex - 1;
                 selectView.ChangeSelectIndex(selectIndex);
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                selectIndex = selectIndex - 1 < 1 ? currentStory.selects.Count : selectIndex - 1;
+                // 원형 인덱스
+                selectIndex = selectIndex + 1 > currentStory.selects.Count ? 1 : selectIndex + 1;
                 selectView.ChangeSelectIndex(selectIndex);
             }
         }
@@ -249,48 +172,13 @@ public class DialogManager : MonoBehaviour
         GameEventManager.Instance.Submit(evt);
     }
 
-    /// <summary>
-    /// Call Only Start, 추후 handler로 분리할 예정
-    /// </summary>
-    private void MatchStoryData()
+    // Action 실행
+    private void TryExecuteActions()
     {
-        for (int i = 0; i < storyStore.Count; i++)
+        if (currentStory != null && currentStory.endActions != null && currentStory.endActions.Count > 0)
         {
-            StoryTextData storyTextData = storyStore[i];
-            storyTextData.SetNextData(SearchNextStoryData(storyTextData, i));
+            ConditionManager.Instance.ExecuteActions(currentStory.endActions);
+            Debug.Log($"[DialogManager] Action Executed for: {currentStory.name}");
         }
-    }
-
-    private StoryTextData SearchNextStoryData(StoryTextData storyTextData, int index)
-    {
-        if (storyTextData.nextStoryID == "<END>") return null;
-        if (storyTextData.nextStoryID == "<SKIP>") return null;
-        if (storyTextData.nextStoryID == "<SELECT>") return null;
-        if (storyTextData.nextStoryID == "<NULL>") return null;
-
-        int len = storyStore.Count;
-        for (int j = (index + 1) % len; j != index; j = (j + 1) % len)
-        {
-            Debug.Log("search try: " + j);
-            if (storyTextData.nextStoryID == storyStore[j].storyID) 
-                return storyStore[j];
-        }
-
-        Debug.LogWarning("[DialogManager] Next Story Data Not Found : " + storyTextData.nextStoryID);
-        return null;
-    }
-
-    private StoryTextData GetStoryTextData(string storyID)
-    {
-        foreach (StoryTextData storyTextData in storyStore)
-        {
-            if (storyTextData.storyID == storyID)
-            {
-                return storyTextData;
-            }
-        }
-
-        Debug.LogError("[DialogManager] Story Data Not Found : " + storyID);
-        return null;
     }
 }
