@@ -352,7 +352,7 @@ MonoBehaviour:
   moveDuration: 0.3
   floorLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   col: {fileID: 33174158}
 --- !u!114 &33174166
 MonoBehaviour:

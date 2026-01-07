@@ -76,6 +76,13 @@ public class DialogManager : MonoBehaviour
             isSelectActivate = false;
             selectView.SelectDeactivate();
             selectView.gameObject.SetActive(false);
+
+            // 만약 마지막 선택 후 Action을 위한 빈 대사라면
+            if (currentStory.charName == "" && currentStory.text == "" && currentStory.isEnd)
+            {
+                TryExecuteActions();
+                EndDialog();
+            }
             return;
         }
 
@@ -100,6 +107,15 @@ public class DialogManager : MonoBehaviour
         {
             // 다음 대사
             currentStory = currentStory.nextData;
+
+            // 만약 마지막 선택 후 Action을 위한 빈 대사라면
+            if (currentStory.charName == "" && currentStory.text == "" && currentStory.isEnd)
+            {
+                TryExecuteActions();
+                EndDialog();
+                return;
+            }
+
             Debug.Log("[DialogManager] Story ID: " + currentStory.name);
             ChangeUI();
         }
@@ -116,7 +132,7 @@ public class DialogManager : MonoBehaviour
 
     private void Update()
     {
-        if (isPlaying)
+        if (isPlaying && showingText.Length < currentStory.text.Length)
         {
             elapedTime += Time.deltaTime;
             if (elapedTime >= letterSpeed)

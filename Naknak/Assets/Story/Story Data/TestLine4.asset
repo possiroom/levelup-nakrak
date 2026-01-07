@@ -16,8 +16,12 @@ MonoBehaviour:
   text: "\uB09C \uC774\uC81C \uC544\uBB34\uAC83\uB3C4 \uBAB0\uB77C. \uB354 \uC774\uC0C1
     \uBB3B\uC9C0 \uB9C8..."
   activatedImage: 1
-  isSelect: 0
-  isEnd: 1
-  selects: []
+  isSelect: 1
+  isEnd: 0
+  selects:
+  - text: "\uC751"
+    nextData: {fileID: 11400000, guid: 82ebb9ecdde094f62b666cb431ddfb4f, type: 2}
+  - text: "\uCC98\uC74C\uBD80\uD130"
+    nextData: {fileID: 11400000, guid: 3687c896420c8443792fea4606d13e92, type: 2}
   nextData: {fileID: 0}
   endActions: []

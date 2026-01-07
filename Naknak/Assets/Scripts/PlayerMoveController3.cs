@@ -153,13 +153,17 @@ public class PlayerMoveController3 : MonoBehaviour
             Vector2 dir = Vector2.right;
             Vector3 from = transform.position;
             
-            RaycastHit2D hit = Physics2D.Raycast(from - new Vector3(0f, 0.5f, 0f), dir, moveDistance, layer);
+            RaycastHit2D[] hits = Physics2D.RaycastAll(from - new Vector3(0f, 0.5f, 0f), dir, moveDistance, layer);
             Debug.DrawRay(from - new Vector3(0f, 0.5f, 0f), dir * moveDistance, Color.red);
 
-            if (hit.collider != null && hit.collider.CompareTag("Interactable"))
+            foreach (RaycastHit2D hit in hits)
             {
-                Debug.Log("[PlayerMoveController3] Interact : " + hit.collider.name);
-                hit.collider.GetComponent<IInteractable>().Interact();
+                if (hit.collider != null && hit.collider.CompareTag("Interactable"))
+                {
+                    Debug.Log("[PlayerMoveController3] Interact : " + hit.collider.name);
+                    hit.collider.GetComponent<IInteractable>().Interact();
+                    break;
+                }
             }
         }
     }
