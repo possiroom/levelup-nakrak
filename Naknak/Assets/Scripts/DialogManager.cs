@@ -121,15 +121,15 @@ public class DialogManager : MonoBehaviour
             elapedTime += Time.deltaTime;
             if (elapedTime >= letterSpeed)
             {
-                showingText += currentStory.text[showingText.Length];
-                view.ChangeStoryText(showingText);
-                if (showingText.Length == currentStory.text.Length)
+                if (showingText.Length < currentStory.text.Length)
+                {
+                    showingText += currentStory.text[showingText.Length];
+                    view.ChangeStoryText(showingText);
+                    elapedTime -= letterSpeed;
+                }
+                else
                 {
                     TextSkip();
-                } 
-                else 
-                {
-                    elapedTime -= letterSpeed;  
                 }
             }
         }
