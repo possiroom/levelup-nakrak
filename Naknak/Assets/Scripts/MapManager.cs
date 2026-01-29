@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -6,12 +9,16 @@ public class MapManager : MonoBehaviour
     // Singleton Instance
     public static MapManager Instance { get; private set; }
 
-    [SerializeField]
-    private Tilemap collisionTilemap;
+    [SerializeField] private PlayerMoveController3 playerCtrl;
 
-    // 추후 외부에서 Setter로 맵을 바꾸는 로직으로 수정
     [SerializeField]
-    private Grid grid;
+    private GameObject defalutMapPrefab;
+
+    [SerializeField] float changeMapTime = 0.5f;
+    [SerializeField] UIFadeInOut panel;
+
+    private MapContainer CurrentMap { get; set; }
+    private Dictionary<string, MapContainer> mapStore = new();
 
     // Singleton Pattern
     private void Awake() {
@@ -23,40 +30,92 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 콜라이더가 있는지 검사, 있으면 true
-    /// </summary>
-    /// <param name="position">Vector3 Pos</param>
-    /// <returns>bool: 콜라이더가 있는가?</returns>
-    public bool IsCollision(Vector3 position) {
-        if (!grid)
+    private void Start()
+    {
+        if (CurrentMap == null)
         {
-            Debug.LogWarning("[MapManager] Grid가 지정되지 않았습니다.");
-            return true; // 기본은 이동 가능
+            FirstMap(defalutMapPrefab);
+        }
+    }
+
+    public void FirstMap(GameObject newMap)
+    {
+        StartCoroutine(ChangeMap(newMap, Vector2Int.zero));
+    }
+
+    public IEnumerator ChangeMap(GameObject newMap, Vector2Int pos, bool destroy = false)
+    {
+        bool hasPrevMap = mapStore.Count > 0;
+        if (hasPrevMap)
+        {
+            StartCoroutine(panel.FadeInOut(changeMapTime, 0.3f, 0.5f));
+            StartCoroutine(playerCtrl.Teleport(pos, changeMapTime));
+            playerCtrl.SetFloor(1);
+            yield return new WaitForSeconds(changeMapTime);
+            if (destroy) FreeMap(CurrentMap);
         }
 
-        // translate position to Vector3Int
-        Vector3Int gridPosition = World2Grid(position);
+        CurrentMap = LoadMap(newMap);
+        TriggerExecutor.Instance.ChangeMap(CurrentMap.GridLayout, CurrentMap.TriggerTilemap);
+    }
 
-        return collisionTilemap.HasTile(gridPosition);
+    private MapContainer LoadMap(GameObject mapPrefab)
+    {
+        MapContainer loadMap;
+        // 메모리에 맵에 올라와 있을 때
+        if (mapStore.ContainsKey(mapPrefab.name))
+        {
+            loadMap = mapStore[mapPrefab.name];
+        } 
+        else
+        {
+            loadMap = Instantiate(mapPrefab).GetComponent<MapContainer>();
+            mapStore.Add(mapPrefab.name, loadMap);
+        }
+
+        DeactiveAllMap(loadMap);
+        return loadMap;
+    }
+
+    private void FreeMap(MapContainer mapCont)
+    {
+        mapStore.Remove(mapCont.gameObject.name);
+        Destroy(mapCont.gameObject);
+    }
+
+    private void DeactiveAllMap(MapContainer only)
+    {
+        foreach (MapContainer map in mapStore.Values)
+        {
+            if (map == only)
+            {
+                map.gameObject.SetActive(true);
+                continue;
+            }
+            map.gameObject.SetActive(false);
+        }
+    }
+
+    public GridLayout GetMapGrid()
+    {
+        return CurrentMap.GridLayout;
+    }
+
+    public GameObject GetMapTriggerMap()
+    {
+        return CurrentMap.TriggerTilemap;
+    }
+
+    public bool IsCollision(Vector3 position) {
+        return false;
     }
 
     // Util
     public Vector3Int World2Grid(Vector3 worldPosition) {
-        if (!grid)
-        {
-            Debug.LogWarning("[MapManager] Grid가 지정되지 않았습니다.");
-            return Vector3Int.zero;
-        }
-        return grid.WorldToCell(worldPosition);
+        return new Vector3Int(0, 0, 0);
     }
 
     public Vector3 Grid2World(Vector3Int gridPosition) {
-        if (!grid)
-        {
-            Debug.LogWarning("[MapManager] Grid가 지정되지 않았습니다.");
-            return Vector3.zero;
-        }
-        return grid.GetCellCenterWorld(gridPosition);
+        return new Vector3(0, 0, 0);
     }
 }

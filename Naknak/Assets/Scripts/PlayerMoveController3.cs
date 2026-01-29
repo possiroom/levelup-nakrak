@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 // enum Direction 은 PlayerMoveController 의 enum 을 따릅니다.
@@ -118,6 +119,14 @@ public class PlayerMoveController3 : MonoBehaviour
         {
             UpdateMoveX();
             UpdateMoveY();
+            anim.speed = 1f; // ...
+        } 
+        else
+        {
+            // dequeue Move XY
+            queuedDirectionX = Vector2.zero;
+            queuedDirectionY = Vector2.zero;
+            anim.speed = 0f; // ...
         }
 
         isMoving = isMovingX || isMovingY;
@@ -133,7 +142,8 @@ public class PlayerMoveController3 : MonoBehaviour
         if (xFirst && isMovingX) anim.SetFloat("direction", (float)vector2Dir(currentDirectionX));
         else if (yFirst && isMovingY) anim.SetFloat("direction", (float)vector2Dir(currentDirectionY));
 
-        if (lastInputManager.GetKeyDownInteract() && !isMoving) TryInteract();
+        if (lastInputManager.GetKeyDownInteract() && 
+        (!isMoving || GameStateManager.Instance.GameState == GameState.Dialog)) TryInteract();
 
     }
 
@@ -198,14 +208,17 @@ public class PlayerMoveController3 : MonoBehaviour
             if (arrived)
             {
                 startPosX = targetPosX;
-
+                bool pause = false;
+                pause = TriggerExecutor.Instance.OnStepCompleted(targetPosX - new Vector2(0f, 0.5f));
+                
                 syncCanMoveXY(targetPosX);
                 syncCanMoveYX(targetPosX);
 
                 if (queuedDirectionX != Vector2.zero &&                                     // (1-1) 입력 큐에 원소가 존재한다면
                     (lastInputManager.GetLastInputAxis() == "Horizontal" ||                 // (2-1) 마지막 입력 방향이 수평 방향이거나
                     (lastInputManager.GetAxisRaw("Vertical") == 1f && !canMoveXY[0])||      // (2-2) 마지막 입력이 수직, 위 방향인데 위로 움직일 수 없거나
-                    (lastInputManager.GetAxisRaw("Vertical") == -1f && !canMoveXY[1])))     // (2-3) 마지막 입력이 수직, 아래 방향인데 아래로 움직일 수 없다면
+                    (lastInputManager.GetAxisRaw("Vertical") == -1f && !canMoveXY[1]))      // (2-3) 마지막 입력이 수직, 아래 방향인데 아래로 움직일 수 없다면
+                    && !pause)
                     { StartMoveX(); }
                 else {
                     isMovingX = false;
@@ -250,6 +263,9 @@ public class PlayerMoveController3 : MonoBehaviour
             nextInputX = false;
             elapsedTimeX = 0f;
             queuedDirectionX = Vector2.zero;
+
+            if (!isMovingY) anim.SetFloat("direction", (float)vector2Dir(currentDirectionX));
+            TriggerExecutor.Instance.OnStepStarted(targetPosX - new Vector2(0f, 0.5f));
         }
     }
 
@@ -283,6 +299,8 @@ public class PlayerMoveController3 : MonoBehaviour
             if (arrived)
             {
                 startPosY = targetPosY;
+                bool pause = false;
+                pause = TriggerExecutor.Instance.OnStepCompleted(targetPosY - new Vector2(0f, 0.5f));
 
                 syncCanMoveXY(targetPosY);
                 syncCanMoveYX(targetPosY);
@@ -290,7 +308,8 @@ public class PlayerMoveController3 : MonoBehaviour
                 if (queuedDirectionY != Vector2.zero &&                                     // (1-1) 입력 큐에 원소가 존재한다면
                     (lastInputManager.GetLastInputAxis() == "Vertical" ||                   // (2-1) 마지막 입력이 수직 방향이거나          
                     (lastInputManager.GetAxisRaw("Horizontal") == -1f && !canMoveYX[0]) ||  // (2-2) 마지막 입력이 수평, 왼쪽 방향인데 왼쪽으로 움직일 수 없거나
-                    (lastInputManager.GetAxisRaw("Horizontal") == 1f && !canMoveYX[1])))    // (2-3) 마지막 입력이 수평, 오른쪽 방향인데 오른쪽으로 움직일 수 없다면
+                    (lastInputManager.GetAxisRaw("Horizontal") == 1f && !canMoveYX[1]))     // (2-3) 마지막 입력이 수평, 오른쪽 방향인데 오른쪽으로 움직일 수 없다면
+                    && !pause)
                     { StartMoveY(); }                                                 
                 else
                 {
@@ -336,6 +355,9 @@ public class PlayerMoveController3 : MonoBehaviour
             nextInputY = false;
             elapsedTimeY = 0f;
             queuedDirectionY = Vector2.zero;
+
+            if (!isMovingX) anim.SetFloat("direction", (float)vector2Dir(currentDirectionY));
+            TriggerExecutor.Instance.OnStepStarted(targetPosY - new Vector2(0f, 0.5f));
         }
     }
 
@@ -398,5 +420,22 @@ public class PlayerMoveController3 : MonoBehaviour
         else if (floorLayer == LayerMask.GetMask("Col 2F")) return 2;
         else if (floorLayer == LayerMask.GetMask("Col 3F")) return 3;
         else return 1;
+    }
+
+    public IEnumerator Teleport(Vector2Int pos, float time = 1f)
+    {
+        isMovingX = false;
+        isMovingY = false;
+        elapsedTimeX = 0f;
+        elapsedTimeY = 0f;
+        nextInputX = true;
+        nextInputY = true;
+        queuedDirectionX = Vector2.zero;
+        queuedDirectionY = Vector2.zero;
+        lastInputManager.IgnoreInput(time + .5f);
+        yield return new WaitForSeconds(time);
+        
+        transform.position = new Vector3(pos.x + 0.5f, pos.y, 0);
+        currentPosition = transform.position;
     }
 }

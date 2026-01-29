@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
+  m_Name: Block_Test_1
+  m_EditorClassIdentifier: 
+  charName: ???
+  text: "\uD2B8\uB9AC\uAC70 \uBE14\uB85D \uB2E4\uC774\uC54C\uB85C\uADF8 \uD14C\uC2A4\uD2B8
+    \uBA54\uC2DC\uC9C0\uC785\uB2C8\uB2E4.\n\uC88B\uC740 \uD558\uB8E8 \uB418\uC2DC\uAE30
+    \uBC14\uB78D\uB2C8\uB2E4."
+  activatedImage: 0
+  isSelect: 0
+  isEnd: 1
+  selects: []
+  nextData: {fileID: 0}
+  endActions: []
