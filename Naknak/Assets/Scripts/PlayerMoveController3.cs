@@ -408,6 +408,7 @@ public class PlayerMoveController3 : MonoBehaviour
         {
             // floor property 대신 직접 내부 상태 관리 필요
             // 현재 구조상 floorLayer와 floor의 관계를 정의해야 함
+            Debug.Log("[PlayerMoveController] Set floor: " + newFloor);
         }
     }
 
@@ -430,9 +431,9 @@ public class PlayerMoveController3 : MonoBehaviour
         elapsedTimeY = 0f;
         nextInputX = true;
         nextInputY = true;
+        lastInputManager.IgnoreInput(time + .5f);
         queuedDirectionX = Vector2.zero;
         queuedDirectionY = Vector2.zero;
-        lastInputManager.IgnoreInput(time + .5f);
         yield return new WaitForSeconds(time);
         
         transform.position = new Vector3(pos.x + 0.5f, pos.y, 0);

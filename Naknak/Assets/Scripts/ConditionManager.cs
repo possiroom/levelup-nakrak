@@ -63,6 +63,7 @@ public class ConditionManager : MonoBehaviour
     {
         if (id == null) return;
         variables[id.name] = value;
+        Debug.Log("[ConditionManager] Set: " + id.name + " = " + value);
     }
 
     public void Add(ConditionID id, int amount)

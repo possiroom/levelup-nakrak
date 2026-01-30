@@ -70,7 +70,8 @@ public class MapManager : MonoBehaviour
         else
         {
             loadMap = Instantiate(mapPrefab).GetComponent<MapContainer>();
-            mapStore.Add(mapPrefab.name, loadMap);
+            loadMap.gameObject.name = mapPrefab.name;   
+            mapStore.TryAdd(mapPrefab.name, loadMap);
         }
 
         DeactiveAllMap(loadMap);
@@ -94,6 +95,11 @@ public class MapManager : MonoBehaviour
             }
             map.gameObject.SetActive(false);
         }
+    }
+
+    public void ChangePlayerFloor(int floor)
+    {
+        playerCtrl.SetFloor(floor);
     }
 
     public GridLayout GetMapGrid()
