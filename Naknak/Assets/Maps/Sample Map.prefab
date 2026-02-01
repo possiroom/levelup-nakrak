@@ -9858,7 +9858,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2576065039527655680, guid: 3639330afd4d64d54907ca9b520c131f, type: 3}
       propertyPath: arrivePos.x
-      value: -1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2576065039527655680, guid: 3639330afd4d64d54907ca9b520c131f, type: 3}
+      propertyPath: arrivePos.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2576065039527655680, guid: 3639330afd4d64d54907ca9b520c131f, type: 3}
       propertyPath: DepartActive
