@@ -358,6 +358,7 @@ public class PlayerMoveController3 : MonoBehaviour
         // Delayed Evaluation
         check = MapManager.Instance.IsCollision(from - new Vector3(0f, 0.5f, 0f) + dir * moveDistance - gridPreset)
             || (hit.collider != null && hit.collider.CompareTag("Interactable"));
+        //check = hit.collider != null && !hit.collider.CompareTag("Interactable");
 
         return check;
     }
