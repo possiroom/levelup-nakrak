@@ -19,6 +19,9 @@ public class PlayerMoveController3 : MonoBehaviour
     // 추상 현재 위치
     Vector2 currentPosition;
 
+    // 플레이어가 바라보는 방향 (항상 유지됨)
+    private Vector2 facingDirection = Vector2.down;
+
     // 플레이어 애니메이션 우선 순위를 위함
     bool xFirst = false, yFirst = false;
     bool teleporting = false;
@@ -97,6 +100,7 @@ public class PlayerMoveController3 : MonoBehaviour
 
     Vector3 gridPreset;
 
+
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -142,10 +146,10 @@ public class PlayerMoveController3 : MonoBehaviour
 
         if (xFirst && isMovingX) anim.SetFloat("direction", (float)vector2Dir(currentDirectionX));
         else if (yFirst && isMovingY) anim.SetFloat("direction", (float)vector2Dir(currentDirectionY));
-
+        else if (!isMoving) anim.SetFloat("direction", (float)vector2Dir(facingDirection));
+        
         if (lastInputManager.GetKeyDownInteract() && 
-        (!isMoving || GameStateManager.Instance.GameState == GameState.Dialog)) TryInteract();
-
+        (!isMoving || GameStateManager.Instance.GameState == GameState.Dialog)) TryInteract();   
     }
 
     void TryInteract()
@@ -158,10 +162,8 @@ public class PlayerMoveController3 : MonoBehaviour
         } 
         else if (gameState == GameState.Gameplay)
         {
-            // 현재 바라보는 방향을 기록하는 변수가 없어서 우선 dir를 right로 설정했어요.
-            // dir = currentDirectionX + currentDirectionY;
-            // 하려고 시도 했는데, 논리상으로 틀린 식이더라구요. 새로운 변수를 만들어야 할 것 같습니다.
-            Vector2 dir = Vector2.right;
+            // 현재  facingDir 함수 사용해서 기록하고 있습니다.
+            Vector2 dir = facingDirection;
             Vector3 from = transform.position;
             
             RaycastHit2D[] hits = Physics2D.RaycastAll(from - new Vector3(0f, 0.5f, 0f), dir, moveDistance, layer);
@@ -179,6 +181,8 @@ public class PlayerMoveController3 : MonoBehaviour
         }
     }
 
+    // facingDir function removed. `facingDirection` is updated in movement methods.
+
     // --- X축 로직 ---
     void UpdateMoveX()
     {
@@ -192,6 +196,7 @@ public class PlayerMoveController3 : MonoBehaviour
 
         if (isMovingX)
         {
+            facingDirection = currentDirectionX;
             elapsedTimeX += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTimeX / moveDuration);
 
@@ -241,6 +246,7 @@ public class PlayerMoveController3 : MonoBehaviour
     private void StartMoveX()
     {
         currentDirectionX = queuedDirectionX;
+        facingDirection = currentDirectionX;
         startPosX = currentPosition;
 
         syncCanMoveXY(currentPosition);
@@ -284,6 +290,7 @@ public class PlayerMoveController3 : MonoBehaviour
 
         if (isMovingY)
         {
+            facingDirection = currentDirectionY;
             elapsedTimeY += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTimeY / moveDuration);
 
@@ -334,6 +341,7 @@ public class PlayerMoveController3 : MonoBehaviour
     private void StartMoveY()
     {
         currentDirectionY = queuedDirectionY;
+        facingDirection = currentDirectionY;
         startPosY = currentPosition;
 
         syncCanMoveYX(currentPosition);
@@ -378,6 +386,7 @@ public class PlayerMoveController3 : MonoBehaviour
         // Delayed Evaluation
         check = MapManager.Instance.IsCollision(from - new Vector3(0f, 0.5f, 0f) + dir * moveDistance - gridPreset)
             || (hit.collider != null && hit.collider.CompareTag("Interactable"));
+        //check = hit.collider != null && !hit.collider.CompareTag("Interactable");
 
         return check;
     }
