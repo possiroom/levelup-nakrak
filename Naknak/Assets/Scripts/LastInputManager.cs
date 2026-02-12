@@ -1,3 +1,4 @@
+using System.Reflection;
 using UnityEngine;
 
 /// <summary>
@@ -124,6 +125,18 @@ public class LastInputManager : MonoBehaviour
     public bool GetKeyDownInteract()
     {
         return Input.GetKeyDown(KeyCode.Z);
+    }
+
+    public bool GetKeyDownJump()
+    {
+        if (ignoreInputTime > 0f) return false;
+        return Input.GetKeyDown(KeyCode.Space);
+    }
+
+    public bool GetKeyRun()
+    {
+        if (ignoreInputTime > 0f) return false;
+        return Input.GetKey(KeyCode.LeftShift);
     }
 
     public void IgnoreInput(float time)

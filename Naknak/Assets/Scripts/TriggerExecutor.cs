@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public sealed class TriggerExecutor : MonoBehaviour
@@ -46,6 +47,17 @@ public sealed class TriggerExecutor : MonoBehaviour
 
             map.Add(cell, b);
         }
+        Debug.Log("[TriggerExecutor] Build Index Count: " + map.Count);
+    }
+
+    public void RemoveIndex(TriggerBlock triggerBlock)
+    {
+        if (map.Values.Contains(triggerBlock))
+        {
+            Vector2Int key = map.First(x => x.Value == triggerBlock).Key;
+            map.Remove(key);
+        }
+        Debug.Log("[TriggerExecutor] Remove Index. Count: " + map.Count);
     }
 
     public bool OnStepStarted(Vector2 pos)

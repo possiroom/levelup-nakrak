@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class MapManager : MonoBehaviour
 {
@@ -16,6 +14,7 @@ public class MapManager : MonoBehaviour
 
     [SerializeField] float changeMapTime = 0.5f;
     [SerializeField] UIFadeInOut panel;
+    [SerializeField] bool debugMode = false;
 
     private MapContainer CurrentMap { get; set; }
     private Dictionary<string, MapContainer> mapStore = new();
@@ -57,6 +56,7 @@ public class MapManager : MonoBehaviour
 
         CurrentMap = LoadMap(newMap);
         TriggerExecutor.Instance.ChangeMap(CurrentMap.GridLayout, CurrentMap.TriggerTilemap);
+        CurrentMap.debugMode = debugMode;
     }
 
     private MapContainer LoadMap(GameObject mapPrefab)
@@ -110,6 +110,11 @@ public class MapManager : MonoBehaviour
     public GameObject GetMapTriggerMap()
     {
         return CurrentMap.TriggerTilemap;
+    }
+
+    public bool GetPlayerIsJumping()
+    {
+        return playerCtrl.GetIsJumping();
     }
 
     public bool IsCollision(Vector3 position) {

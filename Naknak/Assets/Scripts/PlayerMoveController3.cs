@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ using UnityEngine;
 public class PlayerMoveController3 : MonoBehaviour
 {
     public float moveDuration = 0.3f;
+    public float runDuration = 0.2f;
     private readonly float moveDistance = 1f;
     private readonly float sameInputTime = 0.85f;
 
@@ -39,27 +41,20 @@ public class PlayerMoveController3 : MonoBehaviour
 
 
     //플레이어 층수
-    int floor
-    {
-        get
-        {
-            if (floorLayer.Equals("Col 1F")) return 1;
-            else if (floorLayer.Equals("Col 2F")) return 2;
-            else if (floorLayer.Equals("Col 3F")) return 3;
-            else return 1;  
-        }
-        set { return; }
-    }
+    int _layer = 1;
     int layer
     {
         get
         {
-            if (floor == 1) return LayerMask.GetMask("Col 1F");
-            else if (floor == 2) return LayerMask.GetMask("Col 2F");
-            else if (floor == 3) return LayerMask.GetMask("Col 3F");
+            if (_layer == 1) return LayerMask.GetMask("Col 1F");
+            else if (_layer == 2) return LayerMask.GetMask("Col 2F");
+            else if (_layer == 3) return LayerMask.GetMask("Col 3F");
             else return LayerMask.GetMask("Col 1F");
         }
-        set { return; }
+        set
+        {
+            _layer = value;
+        }
     }
 
     // --- X축 이동 변수 ---
@@ -98,7 +93,18 @@ public class PlayerMoveController3 : MonoBehaviour
     internal bool isMovingY = false;
     private float elapsedTimeY = 0f;
 
-    Vector3 gridPreset;
+    // --- 점프 관련 변수 ---
+    private Vector2 jumpStartPos;
+    private int queuedJump = 0;
+    private bool isJumping = false;
+    private bool jumpPhase1 = false;
+    private bool jumpPhase2 = false;
+    private float jumpDuration = 0.6f;
+    private float elapsedTimeJump = 0f;
+
+    private float jumpHeight = 1.5f;
+    private int rho = 60;
+
 
 
     void Start()
@@ -114,17 +120,20 @@ public class PlayerMoveController3 : MonoBehaviour
         targetPosX = transform.position;
         startPosY = transform.position;
         targetPosY = transform.position;
-
-        gridPreset = MapManager.Instance.World2Grid(Vector3.zero);
     }
 
     void Update()
     {
         if (GameStateManager.Instance.GameState == GameState.Gameplay)
         {
-            UpdateMoveX();
-            UpdateMoveY();
-            anim.speed = 1f; // ...
+            if (!isJumping)
+            {
+                UpdateMoveX();
+                UpdateMoveY();
+            }
+            UpdateJump();
+            if (isMovingX || isMovingY) anim.speed = lastInputManager.GetKeyRun() ? moveDuration/runDuration : 1f;
+            else anim.speed = 1f;
         } 
         else
         {
@@ -197,7 +206,7 @@ public class PlayerMoveController3 : MonoBehaviour
         if (isMovingX)
         {
             facingDirection = currentDirectionX;
-            elapsedTimeX += Time.deltaTime;
+            elapsedTimeX += Time.deltaTime * (lastInputManager.GetKeyRun() ? moveDuration/runDuration : 1f);
             float t = Mathf.Clamp01(elapsedTimeX / moveDuration);
 
             Vector2 newPos = new Vector2(Mathf.Lerp(startPosX.x, targetPosX.x, t), transform.position.y);
@@ -206,7 +215,7 @@ public class PlayerMoveController3 : MonoBehaviour
             if (t >= sameInputTime) nextInputX = true;
 
             bool arrived = false;
-            if (Mathf.Abs(transform.position.x - targetPosX.x) <= 0.001f)
+            if (t >= 1f)
             {
                 transform.position = new Vector2(targetPosX.x, transform.position.y);
                 arrived = true;
@@ -215,6 +224,7 @@ public class PlayerMoveController3 : MonoBehaviour
             if (arrived)
             {
                 startPosX = targetPosX;
+                elapsedTimeX = 0f;
                 bool pause = false;
                 pause = TriggerExecutor.Instance.OnStepCompleted(targetPosX - new Vector2(0f, 0.5f));
                 
@@ -225,7 +235,7 @@ public class PlayerMoveController3 : MonoBehaviour
                     (lastInputManager.GetLastInputAxis() == "Horizontal" ||                 // (2-1) 마지막 입력 방향이 수평 방향이거나
                     (lastInputManager.GetAxisRaw("Vertical") == 1f && !canMoveXY[0])||      // (2-2) 마지막 입력이 수직, 위 방향인데 위로 움직일 수 없거나
                     (lastInputManager.GetAxisRaw("Vertical") == -1f && !canMoveXY[1]))      // (2-3) 마지막 입력이 수직, 아래 방향인데 아래로 움직일 수 없다면
-                    && !pause)
+                    && !pause && queuedJump == 0)
                     { StartMoveX(); }
                 else {
                     isMovingX = false;
@@ -236,6 +246,7 @@ public class PlayerMoveController3 : MonoBehaviour
 
     private void EnqueueMoveX()
     {
+        if (isJumping || queuedJump != 0) return;
         float moveValue = lastInputManager.GetAxisRaw("Horizontal");
         if (Mathf.Abs(moveValue) == 1f)
         {
@@ -291,7 +302,7 @@ public class PlayerMoveController3 : MonoBehaviour
         if (isMovingY)
         {
             facingDirection = currentDirectionY;
-            elapsedTimeY += Time.deltaTime;
+            elapsedTimeY += Time.deltaTime * (lastInputManager.GetKeyRun() ? moveDuration/runDuration : 1f);
             float t = Mathf.Clamp01(elapsedTimeY / moveDuration);
 
             Vector2 newPos = new Vector2(transform.position.x, Mathf.Lerp(startPosY.y, targetPosY.y, t));
@@ -300,7 +311,7 @@ public class PlayerMoveController3 : MonoBehaviour
             if (t >= sameInputTime) nextInputY = true;
 
             bool arrived = false;
-            if (Mathf.Abs(transform.position.y - targetPosY.y) <= 0.001f)
+            if (t >= 1f)
             {
                 transform.position = new Vector2(transform.position.x, targetPosY.y);
                 arrived = true;
@@ -309,6 +320,7 @@ public class PlayerMoveController3 : MonoBehaviour
             if (arrived)
             {
                 startPosY = targetPosY;
+                elapsedTimeY = 0f;
                 bool pause = false;
                 pause = TriggerExecutor.Instance.OnStepCompleted(targetPosY - new Vector2(0f, 0.5f));
 
@@ -319,7 +331,7 @@ public class PlayerMoveController3 : MonoBehaviour
                     (lastInputManager.GetLastInputAxis() == "Vertical" ||                   // (2-1) 마지막 입력이 수직 방향이거나          
                     (lastInputManager.GetAxisRaw("Horizontal") == -1f && !canMoveYX[0]) ||  // (2-2) 마지막 입력이 수평, 왼쪽 방향인데 왼쪽으로 움직일 수 없거나
                     (lastInputManager.GetAxisRaw("Horizontal") == 1f && !canMoveYX[1]))     // (2-3) 마지막 입력이 수평, 오른쪽 방향인데 오른쪽으로 움직일 수 없다면
-                    && !pause)
+                    && !pause )
                     { StartMoveY(); }                                                 
                 else
                 {
@@ -331,6 +343,7 @@ public class PlayerMoveController3 : MonoBehaviour
 
     private void EnqueueMoveY()
     {
+        if (isJumping || queuedJump != 0) return;
         float moveValue = lastInputManager.GetAxisRaw("Vertical");
         if (Mathf.Abs(moveValue) == 1f)
         {
@@ -369,6 +382,126 @@ public class PlayerMoveController3 : MonoBehaviour
 
             if (!isMovingX) anim.SetFloat("direction", (float)vector2Dir(currentDirectionY));
             TriggerExecutor.Instance.OnStepStarted(targetPosY - new Vector2(0f, 0.5f));
+        }
+    }
+
+    /// <summary>
+    /// 위/아래로만 점프가 가능하고
+    /// -> 보고 있는 방향이 위/아래일 때 StartJump 가능
+    /// 우선은 멈춰있을 때에만 점프 할 수 있도록
+    /// </summary>
+    private void UpdateJump()
+    {
+        EnqueueJump();
+
+        if (!isMovingX && queuedJump != 0)
+        {
+            StartJump();
+        }
+
+        if (isJumping)
+        {
+            elapsedTimeJump += Time.deltaTime;
+            float tj = Mathf.Clamp01(elapsedTimeJump / jumpDuration);
+            float ty = Mathf.Clamp01(elapsedTimeY / moveDuration);
+            if (facingDirection == Vector2.up)
+                transform.position = jumpStartPos + Vector2.up * GetJumpPos(tj);
+            else if (facingDirection == Vector2.down)
+                transform.position = jumpStartPos + Vector2.up * (GetJumpPos(1-tj) - 2f);
+
+            if (ty + 2*tj >= 1f && !jumpPhase1) {
+                jumpPhase1 = true;
+                Debug.Log("[PlayerMoveController3] Jump Phase 1");
+
+                currentPosition = (jumpStartPos + targetPosY) / 2f - ty * facingDirection;
+                Debug.Log("Currnent Position: " + currentPosition.ToString());
+                TriggerExecutor.Instance.OnStepCompleted(currentPosition - new Vector2(0f, 0.5f));
+                TriggerExecutor.Instance.OnStepStarted(currentPosition + facingDirection - new Vector2(0f, 0.5f));
+            }
+
+            if (ty + 2*tj >= 2f && !jumpPhase2) {
+                jumpPhase2 = true;
+                Debug.Log("[PlayerMoveController3] Jump Phase 2");
+                
+                currentPosition = (jumpStartPos + targetPosY) / 2f + (1 - ty) * facingDirection;
+                Debug.Log("Currnent Position: " + currentPosition.ToString());
+                TriggerExecutor.Instance.OnStepCompleted(currentPosition - new Vector2(0f, 0.5f));
+                if (elapsedTimeY != 0f) TriggerExecutor.Instance.OnStepStarted(currentPosition + facingDirection - new Vector2(0f, 0.5f));
+            }
+
+            if (2*tj >= 2f)
+            {
+                transform.position = new Vector2(transform.position.x, targetPosY.y);
+                isJumping = false;
+                jumpPhase1 = false;
+                jumpPhase2 = false;
+
+                queuedJump = 0;
+                elapsedTimeJump = 0f;
+                
+                syncCanMoveXY(currentPosition);
+                syncCanMoveYX(currentPosition);
+
+                if (elapsedTimeY != 0f)
+                {
+                    targetPosY += (1 - ty) * moveDistance * facingDirection;
+                    startPosY = currentPosition;
+                    currentPosition.y = targetPosY.y;
+
+                    Debug.Log("start Position: " + startPosY.ToString());
+                    Debug.Log("target Position: " + targetPosY.ToString());
+                    Debug.Log("Current Position: " + currentPosition.ToString());
+                    isMovingY = true;
+                }
+                
+                Debug.Log("[PlayerMoveController3] Jump Complete");
+            }
+        }
+    }
+
+    /// <summary>
+    /// 0->1 : 
+    /// </summary>
+    private float GetJumpPos(float x)
+    {
+        return 2f*x - 4*jumpHeight*Mathf.Sin(Mathf.Deg2Rad*rho)*x*(x-1);
+    }
+
+    private void EnqueueJump()
+    {
+        if (!isMovingX && !isJumping && lastInputManager.GetKeyDownJump())
+        {
+            if (facingDirection == Vector2.up)
+            {
+                queuedJump = 1;
+            }
+            else if (facingDirection == Vector2.down)
+            {
+                queuedJump = -1;
+            }
+        }
+    }
+
+    private void StartJump()
+    {
+        if (facingDirection != Vector2.up && facingDirection != Vector2.down)
+        {
+            queuedJump = 0;
+            return;
+        }
+        isJumping = true;
+        jumpPhase1 = false;
+        jumpPhase2 = false;
+        elapsedTimeJump = 0f;
+        queuedJump = 0;
+        isMovingY = false;
+
+        jumpStartPos = transform.position;
+        targetPosY = jumpStartPos + facingDirection * 2;
+        
+        if (elapsedTimeY == 0f)
+        {
+            TriggerExecutor.Instance.OnStepStarted((jumpStartPos + targetPosY) / 2f - new Vector2(0f, 0.5f));
         }
     }
 
@@ -418,9 +551,8 @@ public class PlayerMoveController3 : MonoBehaviour
     {
         if (newFloor >= 1 && newFloor <= 3)
         {
-            // floor property 대신 직접 내부 상태 관리 필요
-            // 현재 구조상 floorLayer와 floor의 관계를 정의해야 함
-            Debug.Log("[PlayerMoveController] Set floor: " + newFloor);
+            layer = newFloor;
+            Debug.Log("[PlayerMoveController3] Set Floor : " + newFloor);
         }
     }
 
@@ -435,20 +567,36 @@ public class PlayerMoveController3 : MonoBehaviour
         else return 1;
     }
 
+    public bool GetIsJumping()
+    {
+        return isJumping;
+    }
+
     public IEnumerator Teleport(Vector2Int pos, float time = 1f)
     {
+        // Move Reset
         isMovingX = false;
         isMovingY = false;
         elapsedTimeX = 0f;
         elapsedTimeY = 0f;
         nextInputX = true;
         nextInputY = true;
+
+        // Jump Reset
+        isJumping = false;
+        elapsedTimeJump = 0f;
+        jumpPhase1 = false;
+        jumpPhase2 = false;
+
+        // Ignore Input & Wait
         teleporting = true;
         lastInputManager.IgnoreInput(time + .5f);
         queuedDirectionX = Vector2.zero;
         queuedDirectionY = Vector2.zero;
+        queuedJump = 0;
         yield return new WaitForSeconds(time);
         
+        // Teleport
         transform.position = new Vector3(pos.x + 0.5f, pos.y, 0);
         currentPosition = transform.position;
         teleporting = false;

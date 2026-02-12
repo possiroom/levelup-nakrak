@@ -672,10 +672,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 886251e9a18ece04ea8e61686c173e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CameraDistance: 10
+  CameraDistance: 11.5
   DeadZoneDepth: 0
   Composition:
-    ScreenPosition: {x: 0.0012586713, y: 0}
+    ScreenPosition: {x: 0, y: 0}
     DeadZone:
       Enabled: 0
       Size: {x: 0.2, y: 0.2}
@@ -743,7 +743,7 @@ Transform:
   m_GameObject: {fileID: 487623906}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.49664426, y: 0, z: -10}
+  m_LocalPosition: {x: 0.5, y: 0, z: -11.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1017,7 +1017,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.49664426, y: 0, z: -10}
+  m_LocalPosition: {x: 0.5, y: 0, z: -11.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1769,6 +1769,7 @@ MonoBehaviour:
   defalutMapPrefab: {fileID: 994874335975909466, guid: f2a0e2a2613514f86a4bcd6cd50c1cfc, type: 3}
   changeMapTime: 0.5
   panel: {fileID: 1314132130}
+  debugMode: 1
 --- !u!4 &1159406106
 Transform:
   m_ObjectHideFlags: 0
