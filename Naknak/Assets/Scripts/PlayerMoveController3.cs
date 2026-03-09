@@ -29,10 +29,10 @@ public class PlayerMoveController3 : MonoBehaviour
     bool teleporting = false;
 
     private bool _isMoving;
-    private bool isMoving
+    public bool isMoving
     {
         get => _isMoving;
-        set
+        private set
         {
             anim.SetBool("isMoving", value);
             _isMoving = value;

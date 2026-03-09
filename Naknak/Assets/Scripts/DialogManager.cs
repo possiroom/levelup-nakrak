@@ -105,6 +105,9 @@ public class DialogManager : MonoBehaviour
         }
         else
         {
+            // 대사 종료 후 이벤트 호출
+            TriggerExecutor.Instance.AfterDialogEvent(currentStory);
+
             // 다음 대사
             currentStory = currentStory.nextData;
 
@@ -125,6 +128,8 @@ public class DialogManager : MonoBehaviour
     {
         selectView.SelectDeactivate();
         selectView.ChangeSelectIndex(selectIndex);
+
+        TriggerExecutor.Instance.AfterDialogEvent(currentStory);
 
         currentStory = currentStory.selects[selectIndex - 1].nextData;
         ChangeUI();
@@ -184,6 +189,7 @@ public class DialogManager : MonoBehaviour
         view.ChangeStoryText("");
         view.gameObject.SetActive(false); 
 
+        TriggerExecutor.Instance.AfterDialogEvent(currentStory);
         GameEventBase evt = GameEventFactory.CreateGameStateChangeEvent(GameState.Gameplay);
         GameEventManager.Instance.Submit(evt);
     }

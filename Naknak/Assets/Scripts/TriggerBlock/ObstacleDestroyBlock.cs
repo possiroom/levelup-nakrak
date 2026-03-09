@@ -4,7 +4,7 @@ using UnityEngine;
 public class ObstacleDestroyBlock : TriggerBlock
 {
     [Header("Obstacle Destory Attributes")]
-    [SerializeField] private ObstacleBase obstacle;
+    [SerializeField] private ObstacleBlock obstacle;
     [SerializeField] private float destroyTime = 1f;
     private bool destroyWait = false;
 

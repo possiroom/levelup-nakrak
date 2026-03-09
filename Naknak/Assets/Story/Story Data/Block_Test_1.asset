@@ -21,4 +21,7 @@ MonoBehaviour:
   isEnd: 1
   selects: []
   nextData: {fileID: 0}
-  endActions: []
+  endActions:
+  - type: 2
+    id: {fileID: 0}
+    value: 0

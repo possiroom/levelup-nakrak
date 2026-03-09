@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MapManager : MonoBehaviour
@@ -56,6 +57,7 @@ public class MapManager : MonoBehaviour
 
         CurrentMap = LoadMap(newMap);
         TriggerExecutor.Instance.ChangeMap(CurrentMap.GridLayout, CurrentMap.TriggerTilemap);
+        TriggerExecutor.Instance.ChangeC2E(CurrentMap.GetC2E());
         CurrentMap.debugMode = debugMode;
     }
 
@@ -112,9 +114,9 @@ public class MapManager : MonoBehaviour
         return CurrentMap.TriggerTilemap;
     }
 
-    public bool GetPlayerIsJumping()
+    public Transform GetTriggerTransform()
     {
-        return playerCtrl.GetIsJumping();
+        return CurrentMap.transform;
     }
 
     public bool IsCollision(Vector3 position) {

@@ -1,17 +1,18 @@
 using UnityEngine;
 
-public class ObsDynamite : ObstacleBase
+public class ObsDynamite : ObstacleBlock
 {
-    public override bool RunObstacleAction(bool isJumping = false)
+    protected override void RunObstacleAction()
     {
-        if (isJumping) return true;
         Debug.Log("펑!!!!!");
-        Destroy(gameObject);
-        return false;
+        GameEventBase evt = GameEventFactory.CreateAdjustHealthEvent(-10);
+        GameEventManager.Instance.Submit(evt);
     }
+
     public override void LoadOnCamera()
     {
         Debug.Log("다이너마이트 자연 소멸");
+        TriggerExecutor.Instance.RemoveIndex(this);
         Destroy(gameObject);
     }
 }

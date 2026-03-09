@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
+  m_Name: Hurted_Cat_1
+  m_EditorClassIdentifier: 
+  charName: 
+  text: "(\uB2E4\uCE5C \uACE0\uC591\uC774\uAC00 \uC788\uB2E4.)"
+  activatedImage: 0
+  isSelect: 1
+  isEnd: 0
+  selects:
+  - text: "\uAD6C\uD574\uC900\uB2E4"
+    nextData: {fileID: 11400000, guid: 1e97f88f86c4c48259602c8abb877c6a, type: 2}
+  - text: "\uC9C0\uB098\uAC04\uB2E4"
+    nextData: {fileID: 11400000, guid: a2900f469150144aebd1379254b82b3f, type: 2}
+  nextData: {fileID: 0}
+  endActions: []

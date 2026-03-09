@@ -18,4 +18,9 @@ public static class GameEventFactory
     {
         return new GameStateChangeEvent(gameState);
     }
+
+    public static GameEventBase CreateAdjustHealthEvent(int delta)
+    {
+        return new AdjustHealthEvent(delta);
+    }
 }

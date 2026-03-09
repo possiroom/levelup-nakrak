@@ -20,4 +20,9 @@ public class MapContainer : MonoBehaviour
         triggerBlocks = TriggerTilemap.GetComponentsInChildren<TriggerBlock>();
         TriggerDebug(debugMode);
     }
+
+    public ConditionToEvent GetC2E()
+    {
+        return gameObject.GetComponent<ConditionToEvent>();
+    }
 }

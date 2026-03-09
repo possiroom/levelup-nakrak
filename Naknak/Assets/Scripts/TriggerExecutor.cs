@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public sealed class TriggerExecutor : MonoBehaviour
@@ -9,7 +8,8 @@ public sealed class TriggerExecutor : MonoBehaviour
     // 추후 접근 권한 수정 예정
     public GridLayout grid;
     public GameObject trigTilemap;
-    private Dictionary<Vector2Int, TriggerBlock> map = new();
+    [SerializeField] private ConditionToEvent conditionToEvent;
+    private Dictionary<Vector2Int, List<TriggerBlock>> map = new();
 
     private void Awake() {
         if (Instance != null) {
@@ -33,6 +33,11 @@ public sealed class TriggerExecutor : MonoBehaviour
         BuildIndex();
     }
 
+    public void ChangeC2E(ConditionToEvent conditionToEvent)
+    {
+        this.conditionToEvent = conditionToEvent;
+    }
+
     public void BuildIndex()
     {
         map.Clear();
@@ -41,32 +46,58 @@ public sealed class TriggerExecutor : MonoBehaviour
         TriggerBlock[] blocks = trigTilemap.GetComponentsInChildren<TriggerBlock>();
         for (int i = 0; i < blocks.Length; i++)
         {
-            TriggerBlock b      = blocks[i];
-            Vector3Int   cell3  = grid.WorldToCell(b.transform.position);
-            Vector2Int   cell   = new(cell3.x, cell3.y);
+            TriggerBlock b = blocks[i];
+            Vector2Int cell = (Vector2Int)grid.WorldToCell(b.transform.position);
 
-            map.Add(cell, b);
+            if (!map.TryGetValue(cell, out List<TriggerBlock> blockList))
+            {
+                blockList = new List<TriggerBlock>();
+                map.Add(cell, blockList);
+            }
+            blockList.Add(b);
         }
-        Debug.Log("[TriggerExecutor] Build Index Count: " + map.Count);
+        Debug.Log("[TriggerExecutor] Build Index. Cell Count: " + map.Count + ", Trigger Count: " + blocks.Length);
     }
 
     public void RemoveIndex(TriggerBlock triggerBlock)
     {
-        if (map.Values.Contains(triggerBlock))
+        if (triggerBlock == null) return;
+
+        List<Vector2Int> emptyCells = null;
+        foreach (var pair in map)
         {
-            Vector2Int key = map.First(x => x.Value == triggerBlock).Key;
-            map.Remove(key);
+            if (pair.Value.Remove(triggerBlock) && pair.Value.Count == 0)
+            {
+                if (emptyCells == null) emptyCells = new List<Vector2Int>();
+                emptyCells.Add(pair.Key);
+            }
         }
-        Debug.Log("[TriggerExecutor] Remove Index. Count: " + map.Count);
+
+        if (emptyCells != null)
+        {
+            for (int i = 0; i < emptyCells.Count; i++)
+            {
+                map.Remove(emptyCells[i]);
+            }
+        }
+
+        Debug.Log("[TriggerExecutor] Remove Index. Cell Count: " + map.Count);
     }
 
     public bool OnStepStarted(Vector2 pos)
     {
         bool pause = false;
         Vector2Int cell = CellTo2Int(grid.WorldToCell(pos));
-        if (map.TryGetValue(cell, out TriggerBlock block))
+        if (map.TryGetValue(cell, out List<TriggerBlock> blocks))
         {
-            pause = block.DepartTrigger();
+            // 실행 중 리스트가 변경될 수 있어 스냅샷으로 순회
+            TriggerBlock[] snapshots = blocks.ToArray();
+            for (int i = 0; i < snapshots.Length; i++)
+            {
+                TriggerBlock block = snapshots[i];
+                if (block == null) continue;
+                pause = block.DepartTrigger() || pause;
+            }
         }
         return pause;
     }
@@ -75,11 +106,23 @@ public sealed class TriggerExecutor : MonoBehaviour
     {
         bool pause = false;
         Vector2Int cell = CellTo2Int(grid.WorldToCell(pos));
-        if (map.TryGetValue(cell, out TriggerBlock block))
+        if (map.TryGetValue(cell, out List<TriggerBlock> blocks))
         {
-            pause = block.ArrivedTrigger();
+            // 실행 중 리스트가 변경될 수 있어 스냅샷으로 순회
+            TriggerBlock[] snapshots = blocks.ToArray();
+            for (int i = 0; i < snapshots.Length; i++)
+            {
+                TriggerBlock block = snapshots[i];
+                if (block == null) continue;
+                pause = block.ArrivedTrigger() || pause;
+            }
         }
         return pause;
+    }
+
+    public void AfterDialogEvent(StoryData dataSO)
+    {
+        conditionToEvent.Execute(dataSO);
     }
 
     private Vector2Int CellTo2Int(Vector3Int cell3)

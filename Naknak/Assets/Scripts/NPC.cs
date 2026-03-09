@@ -19,6 +19,7 @@ public class NPC : MonoBehaviour, IInteractable
             Debug.Log("[NPC] 상호작용 storyID: " + storyData.name);
             GameEventBase evt = GameEventFactory.CreateDialogEvent(storyData);
             GameEventManager.Instance.Submit(evt);
+
         }
         else
         {

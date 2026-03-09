@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using UnityEngine;
 
 /// <summary>
@@ -7,8 +8,16 @@ using UnityEngine;
 public abstract class TriggerBlock : MonoBehaviour
 {
     [Header("Trigger Options")]
-    [SerializeField] private bool DepartActive = false;
-    [SerializeField] private bool PauseMove = false;
+
+    [SerializeField, Tooltip("플레이어가 해당 칸으로 출발 시 작동")]
+    private bool DepartActive = false;
+
+    [SerializeField, Tooltip("플레이어가 해당 칸으로 도착 시 멈춰야 하는지 여부")] 
+    private bool PauseMove = false;
+
+    [SerializeField, Tooltip("디버그 모드가 아닐 때 스프라이트를 활성화")] 
+    private bool activeSprite = false;
+
     private SpriteRenderer sprite;
 
     /// <summary>
@@ -32,7 +41,7 @@ public abstract class TriggerBlock : MonoBehaviour
     public void ActivateSprite(bool activate)
     {
         if (sprite == null) return;
-        sprite.enabled = activate;
+        sprite.enabled = activate || activeSprite;
     }
 
     protected abstract void OnTriggered();

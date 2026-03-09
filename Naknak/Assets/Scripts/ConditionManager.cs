@@ -20,7 +20,7 @@ public enum CompareType
 public enum ActionType 
 { 
     Set, 
-    Add 
+    Add
 }
 
 // 조건 구조체
@@ -36,8 +36,8 @@ public struct DialogCondition
 [System.Serializable]
 public struct DialogAction
 {
-    public ConditionID id;
     public ActionType type;
+    public ConditionID id;
     public int value;
 }
 
@@ -71,6 +71,12 @@ public class ConditionManager : MonoBehaviour
         if (id == null) return;
         if (variables.ContainsKey(id.name)) variables[id.name] += amount;
         else variables.Add(id.name, amount);
+    }
+
+    public void ObjectDestroy(GameObject target)
+    {
+        if (target == null) return;
+        Destroy(target);
     }
 
     // 값 가져오기
@@ -117,7 +123,6 @@ public class ConditionManager : MonoBehaviour
         foreach (var cmd in actions)
         {
             if (cmd.id == null) continue;
-
             if (cmd.type == ActionType.Set) Set(cmd.id, cmd.value);
             else if (cmd.type == ActionType.Add) Add(cmd.id, cmd.value);
         }
