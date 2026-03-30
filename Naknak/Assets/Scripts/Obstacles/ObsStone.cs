@@ -22,7 +22,7 @@ public class ObsStone : ObstacleExecution
         transform.position += Vector3.right * moveStep;
         leftDistance -= moveStep;
 
-        if (-4f <= leftDistance && leftDistance <= 0f)
+        if (-2f <= leftDistance && leftDistance <= 0f)
         {
             PlayerStatus.Instance.TryDamageStone(transform.position.y);
         }

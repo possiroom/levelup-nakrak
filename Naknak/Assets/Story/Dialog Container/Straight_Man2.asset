@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33dad9c7368764146a3e52da044785c8, type: 3}
+  m_Name: Straight_Man2
+  m_EditorClassIdentifier: 
+  dialogSlots:
+  - memo: "\uAE30\uBCF8"
+    conditions:
+    - id: {fileID: 11400000, guid: ea5080e6f4e83434ea96d8469b9430a5, type: 2}
+      compare: 2
+      value: 0
+    headStoryData: {fileID: 11400000, guid: b822f83cdee0b457592463a1dd55bbda, type: 2}
+  - memo: "\uAE30\uBCF8"
+    conditions:
+    - id: {fileID: 11400000, guid: ea5080e6f4e83434ea96d8469b9430a5, type: 2}
+      compare: 2
+      value: 1
+    headStoryData: {fileID: 11400000, guid: c8f126c8bdf5c45b1846e69ffeaa123e, type: 2}
+  - memo: "\uAE30\uBCF8"
+    conditions:
+    - id: {fileID: 11400000, guid: ea5080e6f4e83434ea96d8469b9430a5, type: 2}
+      compare: 2
+      value: 2
+    headStoryData: {fileID: 11400000, guid: 2f9b0f95131cc4b3395bbd958caed116, type: 2}

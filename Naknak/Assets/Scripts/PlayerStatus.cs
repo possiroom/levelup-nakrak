@@ -64,7 +64,7 @@ public class PlayerStatus : MonoBehaviour
     public void TryDamageStone(float obsYPos)
     {
         if (IsInvincible || playerCtrl.GetIsJumping()) return;
-        if (Mathf.Abs(obsYPos - (transform.position.y - 0.5f)) <= 2f)
+        if (Mathf.Abs(obsYPos - (transform.position.y - 0.5f)) <= 1f)
         {
             AddHealth(-10);
             Debug.Log("[PlayerStatus] Damage Stone");

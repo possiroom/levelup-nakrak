@@ -266,7 +266,7 @@ public class PlayerMoveController3 : MonoBehaviour
                                queuedDirectionX == Vector2.right && !canMoveYX[1];      // (1-2) 입력 큐의 방향이 오른쪽인데 오른쪽으로 움직일 수 없다면
                                                                                         // -> 대각선 이동 불가 상황
 
-        if (checkCollider(currentPosition, currentDirectionX) || diagonalBlocked) {
+        if (checkCollider(currentPosition, currentDirectionX) || diagonalBlocked && isMovingY) {
             if (!isMoving) anim.SetFloat("direction", (float)vector2Dir(currentDirectionX));
             isMovingX = false;
             nextInputX = true;
@@ -363,7 +363,7 @@ public class PlayerMoveController3 : MonoBehaviour
                                queuedDirectionY == Vector2.down && !canMoveXY[1];       // (1-2) 입력 큐의 방향이 아래쪽인데 아래쪽으로 움직일 수 없다면
                                                                                         // -> 대각선 이동 불가 상황
 
-        if (checkCollider(currentPosition, currentDirectionY) || diagonalBlocked) {
+        if (checkCollider(currentPosition, currentDirectionY) || diagonalBlocked && isMovingX) {
             if (!isMoving) anim.SetFloat("direction", (float)vector2Dir(currentDirectionY));
             isMovingY = false;
             nextInputY = true;
@@ -425,6 +425,7 @@ public class PlayerMoveController3 : MonoBehaviour
                 
                 currentPosition = (jumpStartPos + targetPosY) / 2f + (1 - ty) * facingDirection;
                 Debug.Log("Currnent Position: " + currentPosition.ToString());
+                if (2*tj >= 2f) isJumping = false;
                 TriggerExecutor.Instance.OnStepCompleted(currentPosition - new Vector2(0f, 0.5f));
                 if (elapsedTimeY != 0f) TriggerExecutor.Instance.OnStepStarted(currentPosition + facingDirection - new Vector2(0f, 0.5f));
             }
