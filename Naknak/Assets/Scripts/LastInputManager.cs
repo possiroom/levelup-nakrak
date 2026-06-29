@@ -38,6 +38,13 @@ public class LastInputManager : MonoBehaviour
 
     void Update()
     {
+        if (GameStateManager.Instance != null && GameStateManager.Instance.GameState != GameState.Gameplay)
+        {
+            lastHorizontal = 0f;
+            lastVertical = 0f;
+            return;
+        }
+
         if (ignoreInputTime > 0f)
         {
             ignoreInputTime -= Time.deltaTime;

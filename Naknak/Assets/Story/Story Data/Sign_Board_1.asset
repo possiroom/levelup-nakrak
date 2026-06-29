@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   charName: "\uD45C\uC9C0\uD310"
   text: "\uC774 \uACF5\uAC04\uC5D0\uC11C\uB294 \uC0C1\uD638\uC791\uC6A9\uC744 \uC774\uC6A9\uD558\uC5EC
-    \uC810\uD504 \uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
-  activatedImage: 0
+    \uC810\uD504 \uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.\nOnly\uC9C1\uC9C4\nZ \uD0A4-\uC0C1\uD638\uC791\uC6A9\nspace\uBC14
+    - \uC810\uD504"
+  activatedImage: -4
   isSelect: 0
   isEnd: 1
   selects: []

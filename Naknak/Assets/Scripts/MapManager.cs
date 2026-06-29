@@ -18,6 +18,8 @@ public class MapManager : MonoBehaviour
     [SerializeField] bool debugMode = false;
 
     private MapContainer CurrentMap { get; set; }
+    private GameObject currentMapPrefab;
+    private Vector2Int currentMapStartPos;
     private Dictionary<string, MapContainer> mapStore = new();
 
     // Singleton Pattern
@@ -55,10 +57,29 @@ public class MapManager : MonoBehaviour
             if (destroy) FreeMap(CurrentMap);
         }
 
+        currentMapPrefab = newMap;
+        currentMapStartPos = pos;
         CurrentMap = LoadMap(newMap);
         TriggerExecutor.Instance.ChangeMap(CurrentMap.GridLayout, CurrentMap.TriggerTilemap);
         TriggerExecutor.Instance.ChangeC2E(CurrentMap.GetC2E());
         CurrentMap.debugMode = debugMode;
+    }
+
+    public void RestartCurrentMap()
+    {
+        if (currentMapPrefab == null) return;
+
+        StartCoroutine(RestartCurrentMapRoutine());
+    }
+
+    private IEnumerator RestartCurrentMapRoutine()
+    {
+        yield return ChangeMap(currentMapPrefab, currentMapStartPos, true);
+
+        if (PlayerStatus.Instance != null)
+        {
+            PlayerStatus.Instance.ResetHealth();
+        }
     }
 
     private MapContainer LoadMap(GameObject mapPrefab)

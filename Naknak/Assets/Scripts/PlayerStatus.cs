@@ -31,6 +31,13 @@ public class PlayerStatus : MonoBehaviour
         return health;
     }
 
+    public void ResetHealth()
+    {
+        health = 100;
+        IsInvincible = false;
+        if (healthSlider != null) healthSlider.value = health;
+    }
+
     public void AddHealth(int delta)
     {
         if (delta < 0)
@@ -43,7 +50,21 @@ public class PlayerStatus : MonoBehaviour
         {
             health = Mathf.Min(100, health + delta);
         } 
-        healthSlider.value = health;
+        if (healthSlider != null) healthSlider.value = health;
+    }
+
+    public void Kill()
+    {
+        if (IsInvincible) return;
+
+        health = 0;
+        if (healthSlider != null) healthSlider.value = health;
+        StartCoroutine(InvicibleTime(1f));
+
+        if (MapManager.Instance != null)
+        {
+            MapManager.Instance.RestartCurrentMap();
+        }
     }
 
     public bool GetIsJumping()
@@ -66,9 +87,8 @@ public class PlayerStatus : MonoBehaviour
         if (IsInvincible || playerCtrl.GetIsJumping()) return;
         if (Mathf.Abs(obsYPos - (transform.position.y - 0.5f)) <= 1f)
         {
-            AddHealth(-10);
-            Debug.Log("[PlayerStatus] Damage Stone");
-            StartCoroutine(InvicibleTime(1f));
+            Kill();
+            Debug.Log("[PlayerStatus] Dead by Stone");
         }
     }
 
