@@ -88,9 +88,9 @@ public class AIManager : MonoBehaviour
         if (currentEnemy != null)
             return;
 
-        
-        currentEnemy =
-            Instantiate(enemyPrefab, enemyRoot);
+        currentEnemy = Instantiate(enemyPrefab);
+        //currentEnemy =
+          //  Instantiate(enemyPrefab, enemyRoot);
 
         currentEnemy
             .GetComponent<EnemyController>()
