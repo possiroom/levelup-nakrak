@@ -1,0 +1,25 @@
+﻿Compared:
+Naknak Assets: C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Assets
+Kakao Assets : C:\Users\LG\OneDrive - UOS\문서\카카오톡 받은 파일\Assets
+
+Only different files are listed in CSV: C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Assets_diff_only.csv
+
+Counts:
+Total differences: 5757
+Only in Naknak Assets: 5735
+Only in Kakao Assets: 10
+Different content: 12
+
+Different content files:
+Maps.meta
+Maps\burn room.prefab
+Maps\Sample Map2.prefab.meta
+Scenes\PrototypeScene.unity
+Scripts.meta
+Scripts\MapManager.cs
+Scripts\New Folder\AIManager.cs
+Scripts\New Folder\AIManager.cs.meta
+Scripts\New Folder\AIPathfinder.cs.meta
+Scripts\New Folder\EnemyController.cs
+Scripts\New Folder\EnemyController.cs.meta
+Scripts\PlayerMoveController3.cs

@@ -60,7 +60,7 @@ public class MapManager : MonoBehaviour
         currentMapPrefab = newMap;
         currentMapStartPos = pos;
         CurrentMap = LoadMap(newMap);
-        TriggerExecutor.Instance.ChangeMap(CurrentMap.GridLayout, CurrentMap.TriggerTilemap);
+        TriggerExecutor.Instance.ChangeMap(CurrentMap.GridLayout, CurrentMap.gameObject);
         TriggerExecutor.Instance.ChangeC2E(CurrentMap.GetC2E());
         CurrentMap.debugMode = debugMode;
     }

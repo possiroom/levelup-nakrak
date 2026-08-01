@@ -602,4 +602,53 @@ public class PlayerMoveController3 : MonoBehaviour
         currentPosition = transform.position;
         teleporting = false;
     }
+
+
+    public void TeleportToWorld(Vector2 worldPos)
+    {
+        // 이동 상태 초기화
+        isMovingX = false;
+        isMovingY = false;
+        isMoving = false;
+
+        elapsedTimeX = 0f;
+        elapsedTimeY = 0f;
+        nextInputX = true;
+        nextInputY = true;
+
+        queuedDirectionX = Vector2.zero;
+        queuedDirectionY = Vector2.zero;
+
+        // 점프 상태 초기화
+        isJumping = false;
+        elapsedTimeJump = 0f;
+        jumpPhase1 = false;
+        jumpPhase2 = false;
+        queuedJump = 0;
+
+        // 텔레포트 중 입력 꼬임 방지
+        teleporting = false;
+
+        if (lastInputManager != null)
+        {
+            lastInputManager.IgnoreInput(0.15f);
+        }
+
+        // 실제 위치 이동
+        Vector3 newPos = new Vector3(worldPos.x, worldPos.y, transform.position.z);
+        transform.position = newPos;
+
+        // PlayerMoveController3 내부 좌표 동기화
+        currentPosition = worldPos;
+
+        startPosX = worldPos;
+        targetPosX = worldPos;
+
+        startPosY = worldPos;
+        targetPosY = worldPos;
+
+        // 이동 가능 방향 다시 계산
+        syncCanMoveXY(currentPosition);
+        syncCanMoveYX(currentPosition);
+    }
 }
