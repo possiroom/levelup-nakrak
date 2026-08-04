@@ -50,10 +50,14 @@ public class MapManager : MonoBehaviour
         bool hasPrevMap = mapStore.Count > 0;
         if (hasPrevMap)
         {
-            StartCoroutine(panel.FadeInOut(changeMapTime, 0.3f, 0.5f));
-            StartCoroutine(playerCtrl.Teleport(pos, changeMapTime));
+            if (panel != null)
+                StartCoroutine(panel.FadeInOut(changeMapTime, 0.3f, 0.5f));
+
             playerCtrl.SetFloor(1);
             yield return new WaitForSeconds(changeMapTime);
+
+            StartCoroutine(playerCtrl.Teleport(pos, 0f));
+
             if (destroy) FreeMap(CurrentMap);
         }
 
@@ -85,7 +89,7 @@ public class MapManager : MonoBehaviour
     private MapContainer LoadMap(GameObject mapPrefab)
     {
         MapContainer loadMap;
-        // 메모리에 맵에 올라와 있을 때
+        // 메모리에 맵에 ?�라?� ?�을 ??
         if (mapStore.ContainsKey(mapPrefab.name))
         {
             loadMap = mapStore[mapPrefab.name];

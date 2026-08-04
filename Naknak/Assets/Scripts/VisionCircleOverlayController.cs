@@ -3,136 +3,161 @@ using UnityEngine.UI;
 
 public class VisionCircleOverlayController : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private Transform player;
-    [SerializeField] private Camera targetCamera;
-    [SerializeField] private Image overlayImage;
+	[Header("References")]
+	[SerializeField]
+	private Transform player;
 
-    [Header("Vision Settings")]
-    [SerializeField] private float visionRadiusWorld = 1.8f;
-    [SerializeField] private float softness = 0.02f;
+	[SerializeField]
+	private Camera targetCamera;
 
-    [Header("Center Fixed")]
-    [SerializeField] private bool fixedToScreenCenter = true;
+	[SerializeField]
+	private Image overlayImage;
 
-    [Header("Noise Settings")]
-    [SerializeField] private bool noiseAlwaysOnForTest = false;
-    [SerializeField] private float noisePower = 0.35f;
-    [SerializeField] private float noiseSpeed = 20f;
-    [SerializeField] private float noiseScale = 80f;
-    [SerializeField] private float noiseWidth = 0.06f;
+	[Header("Overlay Fit")]
+	[SerializeField]
+	private bool fitToFullScreen = true;
 
-    private Material runtimeMaterial;
-    private bool noiseActive = false;
+	[Header("Vision Settings")]
+	[SerializeField]
+	private float visionRadiusWorld = 2.1f;
 
-    private void Awake()
-    {
-        // 카메라가 비어 있으면 메인 카메라 사용
-        if (targetCamera == null)
-        {
-            targetCamera = Camera.main;
-        }
+	[SerializeField]
+	private float softness = 0.08f;
 
-        // 오버레이 이미지가 비어 있으면 자기 자신에서 찾음
-        if (overlayImage == null)
-        {
-            overlayImage = GetComponent<Image>();
-        }
+	[Header("Center Fixed")]
+	[SerializeField]
+	private bool fixedToScreenCenter = true;
 
-        // 원본 머티리얼을 복사해서 런타임 전용으로 사용
-        if (overlayImage != null && overlayImage.material != null)
-        {
-            runtimeMaterial = new Material(overlayImage.material);
-            overlayImage.material = runtimeMaterial;
-        }
+	[Header("Dark Overlay")]
+	[SerializeField]
+	private Color darkColor = new Color(0f, 0f, 0f, 0.82f);
 
-        // 시작 시 시야 효과 숨김
-        HideVision();
-    }
+	[Header("Noise Settings")]
+	[SerializeField]
+	private bool noiseAlwaysOnForTest;
 
-    private void LateUpdate()
-    {
-        if (targetCamera == null || runtimeMaterial == null)
-            return;
+	[SerializeField]
+	private float noisePower = 0.28f;
 
-        // 시야 위치와 노이즈 상태 갱신
-        UpdateVisionPosition();
-        UpdateNoise();
-    }
+	[SerializeField]
+	private float noiseSpeed = 20f;
 
-    private void UpdateVisionPosition()
-    {
-        if (fixedToScreenCenter)
-        {
-            // 시야 중심을 화면 중앙에 고정
-            runtimeMaterial.SetVector("_Center", new Vector4(0.5f, 0.5f, 0f, 0f));
-        }
-        else
-        {
-            if (player == null)
-                return;
+	[SerializeField]
+	private float noiseScale = 85f;
 
-            // 플레이어 위치를 화면 좌표로 변환
-            Vector3 viewportPos = targetCamera.WorldToViewportPoint(player.position);
-            runtimeMaterial.SetVector("_Center", new Vector4(viewportPos.x, viewportPos.y, 0f, 0f));
-        }
+	[SerializeField]
+	private float noiseWidth = 0.08f;
 
-        // 화면 비율 보정
-        float aspect = (float)Screen.width / Screen.height;
-        runtimeMaterial.SetFloat("_Aspect", aspect);
+	private Material runtimeMaterial;
 
-        if (player != null)
-        {
-            // 월드 기준 시야 반지름을 화면 좌표 반지름으로 변환
-            Vector3 centerViewport = targetCamera.WorldToViewportPoint(player.position);
-            Vector3 edgeViewport = targetCamera.WorldToViewportPoint(player.position + Vector3.right * visionRadiusWorld);
+	private bool noiseActive;
 
-            float radiusViewport = Mathf.Abs(edgeViewport.x - centerViewport.x);
+	private void Awake()
+	{
+		if (targetCamera == null)
+		{
+			targetCamera = Camera.main;
+		}
+		if (player == null)
+		{
+			GameObject gameObject = GameObject.FindGameObjectWithTag("Player");
+			if (gameObject != null)
+			{
+				player = gameObject.transform;
+			}
+		}
+		if (overlayImage == null)
+		{
+			overlayImage = GetComponent<Image>();
+		}
+		FitOverlayToFullScreen();
+		if (overlayImage != null && overlayImage.material != null)
+		{
+			runtimeMaterial = new Material(overlayImage.material);
+			overlayImage.material = runtimeMaterial;
+		}
+		HideVision();
+	}
 
-            runtimeMaterial.SetFloat("_Radius", radiusViewport);
-        }
+	private void LateUpdate()
+	{
+		if (!(targetCamera == null) && !(runtimeMaterial == null))
+		{
+			UpdateVisionPosition();
+			UpdateNoise();
+		}
+	}
 
-        // 경계 부드러움 적용
-        runtimeMaterial.SetFloat("_Softness", softness);
-    }
+	private void FitOverlayToFullScreen()
+	{
+		if (fitToFullScreen && !(overlayImage == null))
+		{
+			RectTransform rectTransform = overlayImage.rectTransform;
+			rectTransform.anchorMin = Vector2.zero;
+			rectTransform.anchorMax = Vector2.one;
+			rectTransform.offsetMin = Vector2.zero;
+			rectTransform.offsetMax = Vector2.zero;
+			rectTransform.anchoredPosition = Vector2.zero;
+			rectTransform.localScale = Vector3.one;
+		}
+	}
 
-    private void UpdateNoise()
-    {
-        // 테스트 옵션이 켜져 있으면 항상 노이즈 활성화
-        bool finalNoiseState = noiseActive || noiseAlwaysOnForTest;
+	private void UpdateVisionPosition()
+	{
+		if (fixedToScreenCenter)
+		{
+			runtimeMaterial.SetVector("_Center", new Vector4(0.5f, 0.5f, 0f, 0f));
+		}
+		else
+		{
+			if (player == null)
+			{
+				return;
+			}
+			Vector3 vector = targetCamera.WorldToViewportPoint(player.position);
+			runtimeMaterial.SetVector("_Center", new Vector4(vector.x, vector.y, 0f, 0f));
+		}
+		float value = (float)Screen.width / (float)Screen.height;
+		runtimeMaterial.SetFloat("_Aspect", value);
+		if (player != null)
+		{
+			Vector3 vector2 = targetCamera.WorldToViewportPoint(player.position);
+			float value2 = Mathf.Abs(targetCamera.WorldToViewportPoint(player.position + Vector3.right * visionRadiusWorld).x - vector2.x);
+			runtimeMaterial.SetFloat("_Radius", value2);
+		}
+		runtimeMaterial.SetFloat("_Softness", softness);
+		runtimeMaterial.SetColor("_DarkColor", darkColor);
+	}
 
-        // 노이즈 값들을 쉐이더에 전달
-        runtimeMaterial.SetFloat("_NoisePower", finalNoiseState ? noisePower : 0f);
-        runtimeMaterial.SetFloat("_NoiseSpeed", noiseSpeed);
-        runtimeMaterial.SetFloat("_NoiseScale", noiseScale);
-        runtimeMaterial.SetFloat("_NoiseWidth", noiseWidth);
-        runtimeMaterial.SetFloat("_TimeValue", Time.time);
-    }
+	private void UpdateNoise()
+	{
+		bool flag = noiseActive || noiseAlwaysOnForTest;
+		runtimeMaterial.SetFloat("_NoisePower", flag ? noisePower : 0f);
+		runtimeMaterial.SetFloat("_NoiseSpeed", noiseSpeed);
+		runtimeMaterial.SetFloat("_NoiseScale", noiseScale);
+		runtimeMaterial.SetFloat("_NoiseWidth", noiseWidth);
+		runtimeMaterial.SetFloat("_TimeValue", Time.time);
+	}
 
-    public void SetNoise(bool active)
-    {
-        // 노이즈 활성화 여부 설정
-        noiseActive = active;
-    }
+	public void SetNoise(bool active)
+	{
+		noiseActive = active;
+	}
 
-    public void ShowVision()
-    {
-        // 오버레이 표시
-        if (overlayImage != null)
-        {
-            overlayImage.enabled = true;
-        }
-    }
+	public void ShowVision()
+	{
+		if (overlayImage != null)
+		{
+			overlayImage.enabled = true;
+		}
+	}
 
-    public void HideVision()
-    {
-        // 오버레이 숨김
-        if (overlayImage != null)
-        {
-            overlayImage.enabled = false;
-        }
-
-        // 숨길 때 노이즈도 비활성화
-        SetNoise(false);
-    }
+	public void HideVision()
+	{
+		if (overlayImage != null)
+		{
+			overlayImage.enabled = false;
+		}
+		SetNoise(active: false);
+	}
 }

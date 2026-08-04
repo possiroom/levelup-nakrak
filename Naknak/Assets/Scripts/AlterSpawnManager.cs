@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class AlterSpawnManager : MonoBehaviour
 {
@@ -26,11 +28,23 @@ public class AlterSpawnManager : MonoBehaviour
     [SerializeField] private float boundaryRadius = 0.6f;
     [SerializeField] private float boundaryRandomOffset = 0.05f;
 
+    [Header("World Vision Effect")]
+    [SerializeField] private bool useWorldVisionEffect = true;
+    [SerializeField] private float worldVisionRadius = 2.1f;
+    [SerializeField] private float worldVisionSoftness = 0.8f;
+    [SerializeField, Range(0f, 1f)] private float outsideSaturation = 0.08f;
+    [SerializeField, Range(0f, 1f)] private float outsideDarkness = 0.58f;
+    [SerializeField] private float worldNoisePower = 0.35f;
+    [SerializeField] private float worldNoiseScale = 18f;
+
     private float remainBlindTime = 0f;
     private Coroutine spawnLoopCoroutine;
     private bool omenPlaying = false;
 
     private GameObject currentAlter;
+    private Material worldVisionMaterial;
+    private bool worldVisionApplied = false;
+    private readonly List<RendererMaterialState> rendererMaterialStates = new List<RendererMaterialState>();
 
     public bool IsBlindActive => remainBlindTime > 0f;
     public float RemainBlindTime => remainBlindTime;
@@ -56,6 +70,8 @@ public class AlterSpawnManager : MonoBehaviour
         if (remainBlindTime <= 0f)
             return;
 
+        UpdateWorldVisionEffect();
+
         remainBlindTime -= Time.deltaTime;
 
         if (remainBlindTime <= 0f)
@@ -80,6 +96,7 @@ public class AlterSpawnManager : MonoBehaviour
         omenPlaying = false;
 
         ActivateVisionOverlay();
+        ApplyWorldVisionEffect();
 
         if (visionOverlay != null)
         {
@@ -87,12 +104,7 @@ public class AlterSpawnManager : MonoBehaviour
             visionOverlay.SetNoise(false);
         }
 
-        if (spawnLoopCoroutine != null)
-        {
-            StopCoroutine(spawnLoopCoroutine);
-        }
-
-        spawnLoopCoroutine = StartCoroutine(SpawnLoop());
+        // Alter spawn is disabled; this manager is currently used only for the vision debuff.
     }
 
     private void EndBlindDebuff()
@@ -113,6 +125,7 @@ public class AlterSpawnManager : MonoBehaviour
         }
 
         ClearCurrentAlter();
+        ClearWorldVisionEffect();
 
         if (hideVisionOverlayObjectWhenEnd)
         {
@@ -242,6 +255,105 @@ public class AlterSpawnManager : MonoBehaviour
         }
     }
 
+    private void ApplyWorldVisionEffect()
+    {
+        if (!useWorldVisionEffect || worldVisionApplied)
+            return;
+
+        Shader shader = Shader.Find("Custom/VisionDesaturateWorld");
+        if (shader == null)
+        {
+            Debug.LogWarning("Custom/VisionDesaturateWorld shader를 찾을 수 없습니다.");
+            return;
+        }
+
+        worldVisionMaterial = new Material(shader);
+        UpdateWorldVisionMaterial();
+
+        Renderer[] renderers = FindObjectsOfType<Renderer>(true);
+
+        foreach (Renderer targetRenderer in renderers)
+        {
+            if (!CanApplyWorldVisionEffect(targetRenderer))
+                continue;
+
+            Material[] originalMaterials = targetRenderer.sharedMaterials;
+            Material[] effectMaterials = new Material[originalMaterials.Length];
+
+            for (int i = 0; i < effectMaterials.Length; i++)
+                effectMaterials[i] = worldVisionMaterial;
+
+            rendererMaterialStates.Add(new RendererMaterialState(targetRenderer, originalMaterials));
+            targetRenderer.sharedMaterials = effectMaterials;
+        }
+
+        worldVisionApplied = true;
+    }
+
+    private bool CanApplyWorldVisionEffect(Renderer targetRenderer)
+    {
+        if (targetRenderer == null)
+            return false;
+
+        if (targetRenderer.GetComponentInParent<Canvas>() != null)
+            return false;
+
+        if (targetRenderer.GetComponentInParent<AlterSpawnManager>() != null)
+            return false;
+
+        if (player != null && targetRenderer.transform.IsChildOf(player))
+            return false;
+
+        return targetRenderer is SpriteRenderer || targetRenderer is TilemapRenderer;
+    }
+
+    private void UpdateWorldVisionEffect()
+    {
+        if (!worldVisionApplied || worldVisionMaterial == null)
+            return;
+
+        UpdateWorldVisionMaterial();
+    }
+
+    private void UpdateWorldVisionMaterial()
+    {
+        if (worldVisionMaterial == null)
+            return;
+
+        Vector3 center = player != null ? player.position : Vector3.zero;
+
+        worldVisionMaterial.SetVector("_VisionCenter", new Vector4(center.x, center.y, center.z, 0f));
+        worldVisionMaterial.SetFloat("_Radius", worldVisionRadius);
+        worldVisionMaterial.SetFloat("_Softness", worldVisionSoftness);
+        worldVisionMaterial.SetFloat("_OutsideSaturation", outsideSaturation);
+        worldVisionMaterial.SetFloat("_OutsideDarkness", outsideDarkness);
+        worldVisionMaterial.SetFloat("_NoisePower", worldNoisePower);
+        worldVisionMaterial.SetFloat("_NoiseScale", worldNoiseScale);
+        worldVisionMaterial.SetFloat("_TimeValue", Time.time);
+    }
+
+    private void ClearWorldVisionEffect()
+    {
+        if (!worldVisionApplied)
+            return;
+
+        foreach (RendererMaterialState state in rendererMaterialStates)
+        {
+            if (state.Renderer != null)
+                state.Renderer.sharedMaterials = state.Materials;
+        }
+
+        rendererMaterialStates.Clear();
+
+        if (worldVisionMaterial != null)
+        {
+            Destroy(worldVisionMaterial);
+            worldVisionMaterial = null;
+        }
+
+        worldVisionApplied = false;
+    }
+
     private Vector3 GetBoundarySpawnPosition()
     {
         float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
@@ -273,6 +385,18 @@ public class AlterSpawnManager : MonoBehaviour
         {
             Destroy(currentAlter);
             currentAlter = null;
+        }
+    }
+
+    private struct RendererMaterialState
+    {
+        public readonly Renderer Renderer;
+        public readonly Material[] Materials;
+
+        public RendererMaterialState(Renderer renderer, Material[] materials)
+        {
+            Renderer = renderer;
+            Materials = materials;
         }
     }
 }

@@ -1,5 +1,6 @@
 public enum AIState
 {
-    Patrol,
-    Chase
+	Patrol,
+	RoomChase,
+	GridChase
 }

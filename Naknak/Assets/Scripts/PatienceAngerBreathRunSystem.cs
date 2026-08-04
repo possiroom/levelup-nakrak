@@ -16,13 +16,13 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
     [Header("Stamina")]
     [SerializeField] private float staminaMax = 10f;
 
-    // 뛰는 중 초당 감소량
+
     [SerializeField] private float staminaRunUse = 1f;
 
-    // 걷는 중 초당 회복량
+
     [SerializeField] private float staminaWalkRecovery = 1f;
 
-    // 멈춘 상태 초당 회복량
+
     [SerializeField] private float staminaIdleRecovery = 2f;
 
     [Header("Breath")]
@@ -126,7 +126,7 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
         UpdateWarningGlow();
     }
 
-    // 달리기 속도 적용
+
     private void UpdateRunSpeed()
     {
         bool runKey = inputManager.GetKeyRun();
@@ -148,7 +148,7 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
         }
     }
 
-    // 스태미나 감소 및 회복
+
     private void UpdateStamina()
     {
         bool runKey = inputManager.GetKeyRun();
@@ -164,10 +164,10 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
             !isJumping &&
             stamina > 0f;
 
-        // 뛰는 중
+
         if (IsRunning)
         {
-            // 초당 1 감소
+
             stamina -= staminaRunUse * Time.deltaTime;
 
             if (stamina <= 0f)
@@ -176,7 +176,7 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
 
                 IsRunning = false;
 
-                // 스태미나가 모두 소모되면 걷기 속도
+
                 playerCtrl.runDuration =
                     playerCtrl.moveDuration;
 
@@ -185,7 +185,7 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
         }
         else
         {
-            // 스태미나가 없는데 Shift를 누르며 이동 중
+
             bool failedRunInput =
                 currentPhase >= 5 &&
                 runKey &&
@@ -197,14 +197,14 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
             {
                 if (isMoving)
                 {
-                    // 걷는 중 회복
+
                     stamina +=
                         staminaWalkRecovery *
                         Time.deltaTime;
                 }
                 else
                 {
-                    // 멈춘 상태 회복
+
                     stamina +=
                         staminaIdleRecovery *
                         Time.deltaTime;
@@ -219,7 +219,7 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
                 staminaMax
             );
 
-        // 스태미나가 없는 상태에서 Shift 입력
+
         if (currentPhase >= 5 &&
             runKey &&
             staminaEmpty)
@@ -228,21 +228,21 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
         }
     }
 
-    // 숨고르기
+
     private void UpdateBreath()
     {
         bool isMoving = playerCtrl.isMoving;
         bool isJumping =
             playerCtrl.GetIsJumping();
 
-        // 시야 감소 디버프 기본 시간 감소
+
         if (visionDebuffTime > 0f)
         {
             visionDebuffTime -=
                 Time.deltaTime;
         }
 
-        // 숨고르기 사용 불가
+
         if (currentPhase < 3 ||
             isMoving ||
             isJumping)
@@ -255,16 +255,16 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
             return;
         }
 
-        // 정지 시간 측정
+
         idleTimer += Time.deltaTime;
 
-        // 2초 이상 멈춘 경우
+
         if (idleTimer >= breathTriggerTime &&
             visionDebuffTime > 0f)
         {
             IsBreathing = true;
 
-            // 디버프 시간을 추가 감소
+
             visionDebuffTime -=
                 breathReducePerSecond *
                 Time.deltaTime;
@@ -338,7 +338,7 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
         if (staminaBackgroundImage == null)
         {
             Debug.LogWarning(
-                "[BreathRun] Stamina Background Image가 연결되지 않았습니다."
+                "[BreathRun] Stamina background image is not connected."
             );
 
             return;
@@ -466,7 +466,7 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
             warningBlinkTime;
     }
 
-    // 붉은 경고 애니메이션
+
     private void UpdateWarningGlow()
     {
         if (borderOutline == null ||
@@ -585,27 +585,19 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
             );
     }
 
-    // 시야 감소 기능 테스트
+
     private void DebugTestInput()
     {
-        // F: 화재 시야 감소 7초
         if (Input.GetKeyDown(KeyCode.F))
         {
             TriggerFireEncounter();
-
-            Debug.Log(
-                "[BreathRun] 화재 디버프: 7초"
-            );
+            Debug.Log("[BreathRun] Fire vision debuff 7 seconds");
         }
 
-        // G: 추격자 시야 감소 4초
         if (Input.GetKeyDown(KeyCode.G))
         {
             TriggerAlterEncounter();
-
-            Debug.Log(
-                "[BreathRun] 추격자 디버프: 4초"
-            );
+            Debug.Log("[BreathRun] Alter vision debuff 4 seconds");
         }
     }
 

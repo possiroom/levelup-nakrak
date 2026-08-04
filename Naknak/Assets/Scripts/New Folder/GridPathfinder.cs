@@ -1,87 +1,56 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GridPathfinder
 {
-    private readonly LayerMask wallLayer;
+	private readonly Vector2Int[] directions = new Vector2Int[4]
+	{
+		Vector2Int.up,
+		Vector2Int.down,
+		Vector2Int.left,
+		Vector2Int.right
+	};
 
-    private readonly Vector2Int[] directions =
-    {
-        Vector2Int.up,
-        Vector2Int.down,
-        Vector2Int.left,
-        Vector2Int.right
-    };
-
-
-
-    public GridPathfinder(LayerMask wallLayer)
-    {
-        this.wallLayer = wallLayer;
-    }
-
-    public bool TryGetNextStep(
-        Vector2Int start,
-        Vector2Int goal,
-        out Vector2Int nextStep)
-    {
-        nextStep = start;
-
-        Queue<Vector2Int> queue = new();
-        Dictionary<Vector2Int, Vector2Int> parent = new();
-        HashSet<Vector2Int> visited = new();
-
-        queue.Enqueue(start);
-        visited.Add(start);
-
-        while (queue.Count > 0)
-        {
-            Vector2Int current = queue.Dequeue();
-
-            if (current == goal)
-                break;
-
-            foreach (Vector2Int dir in directions)
-            {
-                Vector2Int next = current + dir;
-
-                if (visited.Contains(next))
-                    continue;
-
-                //if (IsWall(next))
-                //    continue;
-
-                visited.Add(next);
-                parent[next] = current;
-                queue.Enqueue(next);
-            }
-        }
-
-        if (start == goal)
-            return false;
-
-        if (!visited.Contains(goal))
-            return false;
-
-        Vector2Int node = goal;
-
-        while (parent.ContainsKey(node) && parent[node] != start)
-        {
-            node = parent[node];
-        }
-
-        nextStep = node;
-        return true;
-    }
-
-    private bool IsWall(Vector2Int cell)
-    {
-        return false;
-
-        return Physics2D.OverlapBox(
-            cell,
-            Vector2.one * 0.8f,
-            0f,
-            wallLayer);
-    }
+	public List<Vector2Int> FindPath(Vector2Int start, Vector2Int goal, Func<Vector2Int, bool> canMove = null)
+	{
+		Queue<Vector2Int> queue = new Queue<Vector2Int>();
+		Dictionary<Vector2Int, Vector2Int> dictionary = new Dictionary<Vector2Int, Vector2Int>();
+		HashSet<Vector2Int> hashSet = new HashSet<Vector2Int>();
+		queue.Enqueue(start);
+		hashSet.Add(start);
+		while (queue.Count > 0)
+		{
+			Vector2Int vector2Int = queue.Dequeue();
+			if (vector2Int == goal)
+			{
+				break;
+			}
+			Vector2Int[] array = directions;
+			foreach (Vector2Int vector2Int2 in array)
+			{
+				Vector2Int vector2Int3 = vector2Int + vector2Int2;
+				if (!hashSet.Contains(vector2Int3) && (canMove == null || canMove(vector2Int3)))
+				{
+					hashSet.Add(vector2Int3);
+					dictionary[vector2Int3] = vector2Int;
+					queue.Enqueue(vector2Int3);
+				}
+			}
+		}
+		List<Vector2Int> list = new List<Vector2Int>();
+		if (!hashSet.Contains(goal))
+		{
+			return list;
+		}
+		Vector2Int vector2Int4 = goal;
+		list.Add(vector2Int4);
+		while (vector2Int4 != start)
+		{
+			vector2Int4 = dictionary[vector2Int4];
+			list.Add(vector2Int4);
+		}
+		list.Reverse();
+		return list;
+	}
 }

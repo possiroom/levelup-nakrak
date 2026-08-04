@@ -27,6 +27,7 @@ public class PlayerMoveController3 : MonoBehaviour
     // 플레이어 애니메이션 우선 순위를 위함
     bool xFirst = false, yFirst = false;
     bool teleporting = false;
+    private Coroutine movementLockRoutine;
 
     private bool _isMoving;
     public bool isMoving
@@ -601,6 +602,54 @@ public class PlayerMoveController3 : MonoBehaviour
         transform.position = new Vector3(pos.x + 0.5f, pos.y, 0);
         currentPosition = transform.position;
         teleporting = false;
+    }
+
+    public void LockMovement(float time)
+    {
+        ResetMovementState();
+
+        teleporting = true;
+        if (lastInputManager != null)
+            lastInputManager.IgnoreInput(time);
+
+        if (movementLockRoutine != null)
+            StopCoroutine(movementLockRoutine);
+
+        movementLockRoutine = StartCoroutine(UnlockMovementAfter(time));
+    }
+
+    private IEnumerator UnlockMovementAfter(float time)
+    {
+        yield return new WaitForSeconds(time);
+        teleporting = false;
+        movementLockRoutine = null;
+    }
+
+    private void ResetMovementState()
+    {
+        isMovingX = false;
+        isMovingY = false;
+        isMoving = false;
+
+        elapsedTimeX = 0f;
+        elapsedTimeY = 0f;
+        nextInputX = true;
+        nextInputY = true;
+
+        queuedDirectionX = Vector2.zero;
+        queuedDirectionY = Vector2.zero;
+
+        isJumping = false;
+        elapsedTimeJump = 0f;
+        jumpPhase1 = false;
+        jumpPhase2 = false;
+        queuedJump = 0;
+
+        currentPosition = transform.position;
+        startPosX = currentPosition;
+        targetPosX = currentPosition;
+        startPosY = currentPosition;
+        targetPosY = currentPosition;
     }
 
 

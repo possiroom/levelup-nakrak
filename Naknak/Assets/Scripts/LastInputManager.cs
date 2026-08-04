@@ -131,6 +131,7 @@ public class LastInputManager : MonoBehaviour
 
     public bool GetKeyDownInteract()
     {
+        if (ignoreInputTime > 0f) return false;
         return Input.GetKeyDown(KeyCode.Z);
     }
 
@@ -148,6 +149,6 @@ public class LastInputManager : MonoBehaviour
 
     public void IgnoreInput(float time)
     {
-        ignoreInputTime = time;
+        ignoreInputTime = Mathf.Max(ignoreInputTime, time);
     }
 }

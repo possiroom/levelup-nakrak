@@ -4,607 +4,580 @@ using UnityEngine;
 
 public class MansionRoomSystem : MonoBehaviour
 {
-    public static MansionRoomSystem Instance { get; private set; }
+	private const int NoRoom = 13;
 
-    private const int NoRoom = 13;
-    private const int MainRoomId = 11;
-    private const int StudyRoomId = 8;
+	private const int MainRoomId = 11;
 
-    [Header("Player")]
-    [SerializeField] private PlayerMoveController3 playerCtrl;
+	private const int StudyRoomId = 8;
 
-    [Header("Current Room")]
-    [SerializeField] private int currentRoomId = 1;
+	[Header("Player")]
+	[SerializeField]
+	private PlayerMoveController3 playerCtrl;
 
-    [Header("Door Table")]
-    [SerializeField] private RoomDoorData[] roomDoorTable;
+	[Header("Current Room")]
+	[SerializeField]
+	private int currentRoomId = 1;
 
-    [Header("Transition")]
-    [SerializeField] private float teleportDelay = 0.05f;
-    [SerializeField] private bool showOnlyCurrentRoom = false;
+	[Header("Door Table")]
+	[SerializeField]
+	private RoomDoorData[] roomDoorTable;
 
-    [Header("Space Delete")]
-    [SerializeField] private bool debugPhaseHotkeys = true;
-    [SerializeField] private int[] fireRoomOrder = { 1, 2, 3, 4, 5, 6 };
+	[Header("Transition")]
+	[SerializeField]
+	private float teleportDelay = 0.05f;
 
-    [Header("Space Delete Visual")]
-    [SerializeField] private GameObject fireVisualPrefab;
-    [SerializeField] private GameObject deletedVisualPrefab;
-    [SerializeField] private Transform visualRoot;
+	[SerializeField]
+	private bool showOnlyCurrentRoom;
 
-    private bool isTransitioning = false;
-
-    private Dictionary<int, MansionRoom> roomMap;
-    private Dictionary<int, RoomDoorData> baseDoorMap;
-    private Dictionary<int, RoomDoorData> doorMap;
-
-    private HashSet<int> deletedRooms = new HashSet<int>();
-
-    private int currentFirePhase = 0;
-    private int burningRoomId = 0;
-    private bool burningRoomSeen = false;
-
-    private GameObject fireVisualInstance;
-    private Dictionary<int, GameObject> deletedVisuals = new Dictionary<int, GameObject>();
-
-    private void Awake()
-    {
-        Instance = this;
-
-        if (playerCtrl == null)
-            playerCtrl = FindFirstObjectByType<PlayerMoveController3>();
-
-        InitRoomMap();
-        InitDoorMap();
-
-        RefreshRoomVisible();
-    }
-
-    private void Update()
-    {
-        if (!debugPhaseHotkeys)
-            return;
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            StartFirePhase(1);
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-            StartFirePhase(2);
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-            StartFirePhase(3);
-
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-            StartFirePhase(4);
-
-        if (Input.GetKeyDown(KeyCode.Alpha5))
-            StartFirePhase(5);
-
-        if (Input.GetKeyDown(KeyCode.Alpha6))
-            StartFirePhase(6);
-    }
-
-    private void InitRoomMap()
-    {
-        roomMap = new Dictionary<int, MansionRoom>();
-
-        MapContainer mapContainer = GetComponentInParent<MapContainer>();
-        MansionRoom[] foundRooms;
-
-        if (mapContainer != null)
-            foundRooms = mapContainer.GetComponentsInChildren<MansionRoom>(true);
-        else
-            foundRooms = transform.root.GetComponentsInChildren<MansionRoom>(true);
-
-        foreach (MansionRoom room in foundRooms)
-        {
-            if (room == null)
-                continue;
-
-            int id = room.RoomId;
-
-            if (roomMap.ContainsKey(id))
-            {
-                Debug.LogWarning("[MansionRoomSystem] ¡ﬂ∫π Room Id πﬂ∞ﬂ: " + id + " / " + room.name);
-                continue;
-            }
-
-            roomMap.Add(id, room);
-            Debug.Log("[MansionRoomSystem] Room µÓ∑œµ : " + id + " / " + room.name);
-        }
-
-        Debug.Log("[MansionRoomSystem] µÓ∑œµ» πÊ ∞≥ºˆ: " + roomMap.Count);
-    }
-
-    private void InitDoorMap()
-    {
-        baseDoorMap = new Dictionary<int, RoomDoorData>();
-        doorMap = new Dictionary<int, RoomDoorData>();
-
-        foreach (RoomDoorData data in roomDoorTable)
-        {
-            if (data == null)
-                continue;
-
-            if (!baseDoorMap.ContainsKey(data.roomId))
-                baseDoorMap.Add(data.roomId, data.Clone());
-
-            if (!doorMap.ContainsKey(data.roomId))
-                doorMap.Add(data.roomId, data.Clone());
-        }
-
-        Debug.Log("[MansionRoomSystem] Door Table µÓ∑œ ∞≥ºˆ: " + doorMap.Count);
-    }
-
-    public void EnterDoor(int fromRoomId, DoorDirection exitDirection)
-    {
-        if (isTransitioning)
-            return;
-
-        StartCoroutine(EnterDoorRoutine(fromRoomId, exitDirection));
-    }
-
-    private IEnumerator EnterDoorRoutine(int fromRoomId, DoorDirection exitDirection)
-    {
-        isTransitioning = true;
-
-        int previousRoomId = currentRoomId;
-
-        if (!doorMap.ContainsKey(fromRoomId))
-        {
-            Debug.LogError("[MansionRoomSystem] Door Tableø° æ¯¥¬ πÊ ID: " + fromRoomId);
-            isTransitioning = false;
-            yield break;
-        }
-
-        int targetRoomId = doorMap[fromRoomId].GetTargetRoom(exitDirection);
-
-        if (targetRoomId == NoRoom)
-        {
-            Debug.Log("[MansionRoomSystem] ø¨∞·µ«¡ˆ æ ¿∫ πÆ¿‘¥œ¥Ÿ.");
-            isTransitioning = false;
-            yield break;
-        }
-
-        if (deletedRooms.Contains(targetRoomId))
-        {
-            Debug.LogError("[MansionRoomSystem] ªË¡¶µ» πÊ¿∏∑Œ ¿Ãµø«œ∑¡∞Ì «‘: " + targetRoomId);
-            isTransitioning = false;
-            yield break;
-        }
-
-        if (!roomMap.ContainsKey(targetRoomId))
-        {
-            Debug.LogError("[MansionRoomSystem] Roomsø° µÓ∑œµ«¡ˆ æ ¿∫ ∏Ò¿˚¡ˆ πÊ ID: " + targetRoomId);
-            isTransitioning = false;
-            yield break;
-        }
-
-        DoorDirection enterDirection = GetOppositeDirection(exitDirection);
-        MansionRoom targetRoom = roomMap[targetRoomId];
-        Transform spawnPoint = targetRoom.GetSpawnPoint(enterDirection);
-
-        if (spawnPoint == null)
-        {
-            Debug.LogError("[MansionRoomSystem] SpawnPoint æ¯¿Ω: " + targetRoomId + " / " + enterDirection);
-            isTransitioning = false;
-            yield break;
-        }
-
-        yield return new WaitForSeconds(teleportDelay);
-
-        currentRoomId = targetRoomId;
-        RefreshRoomVisible();
-
-        playerCtrl.TeleportToWorld(spawnPoint.position);
-
-        Debug.Log(
-            "[RoomMove] " +
-            fromRoomId + " " + exitDirection +
-            " °Ê " +
-            targetRoomId + " " + enterDirection
-        );
-
-        MarkBurningRoomSeen(targetRoomId);
-        TryDeleteBurningRoomAfterExit(previousRoomId);
-
-        yield return new WaitForSeconds(0.1f);
-
-        isTransitioning = false;
-    }
-
-    public void StartFirePhase(int phase)
-    {
-        if (phase < 1 || phase > fireRoomOrder.Length)
-        {
-            Debug.LogWarning("[MansionRoomSystem] æ¯¥¬ »≠¿Á ∆‰¿Ã¡Ó: " + phase);
-            return;
-        }
-
-        int targetFireRoomId = fireRoomOrder[phase - 1];
-
-        if (deletedRooms.Contains(targetFireRoomId))
-        {
-            Debug.LogWarning("[MansionRoomSystem] ¿ÃπÃ ªË¡¶µ» πÊø°¥¬ »≠¿Á∏¶ πﬂª˝Ω√≈≥ ºˆ æ¯¿Ω: " + targetFireRoomId);
-            return;
-        }
-
-        currentFirePhase = phase;
-        burningRoomId = targetFireRoomId;
-        burningRoomSeen = currentRoomId == burningRoomId;
-
-        ShowFireVisual(burningRoomId);
-
-        Debug.Log("[MansionRoomSystem] Phase " + phase + " »≠¿Á πﬂª˝ πÊ: " + burningRoomId);
-
-        if (burningRoomSeen)
-            Debug.Log("[MansionRoomSystem] «ˆ¿Á πÊ¿Ã »≠¿Á πÊ¿Ã∂Û ¡ÔΩ√ ∏Ò∞› √≥∏Æµ : " + burningRoomId);
-    }
-
-    public void StartNextFirePhase()
-    {
-        StartFirePhase(currentFirePhase + 1);
-    }
-
-    private void MarkBurningRoomSeen(int roomId)
-    {
-        if (burningRoomId == 0)
-            return;
-
-        if (roomId != burningRoomId)
-            return;
-
-        burningRoomSeen = true;
-        Debug.Log("[MansionRoomSystem] »≠¿Á πÊ ∏Ò∞›: " + roomId);
-    }
-
-    private void TryDeleteBurningRoomAfterExit(int previousRoomId)
-    {
-        if (burningRoomId == 0)
-            return;
-
-        if (previousRoomId != burningRoomId)
-            return;
-
-        if (!burningRoomSeen)
-            return;
-
-        DeleteRoom(burningRoomId);
-
-        burningRoomId = 0;
-        burningRoomSeen = false;
-    }
-
-    public void DeleteRoom(int roomId)
-    {
-        if (deletedRooms.Contains(roomId))
-            return;
-
-        deletedRooms.Add(roomId);
-
-        HideFireVisual();
-        ShowDeletedVisual(roomId);
-
-        RebuildDoorMapByDeletedRooms();
-
-        Debug.Log("[MansionRoomSystem] πÊ ªË¡¶ øœ∑·: " + roomId);
-    }
-
-    private void RebuildDoorMapByDeletedRooms()
-    {
-        doorMap.Clear();
-
-        foreach (var pair in baseDoorMap)
-        {
-            doorMap.Add(pair.Key, pair.Value.Clone());
-        }
-
-        List<int> sortedDeletedRooms = new List<int>(deletedRooms);
-        sortedDeletedRooms.Sort();
-
-        foreach (int deletedRoomId in sortedDeletedRooms)
-        {
-            ApplyDeletedRoomRule(deletedRoomId);
-        }
-
-        PrintCurrentDoorMap();
-    }
-
-    private void ApplyDeletedRoomRule(int deletedRoomId)
-    {
-        // ªË¡¶µ» πÊ ¿⁄√º¿« πÆ¿∫ ¿¸∫Œ ∏∑¿Ω
-        if (doorMap.ContainsKey(deletedRoomId))
-            doorMap[deletedRoomId].ClearDoors();
-
-        ApplyPlusFourRule(deletedRoomId);
-        ApplyStudyBridgeRule(deletedRoomId);
-        ApplyMainExceptionRule(deletedRoomId);
-    }
-
-    private void ApplyPlusFourRule(int deletedRoomId)
-    {
-        int plusFourRoomId = deletedRoomId + 4;
-
-        if (!doorMap.ContainsKey(plusFourRoomId))
-            return;
-
-        if (deletedRooms.Contains(plusFourRoomId))
-            return;
-
-        doorMap[plusFourRoomId].ReplaceTarget(deletedRoomId, MainRoomId);
-
-        Debug.Log("[SpaceDelete] " + plusFourRoomId + "π¯ πÊ¿« " + deletedRoomId + " ø¨∞·¿ª Main¿∏∑Œ ∫Ø∞Ê");
-    }
-
-    private void ApplyStudyBridgeRule(int deletedRoomId)
-    {
-        int nextAliveRoomId = FindNextAliveRoomId(deletedRoomId);
-
-        if (nextAliveRoomId == NoRoom)
-            return;
-
-        if (!doorMap.ContainsKey(nextAliveRoomId))
-            return;
-
-        if (!doorMap.ContainsKey(StudyRoomId))
-            return;
-
-        if (deletedRooms.Contains(StudyRoomId))
-            return;
-
-        doorMap[nextAliveRoomId].ReplaceTarget(deletedRoomId, StudyRoomId);
-        doorMap[StudyRoomId].ReplaceTarget(deletedRoomId, nextAliveRoomId);
-
-        Debug.Log("[SpaceDelete] " + nextAliveRoomId + "π¯ πÊ °Í Study(8) ø¨∞· √≥∏Æ");
-    }
-
-    private int FindNextAliveRoomId(int deletedRoomId)
-    {
-        int[] candidates = { 1, 2, 3, 4, 5, 6, 7, 8 };
-
-        foreach (int id in candidates)
-        {
-            if (id <= deletedRoomId)
-                continue;
-
-            if (deletedRooms.Contains(id))
-                continue;
-
-            return id;
-        }
-
-        return NoRoom;
-    }
-
-    private void ApplyMainExceptionRule(int deletedRoomId)
-    {
-        if (!doorMap.ContainsKey(MainRoomId))
-            return;
-
-        if (deletedRoomId == 1)
-        {
-            doorMap[MainRoomId].SetTargetRoom(DoorDirection.Up, StudyRoomId);
-            Debug.Log("[SpaceDelete] Main Up: Entrance °Ê Study");
-        }
-        else if (deletedRoomId == 3)
-        {
-            doorMap[MainRoomId].SetTargetRoom(DoorDirection.Right, 7);
-            Debug.Log("[SpaceDelete] Main Right: Dining °Ê Reception");
-        }
-        else if (deletedRoomId == 5)
-        {
-            doorMap[MainRoomId].SetTargetRoom(DoorDirection.Down, StudyRoomId);
-            Debug.Log("[SpaceDelete] Main Down: Stair °Ê Study");
-        }
-    }
-
-    private void ShowFireVisual(int roomId)
-    {
-        if (fireVisualPrefab == null)
-        {
-            Debug.LogWarning("[MansionRoomSystem] Fire Visual Prefab¿Ã ø¨∞·µ«¡ˆ æ æ“Ω¿¥œ¥Ÿ.");
-            return;
-        }
-
-        if (!roomMap.ContainsKey(roomId))
-            return;
-
-        if (fireVisualInstance == null)
-        {
-            Transform parent = visualRoot != null ? visualRoot : transform;
-            fireVisualInstance = Instantiate(fireVisualPrefab, parent);
-        }
-
-        fireVisualInstance.transform.position = roomMap[roomId].GetVisualPosition();
-        fireVisualInstance.SetActive(true);
-    }
-
-    private void HideFireVisual()
-    {
-        if (fireVisualInstance != null)
-            fireVisualInstance.SetActive(false);
-    }
-
-    private void ShowDeletedVisual(int roomId)
-    {
-        if (deletedVisualPrefab == null)
-        {
-            Debug.LogWarning("[MansionRoomSystem] Deleted Visual Prefab¿Ã ø¨∞·µ«¡ˆ æ æ“Ω¿¥œ¥Ÿ.");
-            return;
-        }
-
-        if (!roomMap.ContainsKey(roomId))
-            return;
-
-        if (deletedVisuals.ContainsKey(roomId))
-            return;
-
-        Transform parent = visualRoot != null ? visualRoot : transform;
-
-        GameObject visual = Instantiate(deletedVisualPrefab, parent);
-        visual.transform.position = roomMap[roomId].GetVisualPosition();
-
-        deletedVisuals.Add(roomId, visual);
-    }
-
-    private DoorDirection GetOppositeDirection(DoorDirection dir)
-    {
-        switch (dir)
-        {
-            case DoorDirection.Up:
-                return DoorDirection.Down;
-
-            case DoorDirection.Down:
-                return DoorDirection.Up;
-
-            case DoorDirection.Left:
-                return DoorDirection.Right;
-
-            case DoorDirection.Right:
-                return DoorDirection.Left;
-
-            default:
-                return DoorDirection.Down;
-        }
-    }
-
-    private void RefreshRoomVisible()
-    {
-        if (!showOnlyCurrentRoom)
-            return;
-
-        if (roomMap == null)
-            return;
-
-        foreach (MansionRoom room in roomMap.Values)
-        {
-            if (room == null)
-                continue;
-
-            room.gameObject.SetActive(room.RoomId == currentRoomId);
-        }
-    }
-
-    private void PrintCurrentDoorMap()
-    {
-        foreach (var pair in doorMap)
-        {
-            RoomDoorData data = pair.Value;
-
-            Debug.Log(
-                "[DoorMap] " +
-                data.roomId + " / " + data.roomName +
-                " / U:" + data.upDoor +
-                " D:" + data.downDoor +
-                " L:" + data.leftDoor +
-                " R:" + data.rightDoor
-            );
-        }
-    }
-
-    public int GetCurrentRoomId()
-    {
-        return currentRoomId;
-    }
-
-    public bool IsRoomDeleted(int roomId)
-    {
-        return deletedRooms.Contains(roomId);
-    }
-
-    public int GetBurningRoomId()
-    {
-        return burningRoomId;
-    }
-}
-
-[System.Serializable]
-public class RoomDoorData
-{
-    public int roomId;
-    public string roomName;
-
-    public int upDoor;
-    public int downDoor;
-    public int leftDoor;
-    public int rightDoor;
-
-    public int GetTargetRoom(DoorDirection dir)
-    {
-        switch (dir)
-        {
-            case DoorDirection.Up:
-                return upDoor;
-
-            case DoorDirection.Down:
-                return downDoor;
-
-            case DoorDirection.Left:
-                return leftDoor;
-
-            case DoorDirection.Right:
-                return rightDoor;
-
-            default:
-                return 13;
-        }
-    }
-
-    public void SetTargetRoom(DoorDirection dir, int targetRoomId)
-    {
-        switch (dir)
-        {
-            case DoorDirection.Up:
-                upDoor = targetRoomId;
-                break;
-
-            case DoorDirection.Down:
-                downDoor = targetRoomId;
-                break;
-
-            case DoorDirection.Left:
-                leftDoor = targetRoomId;
-                break;
-
-            case DoorDirection.Right:
-                rightDoor = targetRoomId;
-                break;
-        }
-    }
-
-    public void ReplaceTarget(int oldTargetId, int newTargetId)
-    {
-        if (upDoor == oldTargetId)
-            upDoor = newTargetId;
-
-        if (downDoor == oldTargetId)
-            downDoor = newTargetId;
-
-        if (leftDoor == oldTargetId)
-            leftDoor = newTargetId;
-
-        if (rightDoor == oldTargetId)
-            rightDoor = newTargetId;
-    }
-
-    public void ClearDoors()
-    {
-        upDoor = 13;
-        downDoor = 13;
-        leftDoor = 13;
-        rightDoor = 13;
-    }
-
-    public RoomDoorData Clone()
-    {
-        return new RoomDoorData
-        {
-            roomId = roomId,
-            roomName = roomName,
-            upDoor = upDoor,
-            downDoor = downDoor,
-            leftDoor = leftDoor,
-            rightDoor = rightDoor
-        };
-    }
+	[Header("Space Delete")]
+	[SerializeField]
+	private bool debugPhaseHotkeys = true;
+
+	[SerializeField]
+	private int[] fireRoomOrder = new int[6] { 1, 2, 3, 4, 5, 6 };
+
+	[Header("Space Delete Visual")]
+	[SerializeField]
+	private GameObject fireVisualPrefab;
+
+	[SerializeField]
+	private GameObject deletedVisualPrefab;
+
+	[SerializeField]
+	private Transform visualRoot;
+
+	private bool isTransitioning;
+
+	private Dictionary<int, MansionRoom> roomMap;
+
+	private Dictionary<int, RoomDoorData> baseDoorMap;
+
+	private Dictionary<int, RoomDoorData> doorMap;
+
+	private HashSet<int> deletedRooms = new HashSet<int>();
+
+	private int currentFirePhase;
+
+	private int burningRoomId;
+
+	private bool burningRoomSeen;
+
+	private GameObject fireVisualInstance;
+
+	private Dictionary<int, GameObject> deletedVisuals = new Dictionary<int, GameObject>();
+
+	[SerializeField]
+	private Transform upDoorTrigger;
+
+	[SerializeField]
+	private Transform downDoorTrigger;
+
+	[SerializeField]
+	private Transform leftDoorTrigger;
+
+	[SerializeField]
+	private Transform rightDoorTrigger;
+
+	public static MansionRoomSystem Instance { get; private set; }
+
+	public Transform GetDoorTrigger(DoorDirection dir)
+	{
+		return dir switch
+		{
+			DoorDirection.Up => upDoorTrigger, 
+			DoorDirection.Down => downDoorTrigger, 
+			DoorDirection.Left => leftDoorTrigger, 
+			DoorDirection.Right => rightDoorTrigger, 
+			_ => null, 
+		};
+	}
+
+	private void Awake()
+	{
+		Instance = this;
+		if (playerCtrl == null)
+		{
+			playerCtrl = Object.FindFirstObjectByType<PlayerMoveController3>();
+		}
+		InitRoomMap();
+		InitDoorMap();
+		RefreshRoomVisible();
+	}
+
+	private void Start()
+	{
+		if (AIManager.Instance != null)
+		{
+			AIManager.Instance.PlayerEnteredRoom(currentRoomId);
+		}
+	}
+
+	private void Update()
+	{
+		if (debugPhaseHotkeys)
+		{
+			if (Input.GetKeyDown(KeyCode.Alpha1))
+			{
+				StartFirePhase(1);
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha2))
+			{
+				StartFirePhase(2);
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha3))
+			{
+				StartFirePhase(3);
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha4))
+			{
+				StartFirePhase(4);
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha5))
+			{
+				StartFirePhase(5);
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha6))
+			{
+				StartFirePhase(6);
+			}
+		}
+	}
+
+	private void InitRoomMap()
+	{
+		roomMap = new Dictionary<int, MansionRoom>();
+		MapContainer componentInParent = GetComponentInParent<MapContainer>();
+		MansionRoom[] array = ((!(componentInParent != null)) ? base.transform.root.GetComponentsInChildren<MansionRoom>(includeInactive: true) : componentInParent.GetComponentsInChildren<MansionRoom>(includeInactive: true));
+		MansionRoom[] array2 = array;
+		foreach (MansionRoom mansionRoom in array2)
+		{
+			if (!(mansionRoom == null))
+			{
+				int roomId = mansionRoom.RoomId;
+				if (roomMap.ContainsKey(roomId))
+				{
+					Debug.LogWarning("[MansionRoomSystem] Ï§ëÎ≥µ Room Id Î∞úÍ≤¨: " + roomId + " / " + mansionRoom.name);
+					continue;
+				}
+				roomMap.Add(roomId, mansionRoom);
+				Debug.Log("[MansionRoomSystem] Room Îì±Î°ùÎê®: " + roomId + " / " + mansionRoom.name);
+			}
+		}
+		Debug.Log("[MansionRoomSystem] Îì±Î°ùÎêú Î∞© Í∞úÏàò: " + roomMap.Count);
+	}
+
+	private void InitDoorMap()
+	{
+		baseDoorMap = new Dictionary<int, RoomDoorData>();
+		doorMap = new Dictionary<int, RoomDoorData>();
+		RoomDoorData[] array = roomDoorTable;
+		foreach (RoomDoorData roomDoorData in array)
+		{
+			if (roomDoorData != null)
+			{
+				if (!baseDoorMap.ContainsKey(roomDoorData.roomId))
+				{
+					baseDoorMap.Add(roomDoorData.roomId, roomDoorData.Clone());
+				}
+				if (!doorMap.ContainsKey(roomDoorData.roomId))
+				{
+					doorMap.Add(roomDoorData.roomId, roomDoorData.Clone());
+				}
+			}
+		}
+		Debug.Log("[MansionRoomSystem] Door Table Îì±Î°ù Í∞úÏàò: " + doorMap.Count);
+	}
+
+	public void EnterDoor(int fromRoomId, DoorDirection exitDirection)
+	{
+		if (!isTransitioning)
+		{
+			StartCoroutine(EnterDoorRoutine(fromRoomId, exitDirection));
+		}
+	}
+
+	private IEnumerator EnterDoorRoutine(int fromRoomId, DoorDirection exitDirection)
+	{
+		isTransitioning = true;
+		int previousRoomId = currentRoomId;
+		if (!doorMap.ContainsKey(fromRoomId))
+		{
+			Debug.LogError("[MansionRoomSystem] Door TableÏóê ÏóÜÎäî Î∞© ID: " + fromRoomId);
+			isTransitioning = false;
+			yield break;
+		}
+		int targetRoomId = doorMap[fromRoomId].GetTargetRoom(exitDirection);
+		if (targetRoomId == 13)
+		{
+			Debug.Log("[MansionRoomSystem] Ïó∞Í≤∞ÎêòÏßÄ ÏïäÏùÄ Î¨∏ÏûÖÎãàÎã§.");
+			isTransitioning = false;
+			yield break;
+		}
+		if (deletedRooms.Contains(targetRoomId))
+		{
+			Debug.LogError("[MansionRoomSystem] ÏÇ≠Ï†úÎêú Î∞©ÏúºÎ°ú Ïù¥ÎèôÌïòÎ†§Í≥† Ìï®: " + targetRoomId);
+			isTransitioning = false;
+			yield break;
+		}
+		if (!roomMap.ContainsKey(targetRoomId))
+		{
+			Debug.LogError("[MansionRoomSystem] RoomsÏóê Îì±Î°ùÎêòÏßÄ ÏïäÏùÄ Î™©Ï†ÅÏßÄ Î∞© ID: " + targetRoomId);
+			isTransitioning = false;
+			yield break;
+		}
+		DoorDirection enterDirection = GetOppositeDirection(exitDirection);
+		MansionRoom mansionRoom = roomMap[targetRoomId];
+		Transform spawnPoint = mansionRoom.GetSpawnPoint(enterDirection);
+		if (spawnPoint == null)
+		{
+			Debug.LogError("[MansionRoomSystem] SpawnPoint ÏóÜÏùå: " + targetRoomId + " / " + enterDirection);
+			isTransitioning = false;
+			yield break;
+		}
+		yield return new WaitForSeconds(teleportDelay);
+		currentRoomId = targetRoomId;
+		AIManager.Instance.PlayerEnteredRoom(currentRoomId);
+		RefreshRoomVisible();
+		playerCtrl.TeleportToWorld(spawnPoint.position);
+		Debug.Log("[RoomMove] " + fromRoomId + " " + exitDirection.ToString() + " ‚Üí " + targetRoomId + " " + enterDirection);
+		MarkBurningRoomSeen(targetRoomId);
+		TryDeleteBurningRoomAfterExit(previousRoomId);
+		yield return new WaitForSeconds(0.1f);
+		isTransitioning = false;
+	}
+
+	public void StartFirePhase(int phase)
+	{
+		if (phase < 1 || phase > fireRoomOrder.Length)
+		{
+			Debug.LogWarning("[MansionRoomSystem] ÏóÜÎäî ÌôîÏû¨ ÌéòÏù¥Ï¶à: " + phase);
+			return;
+		}
+		int item = fireRoomOrder[phase - 1];
+		if (deletedRooms.Contains(item))
+		{
+			Debug.LogWarning("[MansionRoomSystem] Ïù¥ÎØ∏ ÏÇ≠Ï†úÎêú Î∞©ÏóêÎäî ÌôîÏû¨Î•º Î∞úÏÉùÏãúÌÇ¨ Ïàò ÏóÜÏùå: " + item);
+			return;
+		}
+		currentFirePhase = phase;
+		burningRoomId = item;
+		burningRoomSeen = currentRoomId == burningRoomId;
+		ShowFireVisual(burningRoomId);
+		Debug.Log("[MansionRoomSystem] Phase " + phase + " ÌôîÏû¨ Î∞úÏÉù Î∞©: " + burningRoomId);
+		if (burningRoomSeen)
+		{
+			Debug.Log("[MansionRoomSystem] ÌòÑÏû¨ Î∞©Ïù¥ ÌôîÏû¨ Î∞©Ïù¥Îùº Ï¶âÏãú Î™©Í≤© Ï≤òÎ¶¨Îê®: " + burningRoomId);
+		}
+	}
+
+	public void StartNextFirePhase()
+	{
+		StartFirePhase(currentFirePhase + 1);
+	}
+
+	private void MarkBurningRoomSeen(int roomId)
+	{
+		if (burningRoomId != 0 && roomId == burningRoomId)
+		{
+			burningRoomSeen = true;
+			Debug.Log("[MansionRoomSystem] ÌôîÏû¨ Î∞© Î™©Í≤©: " + roomId);
+		}
+	}
+
+	private void TryDeleteBurningRoomAfterExit(int previousRoomId)
+	{
+		if (burningRoomId != 0 && previousRoomId == burningRoomId && burningRoomSeen)
+		{
+			DeleteRoom(burningRoomId);
+			burningRoomId = 0;
+			burningRoomSeen = false;
+		}
+	}
+
+	public void DeleteRoom(int roomId)
+	{
+		if (!deletedRooms.Contains(roomId))
+		{
+			deletedRooms.Add(roomId);
+			HideFireVisual();
+			ShowDeletedVisual(roomId);
+			RebuildDoorMapByDeletedRooms();
+			Debug.Log("[MansionRoomSystem] Î∞© ÏÇ≠Ï†ú ÏôÑÎ£å: " + roomId);
+		}
+	}
+
+	private void RebuildDoorMapByDeletedRooms()
+	{
+		doorMap.Clear();
+		foreach (KeyValuePair<int, RoomDoorData> item in baseDoorMap)
+		{
+			doorMap.Add(item.Key, item.Value.Clone());
+		}
+		List<int> list = new List<int>(deletedRooms);
+		list.Sort();
+		foreach (int item2 in list)
+		{
+			ApplyDeletedRoomRule(item2);
+		}
+		PrintCurrentDoorMap();
+	}
+
+	private void ApplyDeletedRoomRule(int deletedRoomId)
+	{
+		if (doorMap.ContainsKey(deletedRoomId))
+		{
+			doorMap[deletedRoomId].ClearDoors();
+		}
+		ApplyPlusFourRule(deletedRoomId);
+		ApplyStudyBridgeRule(deletedRoomId);
+		ApplyMainExceptionRule(deletedRoomId);
+	}
+
+	private void ApplyPlusFourRule(int deletedRoomId)
+	{
+		int num = deletedRoomId + 4;
+		if (doorMap.ContainsKey(num) && !deletedRooms.Contains(num))
+		{
+			doorMap[num].ReplaceTarget(deletedRoomId, 11);
+			Debug.Log("[SpaceDelete] " + num + "Î≤à Î∞©Ïùò " + deletedRoomId + " Ïó∞Í≤∞ÏùÑ MainÏúºÎ°ú Î≥ÄÍ≤Ω");
+		}
+	}
+
+	private void ApplyStudyBridgeRule(int deletedRoomId)
+	{
+		int num = FindNextAliveRoomId(deletedRoomId);
+		if (num != 13 && doorMap.ContainsKey(num) && doorMap.ContainsKey(8) && !deletedRooms.Contains(8))
+		{
+			doorMap[num].ReplaceTarget(deletedRoomId, 8);
+			doorMap[8].ReplaceTarget(deletedRoomId, num);
+			Debug.Log("[SpaceDelete] " + num + "Î≤à Î∞© ‚Üî Study(8) Ïó∞Í≤∞ Ï≤òÎ¶¨");
+		}
+	}
+
+	private int FindNextAliveRoomId(int deletedRoomId)
+	{
+		int[] array = new int[8] { 1, 2, 3, 4, 5, 6, 7, 8 };
+		foreach (int num in array)
+		{
+			if (num > deletedRoomId && !deletedRooms.Contains(num))
+			{
+				return num;
+			}
+		}
+		return 13;
+	}
+
+	private void ApplyMainExceptionRule(int deletedRoomId)
+	{
+		if (doorMap.ContainsKey(11))
+		{
+			switch (deletedRoomId)
+			{
+			case 1:
+				doorMap[11].SetTargetRoom(DoorDirection.Up, 8);
+				Debug.Log("[SpaceDelete] Main Up: Entrance ‚Üí Study");
+				break;
+			case 3:
+				doorMap[11].SetTargetRoom(DoorDirection.Right, 7);
+				Debug.Log("[SpaceDelete] Main Right: Dining ‚Üí Reception");
+				break;
+			case 5:
+				doorMap[11].SetTargetRoom(DoorDirection.Down, 8);
+				Debug.Log("[SpaceDelete] Main Down: Stair ‚Üí Study");
+				break;
+			}
+		}
+	}
+
+	private void ShowFireVisual(int roomId)
+	{
+		if (fireVisualPrefab == null)
+		{
+			Debug.LogWarning("[MansionRoomSystem] Fire Visual PrefabÏù¥ Ïó∞Í≤∞ÎêòÏßÄ ÏïäÏïòÏäµÎãàÎã§.");
+		}
+		else if (roomMap.ContainsKey(roomId))
+		{
+			if (fireVisualInstance == null)
+			{
+				Transform parent = ((visualRoot != null) ? visualRoot : base.transform);
+				fireVisualInstance = Object.Instantiate(fireVisualPrefab, parent);
+			}
+			fireVisualInstance.transform.position = roomMap[roomId].GetVisualPosition();
+			fireVisualInstance.SetActive(value: true);
+		}
+	}
+
+	private void HideFireVisual()
+	{
+		if (fireVisualInstance != null)
+		{
+			fireVisualInstance.SetActive(value: false);
+		}
+	}
+
+	private void ShowDeletedVisual(int roomId)
+	{
+		if (deletedVisualPrefab == null)
+		{
+			Debug.LogWarning("[MansionRoomSystem] Deleted Visual PrefabÏù¥ Ïó∞Í≤∞ÎêòÏßÄ ÏïäÏïòÏäµÎãàÎã§.");
+		}
+		else if (roomMap.ContainsKey(roomId) && !deletedVisuals.ContainsKey(roomId))
+		{
+			Transform parent = ((visualRoot != null) ? visualRoot : base.transform);
+			GameObject gameObject = Object.Instantiate(deletedVisualPrefab, parent);
+			gameObject.transform.position = roomMap[roomId].GetVisualPosition();
+			deletedVisuals.Add(roomId, gameObject);
+		}
+	}
+
+	private DoorDirection GetOppositeDirection(DoorDirection dir)
+	{
+		return dir switch
+		{
+			DoorDirection.Up => DoorDirection.Down, 
+			DoorDirection.Down => DoorDirection.Up, 
+			DoorDirection.Left => DoorDirection.Right, 
+			DoorDirection.Right => DoorDirection.Left, 
+			_ => DoorDirection.Down, 
+		};
+	}
+
+	private void RefreshRoomVisible()
+	{
+		if (!showOnlyCurrentRoom || roomMap == null)
+		{
+			return;
+		}
+		foreach (MansionRoom value in roomMap.Values)
+		{
+			if (!(value == null))
+			{
+				value.gameObject.SetActive(value.RoomId == currentRoomId);
+			}
+		}
+	}
+
+	private void PrintCurrentDoorMap()
+	{
+		foreach (KeyValuePair<int, RoomDoorData> item in doorMap)
+		{
+			RoomDoorData value = item.Value;
+			Debug.Log("[DoorMap] " + value.roomId + " / " + value.roomName + " / U:" + value.upDoor + " D:" + value.downDoor + " L:" + value.leftDoor + " R:" + value.rightDoor);
+		}
+	}
+
+	public int GetCurrentRoomId()
+	{
+		return currentRoomId;
+	}
+
+	public bool IsRoomDeleted(int roomId)
+	{
+		return deletedRooms.Contains(roomId);
+	}
+
+	public int GetBurningRoomId()
+	{
+		return burningRoomId;
+	}
+
+	public List<int> GetNeighbors(int roomId)
+	{
+		List<int> list = new List<int>();
+		if (!doorMap.ContainsKey(roomId))
+		{
+			return list;
+		}
+		RoomDoorData roomDoorData = doorMap[roomId];
+		if (roomDoorData.upDoor != 13)
+		{
+			list.Add(roomDoorData.upDoor);
+		}
+		if (roomDoorData.downDoor != 13)
+		{
+			list.Add(roomDoorData.downDoor);
+		}
+		if (roomDoorData.leftDoor != 13)
+		{
+			list.Add(roomDoorData.leftDoor);
+		}
+		if (roomDoorData.rightDoor != 13)
+		{
+			list.Add(roomDoorData.rightDoor);
+		}
+		Debug.Log(string.Format("Room {0} ‚Üí [{1}]", roomId, string.Join(", ", list)));
+		return list;
+	}
+
+	public void MoveEnemyToRoom(GameObject enemy, int roomId)
+	{
+		if (!(enemy == null) && roomMap.ContainsKey(roomId))
+		{
+			Transform spawnPoint = roomMap[roomId].GetSpawnPoint(DoorDirection.Down);
+			if (spawnPoint == null)
+			{
+				Debug.LogError($"Room {roomId} SpawnPoint ÏóÜÏùå");
+				return;
+			}
+			enemy.transform.position = spawnPoint.position;
+			Debug.Log($"Enemy Teleport : {roomId}");
+		}
+	}
+
+	private DoorDirection GetExitDirection(int currentRoomId, int nextRoomId)
+	{
+		if (!doorMap.ContainsKey(currentRoomId))
+		{
+			return DoorDirection.Down;
+		}
+		RoomDoorData roomDoorData = doorMap[currentRoomId];
+		if (roomDoorData.upDoor == nextRoomId)
+		{
+			return DoorDirection.Up;
+		}
+		if (roomDoorData.downDoor == nextRoomId)
+		{
+			return DoorDirection.Down;
+		}
+		if (roomDoorData.leftDoor == nextRoomId)
+		{
+			return DoorDirection.Left;
+		}
+		if (roomDoorData.rightDoor == nextRoomId)
+		{
+			return DoorDirection.Right;
+		}
+		return DoorDirection.Down;
+	}
+
+	public RoomMoveInfo GetRoomMoveInfo(int currentRoomId, int nextRoomId)
+	{
+		if (!roomMap.ContainsKey(currentRoomId))
+		{
+			Debug.LogError($"ÌòÑÏû¨ Î∞© ÏóÜÏùå : {currentRoomId}");
+			return null;
+		}
+		if (!roomMap.ContainsKey(nextRoomId))
+		{
+			Debug.LogError($"Ïù¥ÎèôÌï† Î∞© ÏóÜÏùå : {nextRoomId}");
+			return null;
+		}
+		DoorDirection exitDirection = GetExitDirection(currentRoomId, nextRoomId);
+		DoorDirection oppositeDirection = GetOppositeDirection(exitDirection);
+		MansionRoom mansionRoom = roomMap[currentRoomId];
+		MansionRoom mansionRoom2 = roomMap[nextRoomId];
+		Transform doorPoint = mansionRoom.GetDoorPoint(exitDirection);
+		Transform spawnPoint = mansionRoom2.GetSpawnPoint(oppositeDirection);
+		if (doorPoint == null)
+		{
+			Debug.LogError($"DoorPoint ÏóÜÏùå : Room {currentRoomId}");
+			return null;
+		}
+		if (spawnPoint == null)
+		{
+			Debug.LogError($"SpawnPoint ÏóÜÏùå : Room {nextRoomId}");
+			return null;
+		}
+		return new RoomMoveInfo(currentRoomId, nextRoomId, doorPoint, spawnPoint);
+	}
 }
