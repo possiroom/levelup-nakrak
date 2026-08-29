@@ -7,6 +7,9 @@ public class RoomDoorTrigger : TriggerBlock
     [SerializeField] private DoorDirection exitDirection;
     [SerializeField] private float keepReadyDistance = 1.2f;
 
+    public int RoomId => roomId;
+    public DoorDirection ExitDirection => exitDirection;
+
     private static RoomDoorTrigger pendingDoor;
     private Transform playerTransform;
 

@@ -36,6 +36,11 @@ public class AIManager : MonoBehaviour
     private Coroutine teleportCoroutine;
     private int lastTriggeredBurningRoomId;
 
+    public bool isEnemyEvent= false;
+    private int eventCount = 2;
+
+    public int ReturnPlayerRoomID() => playerRoomID;
+
     private void Awake()
     {
         Instance = this;
@@ -45,7 +50,7 @@ public class AIManager : MonoBehaviour
     private void Start()
     {
         enemyRoomID = 2;
-        playerRoomID = 2;
+        playerRoomID = 11;
         pathfinder = new AIPathfinder();
 
         if (player == null)
@@ -72,6 +77,13 @@ public class AIManager : MonoBehaviour
 
     private void UpdateEnemyState()
     {
+        if (isEnemyEvent)
+        {
+            state = AIState.Event;
+            return;
+        }
+
+
         if (currentEnemy == null)
         {
             state = AIState.Patrol;
@@ -93,7 +105,7 @@ public class AIManager : MonoBehaviour
         state = chaseActive ? AIState.RoomChase : AIState.Patrol;
     }
 
-    private void SpawnEnemyAtRoom(int roomId)
+    public void SpawnEnemyAtRoom(int roomId)
     {
         if (enemyPrefab == null)
         {
@@ -315,6 +327,8 @@ public class AIManager : MonoBehaviour
 
     private void Tick()
     {
+
+
         switch (state)
         {
             case AIState.Patrol:
@@ -448,10 +462,127 @@ public class AIManager : MonoBehaviour
         enemy.SetGridChase(true);
     }
 
+    public void EnemyEvent(int spawnRoomID)
+    {
+        ++eventCount;
+        isEnemyEvent = true;
+
+        if (eventCount == 1)
+            StartCoroutine(EnemyEvent01(spawnRoomID));
+        else if (eventCount == 2)
+            StartCoroutine(EnemyEvent02(spawnRoomID));
+        else if (eventCount == 3)
+            StartCoroutine(EnemyEvent03(spawnRoomID));
+    }
+
+    IEnumerator EnemyEvent01(int spawnRoomID)
+    {
+        SpawnEnemyAtRoom(spawnRoomID);
+
+        yield return new WaitForSeconds(3f);
+
+        RemoveEnemy();
+        isEnemyEvent = false;
+
+        Test1 test = GetComponent<Test1>();
+        test.check = false;
+    }
+
+    IEnumerator EnemyEvent02(int spawnRoomID)
+    {
+        
+        SpawnEnemyAtRoom(spawnRoomID);
+
+        GameObject obj = GameObject.Find("Enemy(Clone)");
+        EnemyEventCollider enemyEventCollider = obj.GetComponent<EnemyEventCollider>();
+
+        while (!enemyEventCollider.IsPlayerInRange())
+        {
+            yield return null;
+        }
+
+        RemoveEnemy();
+        isEnemyEvent = false;
+
+        Test1 test = GetComponent<Test1>();
+        test.check = false;
+
+    }
+
+    IEnumerator EnemyEvent03(int spawnRoomID)
+    {
+
+        SpawnEnemyAtRoom(spawnRoomID);
+
+        GameObject obj = GameObject.Find("Enemy(Clone)");
+        EnemyEventCollider enemyEventCollider = obj.GetComponent<EnemyEventCollider>();
+
+        while (!enemyEventCollider.IsPlayerInRange())
+        {
+            yield return null;
+        }
+
+        Debug.Log("추적 상태 전환");
+        isEnemyEvent = false;
+        state = AIState.GridChase;
+        UpdateEnemyState();
+
+        Test1 test = GetComponent<Test1>();
+        test.check = false;
+
+
+    }
     public void EnemyArrived(int roomID)
     {
         enemyRoomID = roomID;
         Debug.Log($"EnemyRoomID changed: {enemyRoomID}");
+        UpdateEnemyState();
+    }
+
+    public void RoomDeleted(int roomID)
+    {
+        if (MansionRoomSystem.Instance == null)
+            return;
+
+        if (enemyRoomID != roomID)
+        {
+            UpdatePatrolTargetFromCurrentRoom();
+            UpdateEnemyState();
+            return;
+        }
+
+        if (currentEnemy == null)
+        {
+            enemyRoomID = MansionRoomSystem.Instance.GetSafeAIRoomAfterDelete(roomID);
+            UpdatePatrolTargetFromCurrentRoom();
+            UpdateEnemyState();
+            return;
+        }
+
+        EnemyController enemy = currentEnemy.GetComponent<EnemyController>();
+        if (enemy != null)
+            enemy.CancelRoomMove();
+
+        int safeRoomId = MansionRoomSystem.Instance.GetSafeAIRoomAfterDelete(roomID);
+        if (safeRoomId == 13)
+        {
+            RemoveEnemy();
+            return;
+        }
+
+        enemyRoomID = safeRoomId;
+        MansionRoomSystem.Instance.MoveEnemyToRoom(currentEnemy, enemyRoomID);
+        UpdatePatrolTargetFromCurrentRoom();
+        UpdateEnemyState();
+    }
+
+    public void EnemyRoomMoveFailed(int failedTargetRoomId)
+    {
+        Debug.LogWarning($"Enemy room move failed. Target room: {failedTargetRoomId}");
+
+        if (state == AIState.Patrol && GetCurrentPatrolTarget() == failedTargetRoomId)
+            AdvancePatrolTarget();
+
         UpdateEnemyState();
     }
 }

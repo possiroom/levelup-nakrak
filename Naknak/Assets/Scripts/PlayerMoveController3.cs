@@ -29,6 +29,9 @@ public class PlayerMoveController3 : MonoBehaviour
     bool teleporting = false;
     private Coroutine movementLockRoutine;
 
+    private GameState CurrentGameState =>
+        GameStateManager.Instance != null ? GameStateManager.Instance.GameState : GameState.Gameplay;
+
     private bool _isMoving;
     public bool isMoving
     {
@@ -125,7 +128,9 @@ public class PlayerMoveController3 : MonoBehaviour
 
     void Update()
     {
-        if (GameStateManager.Instance.GameState == GameState.Gameplay)
+        GameState gameState = CurrentGameState;
+
+        if (gameState == GameState.Gameplay)
         {
             if (!isJumping)
             {
@@ -159,12 +164,12 @@ public class PlayerMoveController3 : MonoBehaviour
         else if (!isMoving) anim.SetFloat("direction", (float)vector2Dir(facingDirection));
         
         if (lastInputManager.GetKeyDownInteract() && 
-        (!isMoving || GameStateManager.Instance.GameState == GameState.Dialog)) TryInteract();   
+        (!isMoving || gameState == GameState.Dialog)) TryInteract();   
     }
 
     void TryInteract()
     {   
-        GameState gameState = GameStateManager.Instance.GameState;
+        GameState gameState = CurrentGameState;
         if (gameState == GameState.Dialog)
         {
             GameEventBase evt = GameEventFactory.CreateNextDialogEvent();

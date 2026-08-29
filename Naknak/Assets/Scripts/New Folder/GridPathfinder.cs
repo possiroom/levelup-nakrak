@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GridPathfinder
 {
+	private const int MaxVisitedCells = 512;
+
 	private readonly Vector2Int[] directions = new Vector2Int[4]
 	{
 		Vector2Int.up,
@@ -33,6 +35,11 @@ public class GridPathfinder
 				if (!hashSet.Contains(vector2Int3) && (canMove == null || canMove(vector2Int3)))
 				{
 					hashSet.Add(vector2Int3);
+					if (hashSet.Count > MaxVisitedCells)
+					{
+						return new List<Vector2Int>();
+					}
+
 					dictionary[vector2Int3] = vector2Int;
 					queue.Enqueue(vector2Int3);
 				}

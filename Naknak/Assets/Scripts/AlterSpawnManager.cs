@@ -20,7 +20,6 @@ public class AlterSpawnManager : MonoBehaviour
     [SerializeField] private float blindTime = 7f;
 
     [Header("Spawn")]
-    [SerializeField] private float spawnCheckInterval = 3f;
     [SerializeField] private float spawnOmenTime = 2f;
     [SerializeField, Range(0f, 1f)] private float spawnChance = 0.5f;
 
@@ -34,16 +33,17 @@ public class AlterSpawnManager : MonoBehaviour
     [SerializeField] private float worldVisionSoftness = 0.8f;
     [SerializeField, Range(0f, 1f)] private float outsideSaturation = 0.08f;
     [SerializeField, Range(0f, 1f)] private float outsideDarkness = 0.58f;
-    [SerializeField] private float worldNoisePower = 0.35f;
     [SerializeField] private float worldNoiseScale = 18f;
+    [SerializeField] private float omenWorldNoisePower = 1.2f;
+    [SerializeField] private float omenWorldNoiseScale = 42f;
 
     private float remainBlindTime = 0f;
-    private Coroutine spawnLoopCoroutine;
-    private bool omenPlaying = false;
+    private Coroutine spawnCoroutine;
 
     private GameObject currentAlter;
     private Material worldVisionMaterial;
     private bool worldVisionApplied = false;
+    private bool omenNoiseActive = false;
     private readonly List<RendererMaterialState> rendererMaterialStates = new List<RendererMaterialState>();
 
     public bool IsBlindActive => remainBlindTime > 0f;
@@ -58,6 +58,21 @@ public class AlterSpawnManager : MonoBehaviour
         }
 
         Instance = this;
+
+        ResolveReferences();
+    }
+
+    private void ResolveReferences()
+    {
+        if (player == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+                player = playerObj.transform;
+        }
+
+        if (visionOverlay == null)
+            visionOverlay = FindFirstObjectByType<VisionCircleOverlayController>(FindObjectsInactive.Include);
 
         if (visionOverlayObject == null && visionOverlay != null)
         {
@@ -90,10 +105,18 @@ public class AlterSpawnManager : MonoBehaviour
         StartBlindDebuff(time);
     }
 
+    public void TriggerBlindDebuffAndRollSpawn(float time)
+    {
+        StartBlindDebuff(time);
+        DecideSpawnAfterBlindDebuff();
+    }
+
     private void StartBlindDebuff(float time)
     {
+        ResolveReferences();
+
         remainBlindTime = time;
-        omenPlaying = false;
+        Debug.Log($"[BlindDebuff] Start {time:0.##}s / overlay:{visionOverlay != null} / overlayObject:{visionOverlayObject != null} / worldEffect:{useWorldVisionEffect}");
 
         ActivateVisionOverlay();
         ApplyWorldVisionEffect();
@@ -101,27 +124,26 @@ public class AlterSpawnManager : MonoBehaviour
         if (visionOverlay != null)
         {
             visionOverlay.ShowVision();
-            visionOverlay.SetNoise(false);
         }
 
-        // Alter spawn is disabled; this manager is currently used only for the vision debuff.
+        SetOmenNoise(false);
     }
 
     private void EndBlindDebuff()
     {
         remainBlindTime = 0f;
-        omenPlaying = false;
 
         if (visionOverlay != null)
         {
-            visionOverlay.SetNoise(false);
             visionOverlay.HideVision();
         }
 
-        if (spawnLoopCoroutine != null)
+        SetOmenNoise(false);
+
+        if (spawnCoroutine != null)
         {
-            StopCoroutine(spawnLoopCoroutine);
-            spawnLoopCoroutine = null;
+            StopCoroutine(spawnCoroutine);
+            spawnCoroutine = null;
         }
 
         ClearCurrentAlter();
@@ -158,51 +180,38 @@ public class AlterSpawnManager : MonoBehaviour
         }
     }
 
-    private IEnumerator SpawnLoop()
+    private void DecideSpawnAfterBlindDebuff()
     {
-        while (remainBlindTime > 0f)
+        if (spawnCoroutine != null)
         {
-            yield return new WaitForSeconds(spawnCheckInterval);
-
-            if (remainBlindTime <= 0f)
-                break;
-
-            if (omenPlaying)
-                continue;
-
-            if (Random.value <= spawnChance)
-            {
-                yield return StartCoroutine(SpawnWithOmen());
-            }
+            StopCoroutine(spawnCoroutine);
+            spawnCoroutine = null;
         }
 
-        spawnLoopCoroutine = null;
+        SetOmenNoise(false);
+
+        if (Random.value > spawnChance)
+            return;
+
+        spawnCoroutine = StartCoroutine(SpawnWithOmen());
     }
 
     private IEnumerator SpawnWithOmen()
     {
-        omenPlaying = true;
-
         ActivateVisionOverlay();
 
-        if (visionOverlay != null)
-        {
-            visionOverlay.SetNoise(true);
-        }
+        SetOmenNoise(true);
 
         yield return new WaitForSeconds(spawnOmenTime);
 
-        if (visionOverlay != null)
-        {
-            visionOverlay.SetNoise(false);
-        }
+        SetOmenNoise(false);
 
         if (remainBlindTime > 0f)
         {
             SpawnAlter();
         }
 
-        omenPlaying = false;
+        spawnCoroutine = null;
     }
 
     private void SpawnAlter()
@@ -263,14 +272,16 @@ public class AlterSpawnManager : MonoBehaviour
         Shader shader = Shader.Find("Custom/VisionDesaturateWorld");
         if (shader == null)
         {
-            Debug.LogWarning("Custom/VisionDesaturateWorld shader를 찾을 수 없습니다.");
+            Debug.LogWarning("[BlindDebuff] Custom/VisionDesaturateWorld shader를 찾을 수 없습니다.");
             return;
         }
 
         worldVisionMaterial = new Material(shader);
         UpdateWorldVisionMaterial();
 
-        Renderer[] renderers = FindObjectsOfType<Renderer>(true);
+        Renderer[] renderers = FindObjectsByType<Renderer>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
 
         foreach (Renderer targetRenderer in renderers)
         {
@@ -288,6 +299,7 @@ public class AlterSpawnManager : MonoBehaviour
         }
 
         worldVisionApplied = true;
+        Debug.Log($"[BlindDebuff] World vision effect applied to {rendererMaterialStates.Count} renderers.");
     }
 
     private bool CanApplyWorldVisionEffect(Renderer targetRenderer)
@@ -327,8 +339,8 @@ public class AlterSpawnManager : MonoBehaviour
         worldVisionMaterial.SetFloat("_Softness", worldVisionSoftness);
         worldVisionMaterial.SetFloat("_OutsideSaturation", outsideSaturation);
         worldVisionMaterial.SetFloat("_OutsideDarkness", outsideDarkness);
-        worldVisionMaterial.SetFloat("_NoisePower", worldNoisePower);
-        worldVisionMaterial.SetFloat("_NoiseScale", worldNoiseScale);
+        worldVisionMaterial.SetFloat("_NoisePower", omenNoiseActive ? omenWorldNoisePower : 0f);
+        worldVisionMaterial.SetFloat("_NoiseScale", omenNoiseActive ? omenWorldNoiseScale : worldNoiseScale);
         worldVisionMaterial.SetFloat("_TimeValue", Time.time);
     }
 
@@ -352,6 +364,23 @@ public class AlterSpawnManager : MonoBehaviour
         }
 
         worldVisionApplied = false;
+    }
+
+    private void SetOmenNoise(bool active)
+    {
+        omenNoiseActive = active;
+
+        if (active)
+        {
+            ActivateVisionOverlay();
+            if (visionOverlay != null)
+                visionOverlay.ShowVision();
+        }
+
+        if (visionOverlay != null)
+            visionOverlay.SetNoise(active);
+
+        UpdateWorldVisionEffect();
     }
 
     private Vector3 GetBoundarySpawnPosition()

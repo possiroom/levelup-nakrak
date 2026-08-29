@@ -82,14 +82,30 @@ public class MansionRoom : MonoBehaviour
 
 	public Transform GetSpawnPoint(DoorDirection enterDirection)
 	{
-		return enterDirection switch
+		Transform spawnPoint = enterDirection switch
 		{
-			DoorDirection.Up => upSpawnPoint, 
-			DoorDirection.Down => downSpawnPoint, 
-			DoorDirection.Left => leftSpawnPoint, 
-			DoorDirection.Right => rightSpawnPoint, 
-			_ => downSpawnPoint, 
+			DoorDirection.Up => upSpawnPoint,
+			DoorDirection.Down => downSpawnPoint,
+			DoorDirection.Left => leftSpawnPoint,
+			DoorDirection.Right => rightSpawnPoint,
+			_ => downSpawnPoint,
 		};
+
+		if (spawnPoint != null)
+		{
+			return spawnPoint;
+		}
+
+		return GetAnySpawnPoint();
+	}
+
+	public Transform GetAnySpawnPoint()
+	{
+		if (downSpawnPoint != null) return downSpawnPoint;
+		if (upSpawnPoint != null) return upSpawnPoint;
+		if (leftSpawnPoint != null) return leftSpawnPoint;
+		if (rightSpawnPoint != null) return rightSpawnPoint;
+		return null;
 	}
 
 	public Vector3 GetVisualPosition()

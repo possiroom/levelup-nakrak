@@ -1,7 +1,7 @@
 using System;
 
 [Serializable]
-public class RoomDoorData
+public class ImportedRoomDoorData
 {
 	public int roomId;
 
@@ -74,9 +74,9 @@ public class RoomDoorData
 		rightDoor = 13;
 	}
 
-	public RoomDoorData Clone()
+	public ImportedRoomDoorData Clone()
 	{
-		return new RoomDoorData
+		return new ImportedRoomDoorData
 		{
 			roomId = roomId,
 			roomName = roomName,

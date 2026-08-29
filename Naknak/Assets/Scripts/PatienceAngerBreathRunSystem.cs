@@ -281,6 +281,11 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
     {
         if (staminaSlider == null)
         {
+            staminaSlider = Object.FindFirstObjectByType<Slider>();
+        }
+
+        if (staminaSlider == null)
+        {
             return;
         }
 
@@ -331,16 +336,27 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
                 break;
             }
         }
+
+        if (staminaBackgroundImage != null)
+        {
+            return;
+        }
+
+        foreach (Image image in images)
+        {
+            string lowerName = image.name.ToLower();
+            if (!lowerName.Contains("fill") && !lowerName.Contains("handle"))
+            {
+                staminaBackgroundImage = image;
+                break;
+            }
+        }
     }
 
     private void CreateExactBorderGlow()
     {
         if (staminaBackgroundImage == null)
         {
-            Debug.LogWarning(
-                "[BreathRun] Stamina background image is not connected."
-            );
-
             return;
         }
 
