@@ -71,6 +71,8 @@ public class MapManager : MonoBehaviour
 
     public void RestartCurrentMap()
     {
+        // Temporary: do not restart the current map while death is disabled.
+        if (!TemporaryFeatureSwitches.HealthSystemEnabled) return;
         if (currentMapPrefab == null) return;
 
         StartCoroutine(RestartCurrentMapRoutine());

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
+  m_Name: S 9
+  m_EditorClassIdentifier: 
+  charName: "\uC870\uC218"
+  text: "\uB9D0\uD560 \uB54C \uBCF4\uC5EC\uC694. \uB208\uC774\uB098 \uD45C\uC815,
+    \uBC18\uC751 \uAC19\uC740 \uAC8C\uC694."
+  activatedImage: 0
+  isSelect: 0
+  isEnd: 0
+  selects: []
+  nextData: {fileID: 11400000, guid: 6f3ca7cfbea1c4c488ac57069c7e97a1, type: 2}
+  endActions: []

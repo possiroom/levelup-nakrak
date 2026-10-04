@@ -15,6 +15,7 @@ public class RoomDoorTrigger : TriggerBlock
 
     private void Update()
     {
+        if (!TemporaryFeatureSwitches.MapTransitionsEnabled) return;
         if (pendingDoor != this)
             return;
 
@@ -33,12 +34,14 @@ public class RoomDoorTrigger : TriggerBlock
 
     protected override void OnTriggered()
     {
+        if (!TemporaryFeatureSwitches.MapTransitionsEnabled) return;
         pendingDoor = this;
         Debug.Log("[RoomDoorTriggerBlock] Door ready. Press Enter: Room " + roomId + " / " + exitDirection);
     }
 
     private void EnterPendingDoor()
     {
+        if (!TemporaryFeatureSwitches.MapTransitionsEnabled) return;
         if (MansionRoomSystem.Instance == null)
         {
             Debug.LogError("[RoomDoorTriggerBlock] MansionRoomSystem.Instance is null.");

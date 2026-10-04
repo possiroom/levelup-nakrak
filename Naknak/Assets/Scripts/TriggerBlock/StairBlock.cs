@@ -7,6 +7,7 @@ public class StairBlock : TriggerBlock
 
     protected override void OnTriggered()
     {
-        MapManager.Instance.ChangePlayerFloor(floor);
+        if (MapStreamingManager.Instance != null)
+            MapStreamingManager.Instance.ChangePlayerFloor(floor);
     }
 }

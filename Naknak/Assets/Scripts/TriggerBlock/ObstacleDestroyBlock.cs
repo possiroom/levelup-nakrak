@@ -10,6 +10,7 @@ public class ObstacleDestroyBlock : TriggerBlock
 
     protected override void OnTriggered()
     {
+        if (!TemporaryFeatureSwitches.ObstaclesEnabled) return;
         if (obstacle == null)
         {
             TriggerExecutor.Instance.RemoveIndex(this);

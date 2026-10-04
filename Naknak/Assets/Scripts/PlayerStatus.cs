@@ -28,11 +28,13 @@ public class PlayerStatus : MonoBehaviour
 
     public int GetHealth()
     {
+        if (!TemporaryFeatureSwitches.HealthSystemEnabled) return 100;
         return health;
     }
 
     public void ResetHealth()
     {
+        if (!TemporaryFeatureSwitches.HealthSystemEnabled) return;
         health = 100;
         IsInvincible = false;
         if (healthSlider != null) healthSlider.value = health;
@@ -40,6 +42,9 @@ public class PlayerStatus : MonoBehaviour
 
     public void AddHealth(int delta)
     {
+        // Temporary: health, damage invincibility, and recovery are disabled.
+        if (!TemporaryFeatureSwitches.HealthSystemEnabled) return;
+
         if (delta < 0)
         {
             if (IsInvincible) return;
@@ -55,6 +60,9 @@ public class PlayerStatus : MonoBehaviour
 
     public void Kill()
     {
+        // Temporary: death and current-map restart are disabled.
+        if (!TemporaryFeatureSwitches.HealthSystemEnabled) return;
+
         if (IsInvincible) return;
 
         health = 0;
@@ -84,6 +92,7 @@ public class PlayerStatus : MonoBehaviour
 
     public void TryDamageStone(float obsYPos)
     {
+        if (!TemporaryFeatureSwitches.HealthSystemEnabled) return;
         if (IsInvincible || playerCtrl.GetIsJumping()) return;
         if (Mathf.Abs(obsYPos - (transform.position.y - 0.5f)) <= 1f)
         {

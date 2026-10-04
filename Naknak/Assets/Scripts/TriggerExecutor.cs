@@ -122,6 +122,18 @@ public sealed class TriggerExecutor : MonoBehaviour
 
     public void AfterDialogEvent(StoryData dataSO)
     {
+        if (conditionToEvent == null)
+        {
+            Debug.LogWarning("[TriggerExecutor] ConditionToEvent가 없습니다. 대사 후 이벤트를 건너뜁니다.");
+            return;
+        }
+
+        if (dataSO == null)
+        {
+            Debug.LogWarning("[TriggerExecutor] StoryData가 null입니다. 대사 후 이벤트를 건너뜁니다.");
+            return;
+        }
+
         conditionToEvent.Execute(dataSO);
     }
 
