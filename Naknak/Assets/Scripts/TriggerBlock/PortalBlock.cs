@@ -10,6 +10,7 @@ public sealed class PortalBlock : TriggerBlock
 
     protected override void OnTriggered()
     {
+        if (!TemporaryFeatureSwitches.MapTransitionsEnabled) return;
         StartCoroutine(MapManager.Instance.ChangeMap(targetMap, arrivePos, destroyMap));
         MapManager.Instance.ChangePlayerFloor(floor);
     }

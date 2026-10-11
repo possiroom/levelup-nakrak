@@ -27,6 +27,10 @@ public class PlayerMoveController3 : MonoBehaviour
     // 플레이어 애니메이션 우선 순위를 위함
     bool xFirst = false, yFirst = false;
     bool teleporting = false;
+    private Coroutine movementLockRoutine;
+
+    private GameState CurrentGameState =>
+        GameStateManager.Instance != null ? GameStateManager.Instance.GameState : GameState.Gameplay;
 
     private bool _isMoving;
     public bool isMoving
@@ -124,7 +128,9 @@ public class PlayerMoveController3 : MonoBehaviour
 
     void Update()
     {
-        if (GameStateManager.Instance.GameState == GameState.Gameplay)
+        GameState gameState = CurrentGameState;
+
+        if (gameState == GameState.Gameplay)
         {
             if (!isJumping)
             {
@@ -158,12 +164,12 @@ public class PlayerMoveController3 : MonoBehaviour
         else if (!isMoving) anim.SetFloat("direction", (float)vector2Dir(facingDirection));
         
         if (lastInputManager.GetKeyDownInteract() && 
-        (!isMoving || GameStateManager.Instance.GameState == GameState.Dialog)) TryInteract();   
+        (!isMoving || gameState == GameState.Dialog)) TryInteract();   
     }
 
     void TryInteract()
     {   
-        GameState gameState = GameStateManager.Instance.GameState;
+        GameState gameState = CurrentGameState;
         if (gameState == GameState.Dialog)
         {
             GameEventBase evt = GameEventFactory.CreateNextDialogEvent();
@@ -601,5 +607,102 @@ public class PlayerMoveController3 : MonoBehaviour
         transform.position = new Vector3(pos.x + 0.5f, pos.y, 0);
         currentPosition = transform.position;
         teleporting = false;
+    }
+
+    public void LockMovement(float time)
+    {
+        ResetMovementState();
+
+        teleporting = true;
+        if (lastInputManager != null)
+            lastInputManager.IgnoreInput(time);
+
+        if (movementLockRoutine != null)
+            StopCoroutine(movementLockRoutine);
+
+        movementLockRoutine = StartCoroutine(UnlockMovementAfter(time));
+    }
+
+    private IEnumerator UnlockMovementAfter(float time)
+    {
+        yield return new WaitForSeconds(time);
+        teleporting = false;
+        movementLockRoutine = null;
+    }
+
+    private void ResetMovementState()
+    {
+        isMovingX = false;
+        isMovingY = false;
+        isMoving = false;
+
+        elapsedTimeX = 0f;
+        elapsedTimeY = 0f;
+        nextInputX = true;
+        nextInputY = true;
+
+        queuedDirectionX = Vector2.zero;
+        queuedDirectionY = Vector2.zero;
+
+        isJumping = false;
+        elapsedTimeJump = 0f;
+        jumpPhase1 = false;
+        jumpPhase2 = false;
+        queuedJump = 0;
+
+        currentPosition = transform.position;
+        startPosX = currentPosition;
+        targetPosX = currentPosition;
+        startPosY = currentPosition;
+        targetPosY = currentPosition;
+    }
+
+
+    public void TeleportToWorld(Vector2 worldPos)
+    {
+        // 이동 상태 초기화
+        isMovingX = false;
+        isMovingY = false;
+        isMoving = false;
+
+        elapsedTimeX = 0f;
+        elapsedTimeY = 0f;
+        nextInputX = true;
+        nextInputY = true;
+
+        queuedDirectionX = Vector2.zero;
+        queuedDirectionY = Vector2.zero;
+
+        // 점프 상태 초기화
+        isJumping = false;
+        elapsedTimeJump = 0f;
+        jumpPhase1 = false;
+        jumpPhase2 = false;
+        queuedJump = 0;
+
+        // 텔레포트 중 입력 꼬임 방지
+        teleporting = false;
+
+        if (lastInputManager != null)
+        {
+            lastInputManager.IgnoreInput(0.15f);
+        }
+
+        // 실제 위치 이동
+        Vector3 newPos = new Vector3(worldPos.x, worldPos.y, transform.position.z);
+        transform.position = newPos;
+
+        // PlayerMoveController3 내부 좌표 동기화
+        currentPosition = worldPos;
+
+        startPosX = worldPos;
+        targetPosX = worldPos;
+
+        startPosY = worldPos;
+        targetPosY = worldPos;
+
+        // 이동 가능 방향 다시 계산
+        syncCanMoveXY(currentPosition);
+        syncCanMoveYX(currentPosition);
     }
 }

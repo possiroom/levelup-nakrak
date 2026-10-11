@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DialogManager : MonoBehaviour
 {
@@ -192,6 +193,21 @@ public class DialogManager : MonoBehaviour
         TriggerExecutor.Instance.AfterDialogEvent(currentStory);
         GameEventBase evt = GameEventFactory.CreateGameStateChangeEvent(GameState.Gameplay);
         GameEventManager.Instance.Submit(evt);
+
+        LoadNextSceneIfConfigured();
+    }
+
+    private void LoadNextSceneIfConfigured()
+    {
+        if (currentStory == null || string.IsNullOrWhiteSpace(currentStory.nextSceneName)) return;
+
+        if (!Application.CanStreamedLevelBeLoaded(currentStory.nextSceneName))
+        {
+            Debug.LogError($"[DialogManager] Scene '{currentStory.nextSceneName}' is not in Build Settings.");
+            return;
+        }
+
+        SceneManager.LoadScene(currentStory.nextSceneName);
     }
 
     // Action 실행
