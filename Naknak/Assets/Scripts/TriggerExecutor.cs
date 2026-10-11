@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public sealed class TriggerExecutor : MonoBehaviour
 {
@@ -17,7 +18,33 @@ public sealed class TriggerExecutor : MonoBehaviour
         } else {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            Instance = null;
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        GridLayout sceneGrid = FindFirstObjectByType<GridLayout>();
+        if (sceneGrid == null)
+        {
+            grid = null;
+            trigTilemap = null;
+            conditionToEvent = null;
+            Debug.LogWarning($"[TriggerExecutor] '{scene.name}' scene has no Grid. Step triggers are disabled.");
+            return;
+        }
+
+        ChangeMap(sceneGrid, sceneGrid.gameObject);
+        ChangeC2E(FindFirstObjectByType<ConditionToEvent>());
     }
 
     public void ChangeMap(GridLayout grid, GameObject trigTilemap)
@@ -41,7 +68,7 @@ public sealed class TriggerExecutor : MonoBehaviour
     public void BuildIndex()
     {
         map.Clear();
-        if (trigTilemap == null) return;
+        if (grid == null || trigTilemap == null) return;
 
         TriggerBlock[] blocks = trigTilemap.GetComponentsInChildren<TriggerBlock>();
         for (int i = 0; i < blocks.Length; i++)
@@ -86,6 +113,8 @@ public sealed class TriggerExecutor : MonoBehaviour
 
     public bool OnStepStarted(Vector2 pos)
     {
+        if (grid == null) return false;
+
         bool pause = false;
         Vector2Int cell = CellTo2Int(grid.WorldToCell(pos));
         if (map.TryGetValue(cell, out List<TriggerBlock> blocks))
@@ -104,6 +133,8 @@ public sealed class TriggerExecutor : MonoBehaviour
 
     public bool OnStepCompleted(Vector2 pos)
     {
+        if (grid == null) return false;
+
         bool pause = false;
         Vector2Int cell = CellTo2Int(grid.WorldToCell(pos));
         if (map.TryGetValue(cell, out List<TriggerBlock> blocks))
