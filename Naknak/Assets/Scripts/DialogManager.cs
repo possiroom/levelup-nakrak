@@ -23,6 +23,7 @@ public class DialogManager : MonoBehaviour
         if (Instance == null) {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += RebindSceneViews;
         } else {
             Destroy(gameObject);
         }
@@ -30,6 +31,7 @@ public class DialogManager : MonoBehaviour
 
     void Start()
     {
+        if (currentStory != null) return;
         elapedTime = 0f;
         showingText = "";
         isPlaying = false;
@@ -38,6 +40,19 @@ public class DialogManager : MonoBehaviour
     }
 
     private StoryData currentStory = null;
+
+    private void OnDestroy()
+    {
+        if (Instance != this) return;
+        SceneManager.sceneLoaded -= RebindSceneViews;
+        Instance = null;
+    }
+
+    private void RebindSceneViews(Scene scene, LoadSceneMode mode)
+    {
+        if (view == null) view = FindFirstObjectByType<DialogViewer>(FindObjectsInactive.Include);
+        if (selectView == null) selectView = FindFirstObjectByType<DialogSelectViewer>(FindObjectsInactive.Include);
+    }
 
     private void ChangeUI()
     {
@@ -52,6 +67,7 @@ public class DialogManager : MonoBehaviour
 
     public void ShowDialog(StoryData storyData)
     {
+        if (storyData == null || view == null) return;
         view.gameObject.SetActive(true);
 
         GameEventBase evt = GameEventFactory.CreateGameStateChangeEvent(GameState.Dialog);
@@ -67,6 +83,7 @@ public class DialogManager : MonoBehaviour
     /// </summary>
     public void NextDialog()
     {
+        if (GameMenuController.IsBlockingGameplay || currentStory == null) return;
         // 대사 스킵
         if (isPlaying) { TextSkip(); return; }
 
@@ -111,6 +128,7 @@ public class DialogManager : MonoBehaviour
 
             // 다음 대사
             currentStory = currentStory.nextData;
+            if (currentStory == null) { EndDialog(); return; }
 
             // 만약 마지막 선택 후 Action을 위한 빈 대사라면
             if (currentStory.charName == "" && currentStory.text == "" && currentStory.isEnd)
@@ -138,6 +156,8 @@ public class DialogManager : MonoBehaviour
 
     private void Update()
     {
+        if (GameMenuController.IsBlockingGameplay) return;
+        if (isPlaying && currentStory != null && showingText.Length >= currentStory.text.Length) TextSkip();
         if (isPlaying && showingText.Length < currentStory.text.Length)
         {
             elapedTime += Time.deltaTime;
@@ -186,6 +206,9 @@ public class DialogManager : MonoBehaviour
 
     private void EndDialog()
     {
+        isPlaying = false;
+        isSelectActivate = false;
+        if (selectView != null) selectView.gameObject.SetActive(false);
         view.ChangeName("");
         view.ChangeStoryText("");
         view.gameObject.SetActive(false); 

@@ -21,13 +21,13 @@ public class StairManager : MonoBehaviour
             // 2. 현재 플레이어의 레이어 마스크 값(value)을 비교하여 토글
             if (player.floorLayer.value == stairLayer1.value)
             {
-                player.floorLayer = stairLayer2;
+                player.floorLayer = stairLayer2; player.SetFloor(MaskToFloor(stairLayer2));
                 player.gameObject.layer = LayerMask.NameToLayer(GetLayerNameFromMask(stairLayer2));
                 Debug.Log("층 변경: Layer 2로");
             }
             else if (player.floorLayer.value == stairLayer2.value)
             {
-                player.floorLayer = stairLayer1;
+                player.floorLayer = stairLayer1; player.SetFloor(MaskToFloor(stairLayer1));
                 player.gameObject.layer = LayerMask.NameToLayer(GetLayerNameFromMask(stairLayer1));
                 Debug.Log("층 변경: Layer 1로");
             }
@@ -35,6 +35,12 @@ public class StairManager : MonoBehaviour
     }
 
     // LayerMask로부터 레이어 이름을 추출하는 함수
+    private int MaskToFloor(LayerMask mask)
+    {
+        for (int floor = 1; floor <= 3; floor++) if (mask == LayerMask.GetMask("Col " + floor + "F")) return floor;
+        return player.GetCurrentFloor();
+    }
+
     private string GetLayerNameFromMask(LayerMask mask)
     {
         for (int i = 0; i < 32; i++)

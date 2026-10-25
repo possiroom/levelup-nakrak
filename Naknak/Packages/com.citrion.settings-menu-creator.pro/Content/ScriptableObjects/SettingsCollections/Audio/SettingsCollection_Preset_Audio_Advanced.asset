@@ -1,0 +1,220 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ae6bbc263dffee45a6068e3f02a825b, type: 3}
+  m_Name: SettingsCollection_Preset_Audio_Advanced
+  m_EditorClassIdentifier: 
+  identifier: 
+  settings:
+  - applyImmediately: 1
+    identifier: speaker-mode
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694140931
+    inputElementProviderSettings:
+      rid: 7116012277929082956
+  - applyImmediately: 1
+    identifier: sample-rate
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694140932
+    inputElementProviderSettings:
+      rid: 7116012277929082961
+  - applyImmediately: 1
+    identifier: virtual-voices
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694140933
+    inputElementProviderSettings:
+      rid: 7116012277929082966
+  - applyImmediately: 1
+    identifier: real-voices
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694140934
+    inputElementProviderSettings:
+      rid: 7116012277929082971
+  settingsSaver: {fileID: 0}
+  inputTemplatesUIToolkit: {fileID: 0}
+  inputTemplatesUGUI: {fileID: 0}
+  audioMixer: {fileID: 0}
+  postProcessProfile: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 3030833568694140931
+      type: {class: Setting_SpeakerMode, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: Mono
+          value: Mono
+        - key: Stereo
+          value: Stereo
+        - key: Quad
+          value: Quad
+        - key: Surround
+          value: Surround
+        - key: Mode5point1
+          value: Surround 5.1
+        - key: Mode7point1
+          value: Surround 7.1
+        defaultValue: 2
+        assignUnityValueAsDefault: 0
+        keepAudioSystemState: 1
+    - rid: 3030833568694140932
+      type: {class: Setting_SampleRate, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: 11025
+          value: 11 kHz
+        - key: 22050
+          value: 22 kHz
+        - key: 44100
+          value: 44.1 kHz
+        - key: 48000
+          value: 48 kHz
+        - key: 88200
+          value: 88.2 kHz
+        - key: 96000
+          value: 96 kHz
+        defaultValue: 44100
+        assignUnityValueAsDefault: 0
+        keepAudioSystemState: 1
+    - rid: 3030833568694140933
+      type: {class: Setting_VirtualVoicesAmount, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: 1
+          value: 1
+        - key: 2
+          value: 2
+        - key: 4
+          value: 4
+        - key: 8
+          value: 8
+        - key: 16
+          value: 16
+        - key: 32
+          value: 32
+        - key: 64
+          value: 64
+        - key: 128
+          value: 128
+        - key: 256
+          value: 256
+        - key: 512
+          value: 512
+        - key: 1024
+          value: 1024
+        - key: 2048
+          value: 2048
+        - key: 4095
+          value: Max
+        defaultValue: 512
+        assignUnityValueAsDefault: 0
+        keepAudioSystemState: 1
+    - rid: 3030833568694140934
+      type: {class: Setting_RealVoicesAmount, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: 1
+          value: 1
+        - key: 2
+          value: 2
+        - key: 4
+          value: 4
+        - key: 8
+          value: 8
+        - key: 16
+          value: 16
+        - key: 32
+          value: 32
+        - key: 64
+          value: 64
+        - key: 128
+          value: 128
+        - key: 255
+          value: Max
+        defaultValue: 32
+        assignUnityValueAsDefault: 0
+        keepAudioSystemState: 1
+    - rid: 7116012277929082956
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 7116012277929082958
+        inputElementProvider_UGUI:
+          rid: 7116012277929082959
+    - rid: 7116012277929082958
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 7116012277929082959
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 7116012277929082961
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 7116012277929082963
+        inputElementProvider_UGUI:
+          rid: 7116012277929082964
+    - rid: 7116012277929082963
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 7116012277929082964
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 7116012277929082966
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 7116012277929082968
+        inputElementProvider_UGUI:
+          rid: 7116012277929082969
+    - rid: 7116012277929082968
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 7116012277929082969
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 7116012277929082971
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 7116012277929082973
+        inputElementProvider_UGUI:
+          rid: 7116012277929082974
+    - rid: 7116012277929082973
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 7116012277929082974
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 

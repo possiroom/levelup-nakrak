@@ -144,6 +144,7 @@ public class AIManager : MonoBehaviour
 
     private void Update()
     {
+        if (GameMenuController.IsBlockingGameplay) return;
         int burningRoomId = MansionRoomSystem.Instance != null
             ? MansionRoomSystem.Instance.GetBurningRoomId()
             : 0;

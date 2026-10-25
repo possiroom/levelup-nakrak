@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: f4f9ad15b2af5404584577023d2b99f1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/Scripts/Runtime/Settings/Base/Unity/Setting_Render.cs
+  uploadId: 988202

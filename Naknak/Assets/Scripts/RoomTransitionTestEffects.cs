@@ -57,6 +57,7 @@ public class RoomTransitionTestEffects : MonoBehaviour
 
     private void Update()
     {
+        if (GameMenuController.IsBlockingGameplay) return;
         if (Input.GetKeyDown(KeyCode.C))
         {
             Debug.Log("[RoomTransitionTestEffects] C 키 테스트: 의자 이동 실행");

@@ -36,6 +36,7 @@ public class MansionRoomSystem : MonoBehaviour
     [SerializeField] private Transform visualRoot;
 
     private bool isTransitioning = false;
+    public bool IsTransitioning => isTransitioning;
 
     private Dictionary<int, MansionRoom> roomMap;
     private Dictionary<int, RoomDoorData> baseDoorMap;
@@ -68,6 +69,7 @@ public class MansionRoomSystem : MonoBehaviour
 
     private void Update()
     {
+        if (GameMenuController.IsBlockingGameplay) return;
         if (!debugPhaseHotkeys)
             return;
 
@@ -526,6 +528,33 @@ public class MansionRoomSystem : MonoBehaviour
         return currentRoomId;
     }
 
+    public MansionCheckpoint CaptureCheckpoint()
+    {
+        return new MansionCheckpoint
+        {
+            room = currentRoomId, phase = currentFirePhase, burningRoom = burningRoomId,
+            seen = burningRoomSeen, deletedRooms = new List<int>(deletedRooms)
+        };
+    }
+
+    public void RestoreCheckpoint(MansionCheckpoint state)
+    {
+        isTransitioning = false;
+        if (roomMap.ContainsKey(state.room)) currentRoomId = state.room;
+        currentFirePhase = state.phase;
+        burningRoomId = state.burningRoom;
+        burningRoomSeen = state.seen;
+        foreach (var visual in deletedVisuals.Values) if (visual != null) Destroy(visual);
+        deletedVisuals.Clear();
+        deletedRooms.Clear();
+        if (state.deletedRooms != null)
+            foreach (int room in state.deletedRooms)
+                if (roomMap.ContainsKey(room)) { deletedRooms.Add(room); ShowDeletedVisual(room); }
+        RebuildDoorMapByDeletedRooms();
+        HideFireVisual();
+        if (burningRoomId != 0) ShowFireVisual(burningRoomId);
+        RefreshRoomVisible();
+    }
     public bool IsRoomDeleted(int roomId)
     {
         return deletedRooms.Contains(roomId);

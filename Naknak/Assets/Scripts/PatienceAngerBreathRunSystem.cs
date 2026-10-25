@@ -109,6 +109,7 @@ public class PatienceAngerBreathRunSystem : MonoBehaviour
 
     private void Update()
     {
+        if (GameMenuController.IsBlockingGameplay) return;
         if (playerCtrl == null || inputManager == null)
         {
             return;

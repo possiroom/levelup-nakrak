@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 400a58dca0b502b4fba28f41a4e193b5
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2655988077585873504
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/Presets/ResourcesCreatorProfile/RCP_Saver_Json.preset
+  uploadId: 988202

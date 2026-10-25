@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: c3cf947acd8846b428a13b978be29777
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/Scripts/Runtime/Settings/Unity/Settings_Terrain.cs
+  uploadId: 988202

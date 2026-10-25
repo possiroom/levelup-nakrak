@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d5d05c92157f0324bb69c71b348777c7
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/Content/ScriptableObjects/SettingsCollections/Terrain/SettingsCollection_Preset_Terrain_All.asset
+  uploadId: 988202

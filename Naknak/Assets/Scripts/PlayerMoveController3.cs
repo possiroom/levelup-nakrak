@@ -23,6 +23,14 @@ public class PlayerMoveController3 : MonoBehaviour
 
     // 플레이어가 바라보는 방향 (항상 유지됨)
     private Vector2 facingDirection = Vector2.down;
+    public Vector2 FacingDirection => facingDirection;
+
+    public void SetFacingDirection(Vector2 direction)
+    {
+        if (direction != Vector2.up && direction != Vector2.down && direction != Vector2.left && direction != Vector2.right) return;
+        facingDirection = direction;
+        if (anim != null) anim.SetFloat("direction", (float)vector2Dir(direction));
+    }
 
     // 플레이어 애니메이션 우선 순위를 위함
     bool xFirst = false, yFirst = false;
@@ -128,6 +136,7 @@ public class PlayerMoveController3 : MonoBehaviour
 
     void Update()
     {
+        if (GameMenuController.IsBlockingGameplay) return;
         GameState gameState = CurrentGameState;
 
         if (gameState == GameState.Gameplay)
@@ -559,6 +568,7 @@ public class PlayerMoveController3 : MonoBehaviour
         if (newFloor >= 1 && newFloor <= 3)
         {
             layer = newFloor;
+            floorLayer = layer;
             Debug.Log("[PlayerMoveController3] Set Floor : " + newFloor);
         }
     }
@@ -568,10 +578,7 @@ public class PlayerMoveController3 : MonoBehaviour
     /// </summary>
     public int GetCurrentFloor()
     {
-        if (floorLayer == LayerMask.GetMask("Col 1F")) return 1;
-        else if (floorLayer == LayerMask.GetMask("Col 2F")) return 2;
-        else if (floorLayer == LayerMask.GetMask("Col 3F")) return 3;
-        else return 1;
+        return _layer;
     }
 
     public bool GetIsJumping()

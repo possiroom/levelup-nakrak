@@ -68,6 +68,7 @@ namespace Naknak.FlashlightSystem
 
         private void Update()
         {
+            if (GameMenuController.IsBlockingGameplay) return;
             UpdateLightsOffInput();
             UpdateFlashlightToggle();
 

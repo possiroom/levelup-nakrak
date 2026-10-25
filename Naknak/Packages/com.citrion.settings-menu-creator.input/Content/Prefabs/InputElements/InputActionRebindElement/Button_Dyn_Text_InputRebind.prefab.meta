@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: bc9b89e0456544e429b1ab377772a144
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 275525
+  packageName: Settings & Options Menu Creator - Input Rebinding Addon
+  packageVersion: 1.2.3
+  assetPath: Packages/com.citrion.settings-menu-creator.input/Content/Prefabs/InputElements/InputActionRebindElement/Button_Dyn_Text_InputRebind.prefab
+  uploadId: 988204

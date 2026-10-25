@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 19e29e67791c70e4b9e7f5eef38c5aa3
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 275525
+  packageName: Settings & Options Menu Creator - Input Rebinding Addon
+  packageVersion: 1.2.3
+  assetPath: Packages/com.citrion.settings-menu-creator.input/README.md
+  uploadId: 988204

@@ -1,0 +1,45 @@
+{
+    "name": "CitrioN.SettingsMenuCreator.Pro",
+    "rootNamespace": "",
+    "references": [
+        "GUID:cfac1490b1124fd4e99a26beaf1a860f",
+        "GUID:557e282a0a6c69144ac95b2c4c1923df",
+        "GUID:df380645f10b7bc4b97d4f5eb6303d95",
+        "GUID:457756d89b35d2941b3e7b37b4ece6f1",
+        "GUID:15fc0a57446b3144c949da3e2b9737a9"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_2021_3_OR_NEWER",
+        "CITRION_COMMON",
+        "SETTINGS_MENU_CREATOR"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.render-pipelines.universal",
+            "expression": "12.0.0",
+            "define": "UNITY_URP"
+        },
+        {
+            "name": "com.unity.render-pipelines.high-definition",
+            "expression": "12.0.0",
+            "define": "UNITY_HDRP"
+        },
+        {
+            "name": "com.citrion.common",
+            "expression": "1.1.3",
+            "define": "CITRION_COMMON"
+        },
+        {
+            "name": "com.citrion.settings-menu-creator",
+            "expression": "1.1.3",
+            "define": "SETTINGS_MENU_CREATOR"
+        }
+    ],
+    "noEngineReferences": false
+}

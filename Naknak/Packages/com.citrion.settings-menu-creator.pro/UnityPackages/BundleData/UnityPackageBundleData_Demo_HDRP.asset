@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 483d04b7a6ecb8f4bbc5e0bc9be4923f, type: 3}
+  m_Name: UnityPackageBundleData_Demo_HDRP
+  m_EditorClassIdentifier: 
+  displayName: HDRP Settings Setup
+  group: 'SMC: Samples'
+  description: Learn how to make HDRP settings work.
+  priority: 6
+  packageAsset: {fileID: 102900000, guid: 0a4b86cd5cb9afe49937ac973a8f9674, type: 3}

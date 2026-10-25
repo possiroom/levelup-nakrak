@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 4aeebae2ede421144b6cb4fb770bd5eb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.ui.components/Scripts/Runtime/Slider/StepSliderValueDisplay.cs
+  uploadId: 988202

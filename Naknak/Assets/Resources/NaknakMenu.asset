@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5de83a2e7ea46b7bb53f8c39c4db221, type: 3}
+  m_Name: NaknakMenu
+  m_EditorClassIdentifier: 
+  gameTitle: "\uB099\uB099"
+  titleScene: Title
+  startScene: PrototypeScene
+  font: {fileID: 12800000, guid: a8424ddb2ff7b491ca1440f68ae55334, type: 3}
+  items:
+  - {fileID: 11400000, guid: 641867a14d1043de9dce5218736a21e0, type: 2}
+  - {fileID: 11400000, guid: 641867a14d1043de9dce5218736a21e1, type: 2}

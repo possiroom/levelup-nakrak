@@ -4,6 +4,7 @@ public class AlterSpawnTestInput : MonoBehaviour
 {
     private void Update()
     {
+        if (GameMenuController.IsBlockingGameplay) return;
         if (Input.GetKeyDown(KeyCode.Alpha7))
         {
             if (AlterSpawnManager.Instance != null)

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a3294b9cebb4d2a42b6e10c43bc15fbb
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/Content/ScriptableObjects/SettingsCollections/General/SettingsCollection_Preset_General_Streaming-Mipmaps.asset
+  uploadId: 988202

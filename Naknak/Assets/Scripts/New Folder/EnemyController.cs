@@ -175,6 +175,7 @@ public class EnemyController : MonoBehaviour
 
 	private void Update()
 	{
+        if (GameMenuController.IsBlockingGameplay) return;
 		// GridChase가 켜진 상태에서만 실제 타일 추격을 수행한다.
 		if (!canGridChase || isRoomMoving || player == null)
 		{

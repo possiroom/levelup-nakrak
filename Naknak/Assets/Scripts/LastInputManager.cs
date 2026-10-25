@@ -35,10 +35,17 @@ public class LastInputManager : MonoBehaviour
 
     private void Update()
     {
+        if (GameMenuController.IsBlockingGameplay)
+        {
+            lastHorizontal = lastVertical = 0f;
+            _wasIgnoring = true;
+            return;
+        }
         if (GameStateManager.Instance != null && GameStateManager.Instance.GameState != GameState.Gameplay)
         {
             lastHorizontal = 0f;
             lastVertical = 0f;
+            _wasIgnoring = true;
             return;
         }
 
@@ -107,18 +114,21 @@ public class LastInputManager : MonoBehaviour
 
     public bool GetKeyDownInteract()
     {
+        if (GameMenuController.IsBlockingGameplay) return false;
         if (ignoreInputTime > 0f) return false;
         return Input.GetKeyDown(KeyCode.Z);
     }
 
     public bool GetKeyDownJump()
     {
+        if (GameMenuController.IsBlockingGameplay) return false;
         if (ignoreInputTime > 0f) return false;
         return Input.GetKeyDown(KeyCode.Space);
     }
 
     public bool GetKeyRun()
     {
+        if (GameMenuController.IsBlockingGameplay) return false;
         if (ignoreInputTime > 0f) return false;
         return Input.GetKey(KeyCode.LeftShift);
     }

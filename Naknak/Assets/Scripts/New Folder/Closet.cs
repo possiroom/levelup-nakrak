@@ -15,6 +15,7 @@ public class Closet : MonoBehaviour
 
 	private void Update()
 	{
+        if (GameMenuController.IsBlockingGameplay) return;
 		Color color = spriteRenderer.color;
 		if (Input.GetKeyDown(KeyCode.Z))
 		{

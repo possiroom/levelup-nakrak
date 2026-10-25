@@ -15,6 +15,7 @@ public class RoomDoorTrigger : TriggerBlock
 
     private void Update()
     {
+        if (GameMenuController.IsBlockingGameplay) return;
         if (!TemporaryFeatureSwitches.MapTransitionsEnabled) return;
         if (pendingDoor != this)
             return;

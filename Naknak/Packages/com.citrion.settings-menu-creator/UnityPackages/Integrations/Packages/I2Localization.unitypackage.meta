@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: b73b9347de4d3cb4a873ffacbbb5687d
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator/UnityPackages/Integrations/Packages/I2Localization.unitypackage
+  uploadId: 988202

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e455f41ce88767745b185a8418059f1d
+PackageManifestImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/package.json
+  uploadId: 988202

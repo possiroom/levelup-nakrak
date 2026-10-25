@@ -32,6 +32,13 @@ public class PlayerStatus : MonoBehaviour
         return health;
     }
 
+    public void RestoreHealth(int value)
+    {
+        health = Mathf.Clamp(value, 0, 100);
+        IsInvincible = false;
+        if (healthSlider != null) healthSlider.value = health;
+    }
+
     public void ResetHealth()
     {
         if (!TemporaryFeatureSwitches.HealthSystemEnabled) return;
