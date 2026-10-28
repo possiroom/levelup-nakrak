@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 public sealed partial class GameMenuController : MonoBehaviour
 {
     public static GameMenuController Instance { get; private set; }
-    public static bool IsBlockingGameplay => Instance != null && (Instance.page != Page.Closed || Instance.loading);
+    public static bool IsBlockingGameplay => SceneLoadManager.IsLoading || Instance != null && (Instance.page != Page.Closed || Instance.loading);
     public static InventoryModel Inventory => Instance.inventory;
 
     private enum Page { Closed, Title, Menu, Items, Options, Save, Load, Confirm }
@@ -29,7 +29,6 @@ public sealed partial class GameMenuController : MonoBehaviour
     private readonly Dictionary<string, GameObject> trackedObjects = new Dictionary<string, GameObject>();
     private readonly HashSet<int> trackedObjectIds = new HashSet<int>();
     private readonly Dictionary<string, MansionRoomSystem> trackedMansions = new Dictionary<string, MansionRoomSystem>();
-    private GameObject[] eventSystemsBeforeMenu = new GameObject[0];
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics() => Instance = null;
@@ -75,7 +74,7 @@ public sealed partial class GameMenuController : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (loading || page != Page.Closed) EnableMenuEvents(true);
+        EnsureMenuEventSystem();
         TrackWorld();
         if (!loading && scene.name == configuration.titleScene) ShowTitle();
     }
@@ -92,7 +91,7 @@ public sealed partial class GameMenuController : MonoBehaviour
 
     private void Update()
     {
-        if (loading) return;
+        if (loading || SceneLoadManager.IsLoading || page == Page.Closed && SceneLoadManager.IsCutscene) return;
         if (page == Page.Closed)
         {
             playSeconds += Time.deltaTime;
@@ -267,6 +266,7 @@ public sealed partial class GameMenuController : MonoBehaviour
     private IEnumerator ChangeSession(string sceneName, GameCheckpoint checkpoint)
     {
         if (!Application.CanStreamedLevelBeLoaded(sceneName)) { Notice("시작할 씬을 찾을 수 없습니다."); yield break; }
+        SceneLoadManager.IsRestoringSession = checkpoint != null;
         loading = true;
         Pause();
         ClearPage();
@@ -288,9 +288,10 @@ public sealed partial class GameMenuController : MonoBehaviour
         // Cold scene loads can exceed 20 seconds on slower disks. The scene's event system
         // stays suppressed until the asynchronous map load has really completed.
         float deadline = Time.realtimeSinceStartup + 120;
-        while (MapStreamingManager.IsLoading && Time.realtimeSinceStartup < deadline) yield return null;
-        if (MapStreamingManager.IsLoading)
+        while ((MapStreamingManager.IsLoading || SceneLoadManager.IsLoading) && Time.realtimeSinceStartup < deadline) yield return null;
+        if (MapStreamingManager.IsLoading || SceneLoadManager.IsLoading)
         {
+            SceneLoadManager.IsRestoringSession = false;
             loading = false; Pause(); ShowPage(Page.Menu); Notice("맵을 불러오는 시간이 초과되었습니다."); yield break;
         }
         if (checkpoint != null)
@@ -328,6 +329,7 @@ public sealed partial class GameMenuController : MonoBehaviour
         yield return null; // Wait for destroyed trigger objects before rebuilding their index.
         TriggerExecutor.Instance?.BuildIndex();
         loading = false;
+        if (checkpoint != null) SceneLoadManager.Instance?.ResumeRestoredSession();
         lastCheckpointLocation = null;
         autosaveTimer = 0;
         if (sceneName == configuration.titleScene) ShowTitle();

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91b08daa6dd949e6b9d9082e3829f160, type: 3}
+  m_Name: PackedJewelryBox
+  m_EditorClassIdentifier:
+  id: tutorial-packed-jewelry-box
+  displayName: 브로치가 담긴 보석함
+  description: 가족과의 추억이 담긴 브로치를 넣어 둔 작은 보석함. 잠금장치가 헐겁다.
+  icon: {fileID: 0}
+  keyItem: 1
+  maxStack: 1

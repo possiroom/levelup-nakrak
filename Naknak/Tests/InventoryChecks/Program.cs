@@ -47,6 +47,19 @@ static class Program
         restored.Restore(inventory.Capture());
         Check(restored.Has("note") && restored.Has("key"), "Inventory restore");
         Check(restored.Remove("note") && restored.Capture().Count == 1, "Zero stacks disappear");
+        var packing = new InventoryModel(new[] { note, key });
+        int packingChanges = 0;
+        packing.Changed += () => packingChanges++;
+        Check(!packing.TryExchange("note", "key"), "Packing requires the source item");
+        packing.Add("note", 2);
+        Check(!packing.TryExchange("note", "missing") && !packing.TryExchange("note", "note"), "Invalid packing result rejected");
+        Check(packing.Count("note") == 2 && packingChanges == 1, "Failed packing preserves inventory");
+        Check(packing.TryExchange("note", "key") && packing.Count("note") == 1 && packing.Has("key"), "Packing consumes one source and grants its result");
+        Check(packingChanges == 2, "Packing sends one complete inventory update");
+        Check(!packing.TryExchange("note", "key") && packing.Count("note") == 1 && packingChanges == 2, "Full result stack cannot consume the source");
+        var packingRestored = new InventoryModel(new[] { note, key });
+        packingRestored.Restore(packing.Capture());
+        Check(packingRestored.Has("key") && packingRestored.Count("note") == 1, "Packed inventory survives restoration");
         string directory = Path.Combine(Path.GetTempPath(), "NaknakChecks_" + Guid.NewGuid().ToString("N"));
         try
         {

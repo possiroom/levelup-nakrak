@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4a4dd6bce734b269af3facb27778ab8, type: 3}
+  m_Name: TutorialSceneFlow
+  m_EditorClassIdentifier:
+  scenes:
+  - scene:
+      path: Assets/Scenes/S1.unity
+    entryDialog: {fileID: 0}
+    hidePlayer: 1
+    placePlayer: 1
+    playerPosition: {x: 0, y: 0}
+  - scene:
+      path: Assets/Scenes/S2.unity
+    entryDialog: {fileID: 0}
+    hidePlayer: 0
+    placePlayer: 1
+    playerPosition: {x: 0, y: 0}
+  - scene:
+      path: Assets/Scenes/T2.unity
+    entryDialog: {fileID: 11400000, guid: 93bcf92bc6350ae44b4ef0f554af783e, type: 2}
+    hidePlayer: 0
+    placePlayer: 1
+    playerPosition: {x: 5, y: -1}
+  - scene:
+      path: Assets/Scenes/Tutorial_T3_VaseBreak.unity
+    entryDialog: {fileID: 0}
+    hidePlayer: 1
+    placePlayer: 1
+    playerPosition: {x: 0, y: 0}
+  - scene:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    entryDialog: {fileID: 0}
+    hidePlayer: 1
+    placePlayer: 1
+    playerPosition: {x: 0, y: 0}
+  - scene:
+      path: Assets/Scenes/S3.unity
+    entryDialog: {fileID: 11400000, guid: 9d4ee9d0b0848da4bac1da97be9cbb00, type: 2}
+    hidePlayer: 0
+    placePlayer: 1
+    playerPosition: {x: 0, y: -1}
+  - scene:
+      path: Assets/Scenes/Tutorial_T35_BlackoutSearch.unity
+    entryDialog: {fileID: 0}
+    hidePlayer: 0
+    placePlayer: 1
+    playerPosition: {x: 0, y: 0}
+  - scene:
+      path: Assets/Scenes/Tutorial_S6_OwnerConfession.unity
+    entryDialog: {fileID: 0}
+    hidePlayer: 1
+    placePlayer: 1
+    playerPosition: {x: 0, y: 0}
+  - scene:
+      path: Assets/Scenes/S#6.unity
+    entryDialog: {fileID: 0}
+    hidePlayer: 0
+    placePlayer: 1
+    playerPosition: {x: 0, y: -1}
+  - scene:
+      path: Assets/Scenes/T0.unity
+    entryDialog: {fileID: 11400000, guid: 82345c5d1b2a40d4e86369ebdcec4ff8, type: 2}
+    hidePlayer: 0
+    placePlayer: 1
+    playerPosition: {x: 0, y: 0}
+  connections:
+  - id: 68fd24e41937432aa3bded5710ca0cf5
+    memo: Intro complete
+    from:
+      path: Assets/Scenes/S1.unity
+    to:
+      path: Assets/Scenes/S2.unity
+    trigger: 2
+    completedDialog: {fileID: 0}
+    conditions: []
+  - id: 10b1d61f0b8b4f6f981b9bc115765713
+    memo: Enter assistant room memory
+    from:
+      path: Assets/Scenes/S2.unity
+    to:
+      path: Assets/Scenes/T0.unity
+    trigger: 1
+    completedDialog: {fileID: 11400000, guid: e2d87848c4a418a44b104466d0760f72, type: 2}
+    conditions: []
+  - id: 02e95392f00b44cdb659eb642ea5ccba
+    memo: Appraisal finished
+    from:
+      path: Assets/Scenes/T2.unity
+    to:
+      path: Assets/Scenes/Tutorial_T3_VaseBreak.unity
+    trigger: 1
+    completedDialog: {fileID: 11400000, guid: 0741a2f63a685e24988170f6d1a8f74b, type: 2}
+    conditions: []
+  - id: 0f1a9818d476434187858758729c2342
+    memo: Vase break complete
+    from:
+      path: Assets/Scenes/Tutorial_T3_VaseBreak.unity
+    to:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    trigger: 2
+    completedDialog: {fileID: 0}
+    conditions: []
+  - id: 676c86577f5d43c1a9960dda5be18db2
+    memo: Return to reality
+    from:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    to:
+      path: Assets/Scenes/S3.unity
+    trigger: 2
+    completedDialog: {fileID: 0}
+    conditions: []
+  - id: c061752ecde94cf7ac2d972610fd4b57
+    memo: Revisit memory - T1 dialogue on entry
+    from:
+      path: Assets/Scenes/S3.unity
+    to:
+      path: Assets/Scenes/T2.unity
+    trigger: 1
+    completedDialog: {fileID: 11400000, guid: 96436b415a900544db115129845ebd8a, type: 2}
+    conditions: []
+  - id: d06f52a18a3543599682f1973545a377
+    memo: Return after box search
+    from:
+      path: Assets/Scenes/Tutorial_T35_BlackoutSearch.unity
+    to:
+      path: Assets/Scenes/S#6.unity
+    trigger: 2
+    completedDialog: {fileID: 0}
+    conditions: []
+  - id: b9abfe1d87bf4ebbad8299b016b6f659
+    memo: Manual late-story search - add evidence conditions before use
+    from:
+      path: Assets/Scenes/S3.unity
+    to:
+      path: Assets/Scenes/Tutorial_T35_BlackoutSearch.unity
+    trigger: 0
+    completedDialog: {fileID: 0}
+    conditions: []
+  - id: bb49a1bdc20c47de99f4c0d950000000
+    memo: T0 exit - use existing T2 until T1 is available
+    from:
+      path: Assets/Scenes/T0.unity
+    to:
+      path: Assets/Scenes/T2.unity
+    trigger: 0
+    completedDialog: {fileID: 0}
+    conditions:
+    - id: {fileID: 11400000, guid: 3a624ba85a9547e08dda15fb92b5d433, type: 2}
+      compare: 0
+      value: 1

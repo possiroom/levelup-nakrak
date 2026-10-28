@@ -181,6 +181,7 @@ public class PlayerMoveController3 : MonoBehaviour
         GameState gameState = CurrentGameState;
         if (gameState == GameState.Dialog)
         {
+            if (SceneLoadManager.HasManagedScene) return;
             GameEventBase evt = GameEventFactory.CreateNextDialogEvent();
             GameEventManager.Instance.Submit(evt);
         } 

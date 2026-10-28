@@ -1,359 +1,209 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class TutorialScene1Cutscene : MonoBehaviour
+/// <summary>S1: dispute, detective entrance, investigation announcement.</summary>
+public sealed class TutorialScene1Cutscene : MonoBehaviour
 {
-    private struct CutsceneLine
-    {
-        public string speaker;
-        public string text;
-        public int activatedImage;
+    public enum CutscenePhase { WaitingForServices, Opening, Dispute, Entrance, Walking, Investigation, Finished }
+    [Header("ëŒ€í™” ì»¨í…Œì´ë„ˆ")]
+    [SerializeField] private DialogContainer disputeDialog;
+    [SerializeField] private DialogContainer entranceDialog;
+    [SerializeField] private DialogContainer investigationDialog;
 
-        public CutsceneLine(string speaker, string text, int activatedImage = 0)
-        {
-            this.speaker = speaker;
-            this.text = text;
-            this.activatedImage = activatedImage;
-        }
-    }
-
-    [Header("Story Template")]
-    [Tooltip("±âÁ¸¿¡ Àß ÀÛµ¿ÇÏ´ø StoryData ÇÏ³ª¸¦ ¿©±â¿¡ ³Ö±â. ÀÌº¥Æ® ¾ø´Â ÀÏ¹İ ´ë»ç StoryData ÃßÃµ.")]
-    [SerializeField] private StoryData storyTemplate;
-
-    [Header("Dialog View Check")]
-    [SerializeField] private DialogViewer dialogView;
-
-    [Tooltip("ÀÌ ÄÆ¾À ½ºÅ©¸³Æ®°¡ Z/Enter/Space/Click ÀÔ·ÂÀ¸·Î DialogManager.NextDialog()¸¦ È£ÃâÇÒÁö ¿©ºÎ")]
-    [SerializeField] private bool handleDialogInputHere = true;
-
-    [Header("Actors")]
+    [Header("íƒì •ê³¼ ì´ë™ í¬ì¸íŠ¸")]
     [SerializeField] private Transform detective;
-
-    [Header("Detective Move Points")]
     [SerializeField] private Transform detectiveStartPoint;
+    [SerializeField] private Transform[] detectiveWaypoints = new Transform[0];
     [SerializeField] private Transform detectiveCenterPoint;
-    [SerializeField] private float detectiveMoveTime = 1.2f;
+    [SerializeField, Min(0.1f)] private float walkSpeed = 2.5f;
 
-    [Header("Input")]
-    [SerializeField] private KeyCode nextKey = KeyCode.Z;
+    [Header("ì¹´ë©”ë¼ í¬ì¸íŠ¸")]
+    [SerializeField] private Camera cutsceneCamera;
+    [Tooltip("S1 ì¹´ë©”ë¼ë¥¼ ìë™ìœ¼ë¡œ ì›€ì§ì´ëŠ” ê¸°ì¡´ Cinemachine Brain ë“±")]
+    [SerializeField] private Behaviour cameraDriver;
+    [SerializeField] private Transform openingCameraPoint;
+    [SerializeField] private Transform entranceCameraPoint;
+    [SerializeField] private Transform groupCameraPoint;
+    [SerializeField, Min(0.1f)] private float openingCameraSize = 2.6f;
+    [SerializeField, Min(0.1f)] private float groupCameraSize = 3.8f;
+    [SerializeField, Min(0f)] private float cameraMoveTime = 0.7f;
 
-    [Header("Fade")]
+    [Header("í˜ì´ë“œì¸")]
     [SerializeField] private Image fadeImage;
-    [SerializeField] private float fadeOutTime = 0.5f;
+    [SerializeField, Min(0f)] private float fadeInTime = 0.45f;
+    [SerializeField] private CutscenePhase phase;
+    public CutscenePhase Phase => phase;
 
-    [Header("Scene Flow")]
-    [SerializeField] private bool loadNextSceneAfterCutscene = false;
-    [SerializeField] private string nextSceneName = "Tutorial_Scene2_MemoryIntro";
-
-    private bool waitingForDialogEnd = false;
+    private bool waitingForDialog;
+    private bool completionSent;
+    private Animator detectiveAnimator;
 
     private void Awake()
     {
-        AutoFindDialogView();
-    }
-
-    private void Start()
-    {
-        StartCoroutine(RunCutscene());
-    }
-
-    private void Update()
-    {
-        if (!waitingForDialogEnd)
-            return;
-
-        if (!handleDialogInputHere)
-            return;
-
-        if (GetAdvanceInput())
-        {
-            if (DialogManager.Instance != null)
-                DialogManager.Instance.NextDialog();
-        }
-    }
-
-    private bool GetAdvanceInput()
-    {
-        if (Input.GetKeyDown(nextKey))
-            return true;
-
-        if (Input.GetKeyDown(KeyCode.Return))
-            return true;
-
-        if (Input.GetKeyDown(KeyCode.KeypadEnter))
-            return true;
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            return true;
-
-        if (Input.GetMouseButtonDown(0))
-            return true;
-
-        return false;
-    }
-
-    private IEnumerator RunCutscene()
-    {
-        SetupStartState();
-
-        StoryData beforeDetectiveStory = CreateStoryChain(
-            "S1_Before",
-            new CutsceneLine[]
-            {
-                new CutsceneLine("Á¶¼ö", "¡¦¡¦¾ø¾î¿ä."),
-                new CutsceneLine("Àü´çÆ÷ ÁÖÀÎ", "¹¹°¡?"),
-                new CutsceneLine("Á¶¼ö", "ºê·ÎÄ¡¿ä. Á¦°¡ »óÀÚ¿¡ ³Ö¾î¼­ µå·ÈÀİ¾Æ¿ä."),
-                new CutsceneLine("Àü´çÆ÷ ÁÖÀÎ", "ºĞ¸íÈ÷ ³Ö¾ú¾î! ¼Ò¶õ Áß¿¡ ´©°¡ °¡Á®°£ °Å¾ß."),
-                new CutsceneLine("A", "Àú¸¦ ÀÇ½ÉÇÏ´Â °Ì´Ï±î?"),
-                new CutsceneLine("B", "µÎ ºĞÀÌ ÇØ°áÇÏ½ÃÁÒ.")
-            }
-        );
-
-        yield return PlayStory(beforeDetectiveStory);
-
+        phase = CutscenePhase.WaitingForServices;
+        if (cameraDriver != null) cameraDriver.enabled = false;
+        SetFade(1f);
+        SetShot(openingCameraPoint, openingCameraSize);
         if (detective != null)
-            detective.gameObject.SetActive(true);
-
-        StoryData detectiveEnterStory = CreateStoryChain(
-            "S1_Enter",
-            new CutsceneLine[]
-            {
-                new CutsceneLine("ÁÖÀÎ°ø", "¹«½¼ ÀÏÀÓ?"),
-                new CutsceneLine("B", "´ç½ÅÀº ¶Ç ´©±¸ÀÓ? ³» ¾Ë¹Ù ¾Æ´Ï´Ï±î ³­ °¨ ¤²¤²")
-            }
-        );
-
-        yield return PlayStory(detectiveEnterStory);
-
-        yield return MoveDetectiveToCenter();
-
-        StoryData afterDetectiveMoveStory = CreateStoryChain(
-            "S1_After",
-            new CutsceneLine[]
-            {
-                new CutsceneLine("ÁÖÀÎ°ø", "³ª Å½Á¤ÀÓ ¤·¤·"),
-                new CutsceneLine("Á¶¼ö", "ºê·ÎÄ¡°¡ ¾ø¾îÁü ¤Ğ¤Ğ"),
-                new CutsceneLine("ÁÖÀÎ°ø", "´Ù ¸ø³ª°¡ Áö±İ ³ª°¡¸é ³Ê°¡ ¹üÀÎÀÓ ¤·¤·"),
-                new CutsceneLine("ÁÖÀÎ°ø", "¾Ë¸®¹ÙÀÌ ¤¡¤¡")
-            }
-        );
-
-        yield return PlayStory(afterDetectiveMoveStory);
-
-        yield return EndCutscene();
-    }
-
-    private void SetupStartState()
-    {
-        if (fadeImage != null)
-            SetFadeAlpha(0f);
-
-        if (detective != null && detectiveStartPoint != null)
         {
-            detective.position = detectiveStartPoint.position;
+            if (detectiveStartPoint != null) detective.position = detectiveStartPoint.position;
+            detectiveAnimator = detective.GetComponentInChildren<Animator>(true);
             detective.gameObject.SetActive(false);
         }
     }
 
-    private StoryData CreateStoryChain(string prefix, CutsceneLine[] lines)
+    private IEnumerator Start()
     {
-        if (lines == null || lines.Length == 0)
-            return null;
-
-        StoryData[] stories = new StoryData[lines.Length];
-
-        for (int i = 0; i < lines.Length; i++)
+        // The menu resets gameplay state after loading. Do not open dialogue before it finishes.
+        while (GameMenuController.IsBlockingGameplay) yield return null;
+        float deadline = Time.realtimeSinceStartup + 30f;
+        while (DialogManager.Instance == null || !DialogManager.Instance.CanShowDialog || ConditionManager.Instance == null)
         {
-            StoryData story = CreateStoryDataInstance();
-
-            story.name = prefix + "_" + i.ToString("00");
-            story.charName = lines[i].speaker;
-            story.text = lines[i].text;
-            story.activatedImage = lines[i].activatedImage;
-
-            story.isSelect = false;
-            story.isEnd = false;
-
-            stories[i] = story;
+            if (Time.realtimeSinceStartup >= deadline)
+            { Debug.LogError("[S1] ê³µí†µ ëŒ€í™” ì‹œìŠ¤í…œì„ ë¶ˆëŸ¬ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.", this); yield break; }
+            yield return null;
         }
+        if (!ValidateReferences()) yield break;
+        var dispute = disputeDialog.GetMatchingDialog();
+        var entrance = entranceDialog.GetMatchingDialog();
+        var investigation = investigationDialog.GetMatchingDialog();
+        if (dispute == null || entrance == null || investigation == null)
+        { Debug.LogError("[S1] ëŒ€í™” ì»¨í…Œì´ë„ˆì˜ ì‹œì‘ ëŒ€ì‚¬/ì¡°ê±´ì„ í™•ì¸í•´ì£¼ì„¸ìš”.", this); yield break; }
 
-        for (int i = 0; i < stories.Length; i++)
+        DialogManager.Instance.BindSceneViews(gameObject.scene);
+        phase = CutscenePhase.Opening;
+        yield return FadeIn();
+        phase = CutscenePhase.Dispute;
+        yield return PlayStory(dispute);
+
+        phase = CutscenePhase.Entrance;
+        detective.gameObject.SetActive(true);
+        SetWalking(false, Vector2.up);
+        yield return MoveCamera(entranceCameraPoint, groupCameraSize);
+        yield return PlayStory(entrance);
+
+        phase = CutscenePhase.Walking;
+        // Dialogue is closed during forced movement; input cannot move the real player.
+        if (detectiveWaypoints != null)
+            foreach (var point in detectiveWaypoints)
+                if (point != null) yield return WalkTo(point.position);
+        yield return WalkTo(detectiveCenterPoint.position);
+        SetWalking(false, Vector2.up);
+        yield return MoveCamera(groupCameraPoint, groupCameraSize);
+
+        phase = CutscenePhase.Investigation;
+        yield return PlayStory(investigation);
+        phase = CutscenePhase.Finished;
+        SetFade(0f); // S2 continues the same conversation; memory-entry fade belongs to S2.
+        if (!completionSent)
         {
-            if (i < stories.Length - 1)
-            {
-                stories[i].nextData = stories[i + 1];
-                stories[i].isEnd = false;
-            }
-            else
-            {
-                stories[i].nextData = null;
-                stories[i].isEnd = true;
-            }
+            completionSent = true;
+            if (SceneLoadManager.Instance == null || !SceneLoadManager.Instance.TryCompleteScene())
+                Debug.LogWarning("[S1] Scene Flow Containerì—ì„œ S1 ì™„ë£Œ í›„ ì—°ê²°ì„ í™•ì¸í•´ì£¼ì„¸ìš”.", this);
         }
-
-        return stories[0];
     }
 
-    private StoryData CreateStoryDataInstance()
+    private bool ValidateReferences()
     {
-        StoryData story;
-
-        if (storyTemplate != null)
-        {
-            story = Instantiate(storyTemplate);
-        }
-        else
-        {
-            story = ScriptableObject.CreateInstance<StoryData>();
-            Debug.LogWarning("[TutorialScene1Cutscene] Story TemplateÀÌ ºñ¾î ÀÖ½À´Ï´Ù. ±âÁ¸ StoryData ÇÏ³ª¸¦ ³Ö´Â °ÍÀ» ÃßÃµÇÕ´Ï´Ù.");
-        }
-
-        return story;
+        if (disputeDialog != null && entranceDialog != null && investigationDialog != null &&
+            detective != null && detectiveStartPoint != null && detectiveCenterPoint != null &&
+            cutsceneCamera != null && openingCameraPoint != null && entranceCameraPoint != null && groupCameraPoint != null)
+            return true;
+        Debug.LogError("[S1] CutsceneManagerì— ëŒ€í™”, íƒì •, ì´ë™/ì¹´ë©”ë¼ í¬ì¸íŠ¸ë¥¼ ì§€ì •í•´ì£¼ì„¸ìš”.", this);
+        return false;
     }
 
-    private IEnumerator PlayStory(StoryData storyData)
+    private IEnumerator PlayStory(StoryData story)
     {
-        if (storyData == null)
-        {
-            Debug.LogWarning("[TutorialScene1Cutscene] StoryData°¡ ºñ¾î ÀÖ½À´Ï´Ù.");
-            yield break;
-        }
-
-        if (DialogManager.Instance == null)
-        {
-            Debug.LogError("[TutorialScene1Cutscene] DialogManager.Instance°¡ ¾ø½À´Ï´Ù.");
-            yield break;
-        }
-
-        if (dialogView == null)
-            AutoFindDialogView();
-
-        waitingForDialogEnd = true;
-
-        DialogManager.Instance.ShowDialog(storyData);
-
-        yield return null;
-
-        if (dialogView != null)
-        {
-            float waitOpenTime = 0f;
-
-            while (!dialogView.gameObject.activeSelf && waitOpenTime < 0.5f)
-            {
-                waitOpenTime += Time.deltaTime;
-                yield return null;
-            }
-
-            while (dialogView.gameObject.activeSelf)
-            {
-                yield return null;
-            }
-        }
-        else
-        {
-            if (GameStateManager.Instance == null)
-            {
-                Debug.LogError("[TutorialScene1Cutscene] DialogViewerµµ ¾ø°í GameStateManagerµµ ¾ø¾î ´ë»ç Á¾·á¸¦ °¨ÁöÇÒ ¼ö ¾ø½À´Ï´Ù.");
-                waitingForDialogEnd = false;
-                yield break;
-            }
-
-            while (GameStateManager.Instance.GameState == GameState.Dialog)
-            {
-                yield return null;
-            }
-        }
-
-        waitingForDialogEnd = false;
-
+        waitingForDialog = true;
+        DialogManager.Instance.ShowDialog(story);
+        while (DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen) yield return null;
+        waitingForDialog = false;
+        // The confirm key that closed this conversation cannot close the next one.
         yield return null;
     }
 
-    private IEnumerator MoveDetectiveToCenter()
+    private void Update()
     {
-        if (detective == null || detectiveCenterPoint == null)
-            yield break;
+        // Managed scenes have exactly one dialogue input owner: SceneLoadManager.
+        if (!waitingForDialog || SceneLoadManager.HasManagedScene || GameMenuController.IsBlockingGameplay) return;
+        if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) ||
+            Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) DialogManager.Instance?.NextDialog();
+    }
 
-        Vector3 startPos = detective.position;
-        Vector3 targetPos = detectiveCenterPoint.position;
-
-        float elapsed = 0f;
-
-        while (elapsed < detectiveMoveTime)
+    private IEnumerator WalkTo(Vector3 target)
+    {
+        while (Vector3.Distance(detective.position, target) > 0.001f)
         {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / detectiveMoveTime);
-
-            detective.position = Vector3.Lerp(startPos, targetPos, t);
-
+            SetWalking(true, target - detective.position);
+            detective.position = Vector3.MoveTowards(detective.position, target, walkSpeed * Time.deltaTime);
             yield return null;
         }
-
-        detective.position = targetPos;
+        detective.position = target;
+        SetWalking(false, Vector2.up);
     }
 
-    private IEnumerator EndCutscene()
+    private void SetWalking(bool moving, Vector2 direction)
     {
-        yield return FadeToBlack(fadeOutTime);
-
-        if (loadNextSceneAfterCutscene && !string.IsNullOrEmpty(nextSceneName))
-        {
-            SceneManager.LoadScene(nextSceneName);
-        }
-        else
-        {
-            Debug.Log("[TutorialScene1Cutscene] S#1 ÄÆ¾À Á¾·á");
-        }
+        if (detectiveAnimator == null || detectiveAnimator.runtimeAnimatorController == null) return;
+        detectiveAnimator.SetBool("isMoving", moving);
+        float facing = Mathf.Abs(direction.x) > Mathf.Abs(direction.y) ? (direction.x > 0 ? 1 : 3) : (direction.y > 0 ? 0 : 2);
+        detectiveAnimator.SetFloat("direction", facing);
     }
 
-    private IEnumerator FadeToBlack(float duration)
+    private void SetShot(Transform point, float size)
     {
-        if (fadeImage == null)
-            yield break;
+        if (cutsceneCamera == null || point == null) return;
+        cutsceneCamera.transform.position = point.position;
+        cutsceneCamera.orthographicSize = size;
+    }
 
-        float startAlpha = fadeImage.color.a;
-        float targetAlpha = 1f;
-
+    private IEnumerator MoveCamera(Transform point, float size)
+    {
+        Vector3 from = cutsceneCamera.transform.position;
+        float fromSize = cutsceneCamera.orthographicSize;
         float elapsed = 0f;
-
-        while (elapsed < duration)
+        while (elapsed < cameraMoveTime)
         {
             elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            float alpha = Mathf.Lerp(startAlpha, targetAlpha, t);
-
-            SetFadeAlpha(alpha);
-
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / cameraMoveTime);
+            cutsceneCamera.transform.position = Vector3.Lerp(from, point.position, t);
+            cutsceneCamera.orthographicSize = Mathf.Lerp(fromSize, size, t);
             yield return null;
         }
-
-        SetFadeAlpha(targetAlpha);
+        SetShot(point, size);
     }
 
-    private void SetFadeAlpha(float alpha)
+    private IEnumerator FadeIn()
     {
-        if (fadeImage == null)
-            return;
-
-        Color color = fadeImage.color;
-        color.a = alpha;
-        fadeImage.color = color;
+        float elapsed = 0f;
+        while (elapsed < fadeInTime)
+        {
+            elapsed += Time.deltaTime;
+            SetFade(1f - Mathf.Clamp01(elapsed / fadeInTime));
+            yield return null;
+        }
+        SetFade(0f);
     }
 
-    private void AutoFindDialogView()
+    private void SetFade(float alpha)
     {
-        if (dialogView != null)
-            return;
+        if (fadeImage == null) return;
+        fadeImage.raycastTarget = false;
+        fadeImage.color = new Color(0f, 0f, 0f, alpha);
+    }
 
-        DialogViewer[] views = FindObjectsByType<DialogViewer>(
-            FindObjectsInactive.Include,
-            FindObjectsSortMode.None
-        );
-
-        if (views.Length > 0)
-            dialogView = views[0];
+    private void OnDrawGizmosSelected()
+    {
+        if (detectiveStartPoint == null) return;
+        Gizmos.color = Color.cyan;
+        Vector3 previous = detectiveStartPoint.position;
+        Gizmos.DrawWireSphere(previous, 0.15f);
+        if (detectiveWaypoints != null)
+            foreach (var point in detectiveWaypoints)
+                if (point != null) { Gizmos.DrawLine(previous, point.position); previous = point.position; Gizmos.DrawWireSphere(previous, 0.15f); }
+        if (detectiveCenterPoint != null)
+        { Gizmos.DrawLine(previous, detectiveCenterPoint.position); Gizmos.DrawWireSphere(detectiveCenterPoint.position, 0.2f); }
     }
 }

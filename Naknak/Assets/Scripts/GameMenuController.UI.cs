@@ -52,29 +52,12 @@ public sealed partial class GameMenuController
         eventObject.transform.SetParent(transform, false);
         ownEventSystem = eventObject.GetComponent<EventSystem>();
         ownEventSystem.sendNavigationEvents = false;
-        ownEventSystem.enabled = false;
-        eventObject.GetComponent<StandaloneInputModule>().enabled = false;
+        eventObject.AddComponent<MenuEventSystemOwner>();
     }
 
-    private void EnableMenuEvents(bool active)
+    private void EnsureMenuEventSystem()
     {
-        // Keep a single active EventSystem even when the game loads additive scenes.
-        if (active)
-        {
-            var disabled = new List<GameObject>(eventSystemsBeforeMenu);
-            foreach (var system in FindObjectsByType<EventSystem>(FindObjectsSortMode.None))
-                if (system != ownEventSystem && system.enabled)
-                { system.enabled = false; if (!disabled.Contains(system.gameObject)) disabled.Add(system.gameObject); }
-            eventSystemsBeforeMenu = disabled.ToArray();
-        }
-        ownEventSystem.enabled = active;
-        ownEventSystem.GetComponent<StandaloneInputModule>().enabled = active;
-        if (!active)
-        {
-            foreach (var target in eventSystemsBeforeMenu)
-                if (target != null && target.TryGetComponent<EventSystem>(out var system)) system.enabled = true;
-            eventSystemsBeforeMenu = new GameObject[0];
-        }
+        if (ownEventSystem != null) ownEventSystem.GetComponent<MenuEventSystemOwner>().EnsureSingle();
     }
 
     private void ClearPage()
@@ -84,7 +67,7 @@ public sealed partial class GameMenuController
         buttons.Clear(); adjustments.Clear(); visibleItems.Clear();
         description = null; footer = null; itemScroll = null;
         screen.gameObject.SetActive(true);
-        EnableMenuEvents(true);
+        EnsureMenuEventSystem();
     }
 
     private void ShowPage(Page next)
@@ -94,7 +77,7 @@ public sealed partial class GameMenuController
         if (next == Page.Closed)
         {
             screen.gameObject.SetActive(false);
-            EnableMenuEvents(false);
+            EnsureMenuEventSystem();
             return;
         }
         ClearPage();
@@ -150,7 +133,7 @@ public sealed partial class GameMenuController
     private void DrawItems()
     {
         var descriptionWindow = Box(panel, "Description", new Color(0, 0, 0, 0.25f), new Vector2(0.02f, 0.80f), new Vector2(0.98f, 0.98f), true);
-        description = Label(descriptionWindow, "소지한 아이템이 없습니다.", 25, new Vector2(0.025f, 0.08f), new Vector2(0.975f, 0.92f));
+        description = Label(descriptionWindow, itemSelectionPrompt ?? "소지한 아이템이 없습니다.", 25, new Vector2(0.025f, 0.08f), new Vector2(0.975f, 0.92f));
         // Tabs are mouse-clickable without becoming item-list navigation entries.
         Tab("아이템", false, 0.02f, 0.48f);
         Tab("중요 아이템", true, 0.52f, 0.98f);
@@ -173,7 +156,7 @@ public sealed partial class GameMenuController
         {
             var item = visibleItems[i];
             int index = i;
-            var button = Command("", () => Focus(index), Vector2.zero, Vector2.one, content);
+            var button = Command("", () => ActivateInventoryItem(index), Vector2.zero, Vector2.one, content);
             var rect = (RectTransform)button.transform;
             int column = i % 2;
             rect.anchorMin = new Vector2(column * 0.5f, 1); rect.anchorMax = new Vector2((column + 1) * 0.5f, 1);
@@ -191,8 +174,8 @@ public sealed partial class GameMenuController
             Label(rect, item.DisplayName, 26, new Vector2(0.14f, 0.05f), new Vector2(0.82f, 0.95f));
             Label(rect, ": " + inventory.Count(item.Id), 25, new Vector2(0.83f, 0.05f), new Vector2(0.97f, 0.95f), TextAlignmentOptions.Right);
         }
-        Footer("↑↓←→ 선택    Q / E / Tab 분류 변경    X / Esc 뒤로");
-        Command("뒤로", () => ShowPage(Page.Menu), new Vector2(0.84f, 0.02f), new Vector2(0.98f, 0.09f));
+        Footer(itemSelected != null ? "사용할 아이템 선택    Z / Enter 사용    X / Esc 취소" : "↑↓←→ 선택    Q / E / Tab 분류 변경    X / Esc 뒤로");
+        Command("뒤로", ReturnFromItems, new Vector2(0.84f, 0.02f), new Vector2(0.98f, 0.09f));
         // Keep the back action in keyboard navigation too, including an empty inventory.
     }
 
@@ -318,7 +301,7 @@ public sealed partial class GameMenuController
             switch (page)
             {
                 case Page.Menu: Resume(); break;
-                case Page.Items: ShowPage(Page.Menu); break;
+                case Page.Items: ReturnFromItems(); break;
                 case Page.Options: SaveOptions(); break;
                 case Page.Save: ShowPage(Page.Menu); break;
                 case Page.Load: ShowPage(loadOrigin); break;
@@ -371,6 +354,7 @@ public sealed partial class GameMenuController
         {
             description.text = visibleItems[selected].Description;
             if (string.IsNullOrWhiteSpace(description.text)) description.text = visibleItems[selected].DisplayName;
+            if (itemSelected != null) description.text = itemSelectionPrompt + "\n" + description.text;
             Canvas.ForceUpdateCanvases();
             int row = selected / 2;
             float height = itemScroll.viewport.rect.height;

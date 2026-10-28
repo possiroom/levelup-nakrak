@@ -40,6 +40,28 @@ public class DialogManager : MonoBehaviour
     }
 
     private StoryData currentStory = null;
+    private DialogViewer fallbackView;
+    private DialogSelectViewer fallbackSelectView;
+    public bool IsDialogOpen => currentStory != null && view != null && view.gameObject.activeSelf;
+    public bool CanShowDialog => view != null && GameEventManager.Instance != null;
+
+    public void BindSceneViews(Scene scene)
+    {
+        foreach (var root in scene.GetRootGameObjects())
+        {
+            var sceneView = root.GetComponentInChildren<DialogViewer>(true);
+            var sceneSelect = root.GetComponentInChildren<DialogSelectViewer>(true);
+            if (sceneView != null) view = sceneView;
+            if (sceneSelect != null) selectView = sceneSelect;
+        }
+        if (scene.name == "PrototypeScene")
+        {
+            if (view != null && view.gameObject.scene == scene) fallbackView = view;
+            if (selectView != null && selectView.gameObject.scene == scene) fallbackSelectView = selectView;
+        }
+        if (view == null) view = fallbackView;
+        if (selectView == null) selectView = fallbackSelectView;
+    }
 
     private void OnDestroy()
     {
@@ -52,6 +74,7 @@ public class DialogManager : MonoBehaviour
     {
         if (view == null) view = FindFirstObjectByType<DialogViewer>(FindObjectsInactive.Include);
         if (selectView == null) selectView = FindFirstObjectByType<DialogSelectViewer>(FindObjectsInactive.Include);
+        if (scene.name == "PrototypeScene") { fallbackView = view; fallbackSelectView = selectView; }
     }
 
     private void ChangeUI()
@@ -206,6 +229,7 @@ public class DialogManager : MonoBehaviour
 
     private void EndDialog()
     {
+        var completed = currentStory;
         isPlaying = false;
         isSelectActivate = false;
         if (selectView != null) selectView.gameObject.SetActive(false);
@@ -217,20 +241,11 @@ public class DialogManager : MonoBehaviour
         GameEventBase evt = GameEventFactory.CreateGameStateChangeEvent(GameState.Gameplay);
         GameEventManager.Instance.Submit(evt);
 
-        LoadNextSceneIfConfigured();
-    }
-
-    private void LoadNextSceneIfConfigured()
-    {
-        if (currentStory == null || string.IsNullOrWhiteSpace(currentStory.nextSceneName)) return;
-
-        if (!Application.CanStreamedLevelBeLoaded(currentStory.nextSceneName))
-        {
-            Debug.LogError($"[DialogManager] Scene '{currentStory.nextSceneName}' is not in Build Settings.");
-            return;
-        }
-
-        SceneManager.LoadScene(currentStory.nextSceneName);
+        currentStory = null;
+        if (SceneLoadManager.Instance != null && SceneLoadManager.Instance.NotifyDialogFinished(completed)) return;
+        // Keep old data working, but route legacy transitions through the same loader.
+        if (completed != null && !string.IsNullOrWhiteSpace(completed.nextSceneName) && SceneLoadManager.Instance != null)
+            SceneLoadManager.Instance.StartCoroutine(SceneLoadManager.Instance.LoadContent(completed.nextSceneName));
     }
 
     // Action 실행

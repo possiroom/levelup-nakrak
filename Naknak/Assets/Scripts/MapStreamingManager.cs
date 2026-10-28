@@ -17,6 +17,8 @@ public sealed class MapStreamingManager : MonoBehaviour
     private IEnumerator Start()
     {
         IsLoading = true;
+        if (SceneLoadManager.IsRestoringSession || SceneLoadManager.HasManagedScene)
+        { IsLoading = false; yield break; }
         yield return Load(initialMapScene);
         foreach (var scene in preloadMapScenes) yield return Load(scene);
         IsLoading = false;
@@ -28,7 +30,12 @@ public sealed class MapStreamingManager : MonoBehaviour
         if (!Application.CanStreamedLevelBeLoaded(sceneName))
         { Debug.LogError("[MapStreamingManager] Build Settings에 없는 맵: " + sceneName); yield break; }
         if (!SceneManager.GetSceneByName(sceneName).isLoaded)
+        {
+            var flow = Resources.Load<SceneFlowContainer>("TutorialSceneFlow");
+            if (flow != null && flow.FindScene(sceneName) != null && SceneLoadManager.Instance != null)
+            { yield return SceneLoadManager.Instance.LoadContent(sceneName); yield break; }
             yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        }
         var scene = SceneManager.GetSceneByName(sceneName);
         foreach (var root in scene.GetRootGameObjects())
             foreach (var map in root.GetComponentsInChildren<MapContainer>(true))

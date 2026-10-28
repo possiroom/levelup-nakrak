@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
+  m_Name: End_49
+  m_EditorClassIdentifier: 
+  charName: "\uC8FC\uC778\uACF5"
+  text: "\uB098\uB294 \uAC70\uC9D3\uB9D0\uC744 \uBC1D\uD600\uB0BC \uC218\uB294 \uC788\uC5B4\uB3C4,
+    \uADF8\uB807\uAC8C \uBE68\uB9AC \uC54C\uC544\uCC44\uC9C4 \uBABB\uD558\uAC70\uB4E0."
+  activatedImage: 0
+  isSelect: 0
+  isEnd: 0
+  selects: []
+  nextData: {fileID: 11400000, guid: 50907489c6a0ae7429e766d913183fe6, type: 2}
+  endActions: []

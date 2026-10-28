@@ -60,6 +60,20 @@ namespace Naknak.Inventory
         public List<InventoryEntry> Capture() => counts.OrderBy(p => p.Key, StringComparer.Ordinal)
             .Select(p => new InventoryEntry(p.Key, p.Value)).ToList();
 
+        // Item use must not consume the source if the result cannot be received.
+        public bool TryExchange(string sourceId, string resultId)
+        {
+            var result = Find(resultId);
+            if (sourceId == resultId || !Has(sourceId) || result == null || Count(resultId) >= result.MaxStack)
+                return false;
+            int remaining = Count(sourceId) - 1;
+            if (remaining == 0) counts.Remove(sourceId);
+            else counts[sourceId] = remaining;
+            counts[resultId] = Count(resultId) + 1;
+            Changed?.Invoke();
+            return true;
+        }
+
         public List<InventoryItem> Items(bool keyItems) => catalog.Values
             .Where(item => item.IsKeyItem == keyItems && Count(item.Id) > 0)
             .OrderBy(item => item.DisplayName, StringComparer.Ordinal).ThenBy(item => item.Id).ToList();
