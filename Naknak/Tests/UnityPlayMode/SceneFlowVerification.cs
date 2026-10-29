@@ -38,6 +38,7 @@ public static class SceneFlowVerification
             services.AddComponent<GameStateManager>(); services.AddComponent<GameEventManager>();
             services.AddComponent<TriggerExecutor>(); services.AddComponent<ConditionManager>(); services.AddComponent<DialogManager>();
             var view = new GameObject("CoreView"); view.transform.SetParent(services.transform); view.AddComponent<DialogViewer>(); view.SetActive(false);
+            var selectView = new GameObject("CoreSelectView"); selectView.transform.SetParent(services.transform); selectView.AddComponent<DialogSelectViewer>(); selectView.SetActive(false);
             var player = new GameObject("Player"); player.AddComponent<PlayerMoveController3>();
             var camera = new GameObject("CoreCamera"); camera.AddComponent<Camera>(); camera.AddComponent<AudioListener>();
             new GameObject("CoreEventSystem").AddComponent<EventSystem>();
@@ -63,7 +64,19 @@ public static class SceneFlowVerification
             flow = S1CutsceneVerification.CreateScenes();
             EditorUtility.SetDirty(flow);
             AssetDatabase.SaveAssets();
-            EditorBuildSettings.scenes = new[] { "Title", "PrototypeScene", "TestA", "TestB", "S1", "S2" }.SelectSceneSettings();
+            flow = T3CutsceneVerification.CreateScenes();
+            EditorUtility.SetDirty(flow);
+            AssetDatabase.SaveAssets();
+            flow = T4MemoryVerification.CreateScenes();
+            EditorUtility.SetDirty(flow);
+            AssetDatabase.SaveAssets();
+            flow = T2AppraisalVerification.CreateScenes();
+            EditorUtility.SetDirty(flow);
+            AssetDatabase.SaveAssets();
+            flow = MemoryReplayVerification.CreateScenes();
+            EditorUtility.SetDirty(flow);
+            AssetDatabase.SaveAssets();
+            EditorBuildSettings.scenes = new[] { "Title", "PrototypeScene", "TestA", "TestB", "S1", "S2", "TestT3", "TestT4", "TestT4Memory", "TestT2Appraisal", "TestMemoryT1" }.SelectSceneSettings();
             EditorSceneManager.OpenScene("Assets/Scenes/PrototypeScene.unity");
             GamePlayEntry.Apply();
             SessionState.SetBool(Pending, true);
@@ -94,6 +107,7 @@ public static class SceneFlowVerification
                 };
                 routines.Push(Checks());
             }
+            if (errors.Count > 0) throw new InvalidOperationException(errors[0]);
             if (EditorApplication.timeSinceStartup > deadline) throw new TimeoutException("Scene verification timed out");
             if (pendingOperation != null && !pendingOperation.isDone) return;
             pendingOperation = null;
@@ -179,6 +193,10 @@ public static class SceneFlowVerification
         UnityEngine.Object.Destroy(other);
         yield return S1CutsceneVerification.Checks(Assert);
         yield return T0RoomVerification.Checks(Assert);
+        yield return T3CutsceneVerification.Checks(Assert);
+        yield return T4MemoryVerification.Checks(Assert);
+        yield return T2AppraisalVerification.Checks(Assert);
+        yield return MemoryReplayVerification.Checks(Assert);
     }
     private static void Assert(bool condition, string message)
     { if (!condition) throw new Exception(message); passed.Add(message); }

@@ -17,4 +17,5 @@ MonoBehaviour:
   description: 상당한 가치를 지닌 고급 브로치. 가족과의 추억이 담겨 있다.
   icon: {fileID: 0}
   keyItem: 1
+  memoryOnly: 1
   maxStack: 1

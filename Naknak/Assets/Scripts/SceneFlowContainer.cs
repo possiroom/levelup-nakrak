@@ -20,7 +20,17 @@ public sealed class SceneFlowContainer : ScriptableObject
     {
         public SceneReference scene = new SceneReference();
         public StoryData entryDialog;
+        public DialogContainer entryDialogs;
+        public bool memorySpace;
+        [Tooltip("Entering this scene from reality starts a replay, including older saves without a visit counter.")]
+        public bool memoryReplayEntry;
+        [Tooltip("Item held when entering this memory from reality. T0 grants its own brooch.")]
+        public Naknak.Inventory.InventoryItem memoryEntryItem;
         public bool hidePlayer;
+        [Tooltip("플레이어 모습은 유지하고 이동/메뉴만 잠급니다.")]
+        public bool lockPlayerInput;
+        [Tooltip("PrototypeScene의 기존 플레이어 추적 카메라를 사용합니다.")]
+        public bool useSharedCamera;
         public bool placePlayer = true;
         public Vector2 playerPosition;
     }
@@ -33,6 +43,7 @@ public sealed class SceneFlowContainer : ScriptableObject
         public SceneReference from = new SceneReference();
         public SceneReference to = new SceneReference();
         public SceneConnectionTrigger trigger;
+        public bool fade;
         [Tooltip("DialogFinished: select the LAST dialogue asset in the conversation.")]
         public StoryData completedDialog;
         public List<DialogCondition> conditions = new List<DialogCondition>();
@@ -40,6 +51,8 @@ public sealed class SceneFlowContainer : ScriptableObject
 
     public List<SceneEntry> scenes = new List<SceneEntry>();
     public List<Connection> connections = new List<Connection>();
+    public ConditionID memoryVisitCount;
+    public List<ConditionID> memoryRunConditions = new List<ConditionID>();
 
     private void OnValidate()
     {

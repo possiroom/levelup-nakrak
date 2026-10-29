@@ -21,6 +21,26 @@ static class Program
 
     static void Main()
     {
+        var memoryBrooch = new InventoryItem { Id = "memory-brooch", MaxStack = 1, IsKeyItem = true, MemoryOnly = true };
+        var memoryBox = new InventoryItem { Id = "memory-box", MaxStack = 1, IsKeyItem = true, MemoryOnly = true };
+        var evidence = new InventoryItem { Id = "evidence", MaxStack = 99, IsKeyItem = true };
+        var scoped = new InventoryModel(new[] { memoryBrooch, memoryBox, evidence });
+        Check(!scoped.Add(memoryBrooch.Id), "Memory items cannot be acquired in reality");
+        Check(!scoped.TryAddAll(new[] { new InventoryEntry(memoryBrooch.Id, 1), new InventoryEntry(evidence.Id, 1) }) &&
+            !scoped.Has(evidence.Id), "Out-of-memory reward rejection is atomic");
+        scoped.SetMemorySpace(true);
+        Check(scoped.Add(memoryBrooch.Id) && scoped.Add(evidence.Id), "Memory permits brooch and persistent evidence");
+        Check(scoped.TryExchange(memoryBrooch.Id, memoryBox.Id), "Packing works inside memory");
+        var memorySave = scoped.Capture();
+        scoped.SetMemorySpace(false);
+        Check(!scoped.Has(memoryBox.Id) && scoped.Items(true).Count == 1 && scoped.Has(evidence.Id), "Leaving memory removes only scoped items");
+        Check(!scoped.TryExchange(evidence.Id, memoryBox.Id) && scoped.Has(evidence.Id), "Memory exchange cannot consume evidence in reality");
+        scoped.Restore(memorySave);
+        Check(!scoped.Has(memoryBox.Id) && scoped.Capture().Count == 1, "Legacy reality save cannot expose memory items");
+        scoped.SetMemorySpace(true);
+        Check(scoped.Has(memoryBox.Id), "Loading inside memory preserves the saved box phase");
+        scoped.SetMemorySpace(false); scoped.SetMemorySpace(true);
+        Check(!scoped.Has(memoryBox.Id) && scoped.Has(evidence.Id), "Reentry preserves evidence without leaking old boxes");
         var note = new InventoryItem { Id = "note", DisplayName = "쪽지", MaxStack = 5 };
         var key = new InventoryItem { Id = "key", DisplayName = "열쇠", MaxStack = 1, IsKeyItem = true };
         var inventory = new InventoryModel(new[] { note, key });
@@ -60,6 +80,18 @@ static class Program
         var packingRestored = new InventoryModel(new[] { note, key });
         packingRestored.Restore(packing.Capture());
         Check(packingRestored.Has("key") && packingRestored.Count("note") == 1, "Packed inventory survives restoration");
+        var rewards = new InventoryModel(new[] { note, key });
+        int rewardChanges = 0;
+        rewards.Changed += () => rewardChanges++;
+        Check(!rewards.TryAddAll(new[] { new InventoryEntry("note", 1), new InventoryEntry("missing", 1) }) && rewards.Count("note") == 0,
+            "Unknown investigation reward cannot partially grant items");
+        Check(!rewards.TryAddAll(new[] { new InventoryEntry("note", 3), new InventoryEntry("note", 3) }) && rewards.Count("note") == 0,
+            "Repeated reward IDs obey aggregate stack capacity");
+        Check(rewards.TryAddAll(new[] { new InventoryEntry("note", 2), new InventoryEntry("key", 1) }) && rewardChanges == 1,
+            "Multiple investigation rewards send one atomic update");
+        Check(!rewards.TryAddAll(new[] { new InventoryEntry("note", 1), new InventoryEntry("key", 1) }) && rewards.Count("note") == 2 && rewardChanges == 1,
+            "Full reward stack preserves every other item");
+        Check(!rewards.TryAddAll(new[] { new InventoryEntry("note", -1) }) && !rewards.TryAddAll(null), "Invalid reward inputs rejected");
         string directory = Path.Combine(Path.GetTempPath(), "NaknakChecks_" + Guid.NewGuid().ToString("N"));
         try
         {

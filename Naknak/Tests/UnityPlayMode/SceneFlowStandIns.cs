@@ -35,14 +35,21 @@ public sealed class GameStateManager : MonoBehaviour
     private void Awake() { Instance = this; }
     public void ChangeGameState(GameState state) { GameState = state; }
 }
-public sealed class GameEventBase { public GameState state; }
+public sealed class GameEventBase { public GameState state; public StoryData story; }
 public static class GameEventFactory
-{ public static GameEventBase CreateGameStateChangeEvent(GameState state) => new GameEventBase { state = state }; }
+{
+    public static GameEventBase CreateGameStateChangeEvent(GameState state) => new GameEventBase { state = state };
+    public static GameEventBase CreateDialogEvent(StoryData story) => new GameEventBase { story = story };
+}
 public sealed class GameEventManager : MonoBehaviour
 {
     public static GameEventManager Instance;
     private void Awake() { Instance = this; }
-    public void Submit(GameEventBase evt) { GameStateManager.Instance.ChangeGameState(evt.state); }
+    public void Submit(GameEventBase evt)
+    {
+        if (evt.story != null) DialogManager.Instance.ShowDialog(evt.story);
+        else GameStateManager.Instance.ChangeGameState(evt.state);
+    }
 }
 public sealed class DialogViewer : MonoBehaviour
 {

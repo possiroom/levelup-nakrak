@@ -11,13 +11,23 @@ namespace Naknak.Inventory
         [TextArea(2, 6)] [SerializeField] private string description;
         [SerializeField] private Sprite icon;
         [SerializeField] private bool keyItem;
+        [Tooltip("Available only while exploring a memory.")]
+        [SerializeField] private bool memoryOnly;
+        [SerializeField] private DialogContainer inspectionDialogs;
+        [SerializeField] private InventoryItem inspectionResult;
+        [SerializeField] private ConditionID descriptionCondition;
+        [TextArea(2, 6)] [SerializeField] private string changedDescription;
         [Min(1)] [SerializeField] private int maxStack = 99;
 
         public string Id => id;
         public string DisplayName => string.IsNullOrWhiteSpace(displayName) ? name : displayName;
-        public string Description => description;
+        public string Description => descriptionCondition != null && ConditionManager.Instance != null &&
+            ConditionManager.Instance.Get(descriptionCondition) != 0 && !string.IsNullOrEmpty(changedDescription) ? changedDescription : description;
+        public StoryData InspectionDialog => inspectionDialogs != null ? inspectionDialogs.GetMatchingDialog() : null;
+        public InventoryItem InspectionResult => inspectionResult;
         public Sprite Icon => icon;
         public bool IsKeyItem => keyItem;
+        public bool MemoryOnly => memoryOnly;
         public int MaxStack => Mathf.Max(1, maxStack);
 
 #if UNITY_EDITOR

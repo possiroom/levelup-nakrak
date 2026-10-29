@@ -17,4 +17,5 @@ MonoBehaviour:
   description: 가족과의 추억이 담긴 브로치를 넣어 둔 작은 보석함. 잠금장치가 헐겁다.
   icon: {fileID: 0}
   keyItem: 1
+  memoryOnly: 1
   maxStack: 1

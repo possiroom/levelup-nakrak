@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
+  m_Name: T2WrongItem
+  m_EditorClassIdentifier:
+  charName:
+  text: 브로치가 담긴 보석함을 보여드리자.
+  activatedImage: 0
+  isSelect: 0
+  isEnd: 1
+  selects: []
+  nextData: {fileID: 0}
+  nextSceneName:
+  endActions: []

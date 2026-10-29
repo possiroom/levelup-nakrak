@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91b08daa6dd949e6b9d9082e3829f160, type: 3}
+  m_Name: ExpiredPawnTicket
+  m_EditorClassIdentifier: 
+  id: evidence-expired-ticket
+  displayName: "\uAE30\uD55C\uC774 \uC9C0\uB09C \uC804\uB2F9\uD3EC\uC99D"
+  description: "\uAE30\uD55C\uC774 \uC9C0\uB09C \uC804\uB2F9\uD3EC\uC99D. \uC22B\uC790
+    2\uAC00 \uD06C\uAC8C \uC801\uD600 \uC788\uB2E4."
+  icon: {fileID: 0}
+  keyItem: 1
+  memoryOnly: 0
+  inspectionDialogs: {fileID: 0}
+  inspectionResult: {fileID: 0}
+  descriptionCondition: {fileID: 0}
+  changedDescription: 
+  maxStack: 1

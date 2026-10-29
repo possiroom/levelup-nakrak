@@ -9,12 +9,22 @@ public sealed class SceneLoadManager : MonoBehaviour
     public static bool IsLoading { get; private set; }
     public static bool IsRestoringSession { get; set; }
     public static bool HasManagedScene => Instance != null && Instance.current != null;
-    public static bool IsCutscene => HasManagedScene && Instance.current.hidePlayer;
+    public static string CurrentScenePath => HasManagedScene ? Instance.contentScene.path : "";
+    public static bool IsMemorySpace => HasManagedScene && Instance.current.memorySpace;
+    public static bool IsPreparingMemory => Instance != null && Instance.memoryPending;
+    public static bool IsMemoryRevisit => IsMemorySpace && Instance.container != null &&
+        ConditionManager.Instance != null && ConditionManager.Instance.Get(Instance.container.memoryVisitCount) > 1;
+    public static bool IsCutscene => HasManagedScene && (Instance.current.hidePlayer || Instance.PlayerInputLocked);
     [SerializeField] private SceneFlowContainer container;
     private SceneFlowContainer.SceneEntry current;
     private Scene contentScene;
     private bool entryPending;
     private bool preparing;
+    private bool memoryActive;
+    private bool memoryPending;
+    private bool? inputLockOverride;
+    private UnityEngine.UI.Image transitionOverlay;
+    private bool PlayerInputLocked => inputLockOverride ?? (current != null && current.lockPlayerInput);
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics() { Instance = null; IsLoading = false; IsRestoringSession = false; }
@@ -57,11 +67,19 @@ public sealed class SceneLoadManager : MonoBehaviour
         var entry = container != null ? container.FindScene(scene.path) : null;
         if (entry == null)
         {
-            if (mode == LoadSceneMode.Single) { current = null; entryPending = false; }
+            if (mode == LoadSceneMode.Single)
+            {
+                current = null; entryPending = false; memoryActive = false; memoryPending = false;
+                if (GameMenuController.Instance != null) GameMenuController.Inventory.SetMemorySpace(false);
+            }
             return;
         }
         contentScene = scene;
         current = entry;
+        memoryPending = entry.memorySpace || memoryActive;
+        if (!memoryPending && GameMenuController.Instance != null) GameMenuController.Inventory.SetMemorySpace(false);
+        if (memoryPending && !IsRestoringSession) PrepareMemory(false);
+        inputLockOverride = null;
         entryPending = !IsRestoringSession;
         ConfigureScene(scene, entry);
         if (!preparing && !SceneManager.GetSceneByName("PrototypeScene").isLoaded)
@@ -81,12 +99,19 @@ public sealed class SceneLoadManager : MonoBehaviour
 
     private void Update()
     {
+        if (memoryPending && !IsRestoringSession && !IsLoading) PrepareMemory(false);
+        if (memoryPending) return;
         if (current == null || IsLoading || IsRestoringSession || GameMenuController.IsBlockingGameplay) return;
-        if (entryPending && DialogManager.Instance != null && !DialogManager.Instance.IsDialogOpen)
+        if (entryPending && DialogManager.Instance != null && DialogManager.Instance.CanShowDialog && !DialogManager.Instance.IsDialogOpen &&
+            (current.entryDialogs == null || ConditionManager.Instance != null))
         {
             entryPending = false;
-            if (current.entryDialog != null) { DialogManager.Instance.ShowDialog(current.entryDialog); return; }
+            var entryStory = current.entryDialogs != null ? current.entryDialogs.GetMatchingDialog() : current.entryDialog;
+            if (entryStory != null) { DialogManager.Instance.ShowDialog(entryStory); return; }
         }
+        if (IsMemoryRevisit && DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen &&
+            (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
+        { DialogManager.Instance.SkipUntilChoice(); return; }
         if (DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen &&
             (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) ||
              Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))) DialogManager.Instance.NextDialog();
@@ -111,8 +136,34 @@ public sealed class SceneLoadManager : MonoBehaviour
         if (!Application.CanStreamedLevelBeLoaded(connection.to.Path))
         { Debug.LogError("[SceneLoadManager] Add the target scene to Build Settings: " + connection.to.Path); return false; }
         container = flow;
-        StartCoroutine(LoadContent(connection.to.Path));
+        StartCoroutine(connection.fade ? FadeTravel(connection.to.Path) : LoadContent(connection.to.Path));
         return true;
+    }
+
+    private IEnumerator FadeTravel(string destination)
+    {
+        if (transitionOverlay == null)
+        {
+            var canvasObject = new GameObject("Scene Transition", typeof(RectTransform), typeof(Canvas));
+            canvasObject.transform.SetParent(transform, false);
+            var canvas = canvasObject.GetComponent<Canvas>(); canvas.renderMode = RenderMode.ScreenSpaceOverlay; canvas.sortingOrder = 30000;
+            var imageObject = new GameObject("Fade", typeof(RectTransform), typeof(UnityEngine.UI.Image));
+            imageObject.transform.SetParent(canvasObject.transform, false);
+            var rect = (RectTransform)imageObject.transform; rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+            rect.offsetMin = rect.offsetMax = Vector2.zero;
+            transitionOverlay = imageObject.GetComponent<UnityEngine.UI.Image>(); transitionOverlay.raycastTarget = false;
+        }
+        IsLoading = true;
+        for (float elapsed = 0; elapsed < 0.25f; elapsed += Time.unscaledDeltaTime)
+        { transitionOverlay.color = new Color(0, 0, 0, Mathf.Clamp01(elapsed / 0.25f)); yield return null; }
+        transitionOverlay.color = Color.black;
+        IsLoading = false;
+        yield return LoadContent(destination);
+        IsLoading = true;
+        for (float elapsed = 0; elapsed < 0.25f; elapsed += Time.unscaledDeltaTime)
+        { transitionOverlay.color = new Color(0, 0, 0, 1 - Mathf.Clamp01(elapsed / 0.25f)); yield return null; }
+        transitionOverlay.color = Color.clear;
+        IsLoading = false;
     }
 
     public IEnumerator LoadContent(string scenePathOrName)
@@ -139,7 +190,12 @@ public sealed class SceneLoadManager : MonoBehaviour
         GridLayout grid = null;
         foreach (var root in scene.GetRootGameObjects())
         {
-            if (contentCamera == null) contentCamera = root.GetComponentInChildren<Camera>();
+            if (contentCamera == null && !entry.useSharedCamera) contentCamera = root.GetComponentInChildren<Camera>();
+            if (entry.useSharedCamera)
+            {
+                foreach (var camera in root.GetComponentsInChildren<Camera>(true)) camera.enabled = false;
+                foreach (var listener in root.GetComponentsInChildren<AudioListener>(true)) listener.enabled = false;
+            }
             if (grid == null) grid = root.GetComponentInChildren<GridLayout>();
         }
         if (core.isLoaded)
@@ -151,7 +207,7 @@ public sealed class SceneLoadManager : MonoBehaviour
         var player = FindFirstObjectByType<PlayerMoveController3>(FindObjectsInactive.Include);
         if (player != null)
         {
-            player.enabled = !entry.hidePlayer;
+            player.enabled = !entry.hidePlayer && !PlayerInputLocked;
             foreach (var renderer in player.GetComponentsInChildren<SpriteRenderer>(true)) renderer.enabled = !entry.hidePlayer;
             if (entry.placePlayer && !IsRestoringSession) player.TeleportToWorld(entry.playerPosition);
         }
@@ -164,5 +220,40 @@ public sealed class SceneLoadManager : MonoBehaviour
         DialogManager.Instance?.BindSceneViews(scene);
     }
 
-    public void ResumeRestoredSession() { IsRestoringSession = false; entryPending = false; }
+    // A cutscene can release control without mutating the shared flow asset or teleporting again.
+    public void SetPlayerInputLocked(bool locked)
+    {
+        if (current == null) return;
+        inputLockOverride = locked;
+        var player = FindFirstObjectByType<PlayerMoveController3>(FindObjectsInactive.Include);
+        if (player != null) player.enabled = !current.hidePlayer && !locked;
+    }
+
+    private void PrepareMemory(bool restoring)
+    {
+        if (GameMenuController.Instance == null || ConditionManager.Instance == null) return;
+        var inventory = GameMenuController.Inventory;
+        bool inMemory = IsMemorySpace;
+        inventory.SetMemorySpace(inMemory);
+        if (inMemory && !memoryActive && !restoring)
+        {
+            inventory.ClearMemoryItems();
+            foreach (var flag in container.memoryRunConditions) ConditionManager.Instance.Set(flag, 0);
+            int visits = ConditionManager.Instance.Get(container.memoryVisitCount);
+            ConditionManager.Instance.Set(container.memoryVisitCount, Mathf.Max(current.memoryReplayEntry ? 2 : 1, visits + 1));
+            if (current.memoryEntryItem != null && !inventory.Add(current.memoryEntryItem.Id))
+                Debug.LogError("[Memory] Cannot grant entry item: " + current.memoryEntryItem.Id);
+        }
+        if (inMemory && restoring && ConditionManager.Instance.Get(container.memoryVisitCount) == 0)
+            ConditionManager.Instance.Set(container.memoryVisitCount, 1);
+        memoryActive = inMemory;
+        memoryPending = false;
+    }
+
+    public void ResumeRestoredSession()
+    {
+        PrepareMemory(true);
+        IsRestoringSession = false;
+        entryPending = false;
+    }
 }

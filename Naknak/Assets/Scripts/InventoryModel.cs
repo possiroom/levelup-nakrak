@@ -19,6 +19,22 @@ namespace Naknak.Inventory
         private readonly Dictionary<string, InventoryItem> catalog;
         private readonly Dictionary<string, int> counts = new Dictionary<string, int>();
         public event Action Changed;
+        public bool IsMemorySpace { get; private set; }
+
+        public void SetMemorySpace(bool active)
+        {
+            IsMemorySpace = active;
+            if (!active) ClearMemoryItems();
+        }
+
+        public void ClearMemoryItems()
+        {
+            var ids = counts.Keys.Where(id => catalog[id].MemoryOnly).ToList();
+            foreach (var id in ids) counts.Remove(id);
+            if (ids.Count > 0) Changed?.Invoke();
+        }
+
+        private bool Available(InventoryItem item) => item != null && (!item.MemoryOnly || IsMemorySpace);
 
         public InventoryModel(IEnumerable<InventoryItem> items)
         {
@@ -34,14 +50,14 @@ namespace Naknak.Inventory
         }
 
         public InventoryItem Find(string id) => id != null && catalog.TryGetValue(id, out var item) ? item : null;
-        public int Count(string id) => id != null && counts.TryGetValue(id, out var count) ? count : 0;
+        public int Count(string id) => Available(Find(id)) && counts.TryGetValue(id, out var count) ? count : 0;
         public bool Has(string id, int quantity = 1) => quantity > 0 && Count(id) >= quantity;
 
         // Addition/removal is atomic: an overflowing stack never partially consumes a pickup.
         public bool Add(string id, int quantity = 1)
         {
             var item = Find(id);
-            if (quantity <= 0 || item == null || quantity > item.MaxStack - Count(id)) return false;
+            if (quantity <= 0 || !Available(item) || quantity > item.MaxStack - Count(id)) return false;
             counts[id] = Count(id) + quantity;
             Changed?.Invoke();
             return true;
@@ -57,14 +73,32 @@ namespace Naknak.Inventory
             return true;
         }
 
-        public List<InventoryEntry> Capture() => counts.OrderBy(p => p.Key, StringComparer.Ordinal)
+        // Investigation rewards are one transaction, including repeated item IDs.
+        public bool TryAddAll(IEnumerable<InventoryEntry> rewards)
+        {
+            if (rewards == null) return false;
+            var additions = new Dictionary<string, int>();
+            foreach (var entry in rewards)
+            {
+                var item = entry == null ? null : Find(entry.itemId);
+                if (!Available(item) || entry.quantity <= 0) return false;
+                int pending = additions.TryGetValue(entry.itemId, out var count) ? count : 0;
+                if (entry.quantity > item.MaxStack - Count(entry.itemId) - pending) return false;
+                additions[entry.itemId] = pending + entry.quantity;
+            }
+            foreach (var pair in additions) counts[pair.Key] = Count(pair.Key) + pair.Value;
+            if (additions.Count > 0) Changed?.Invoke();
+            return true;
+        }
+
+        public List<InventoryEntry> Capture() => counts.Where(p => Available(catalog[p.Key])).OrderBy(p => p.Key, StringComparer.Ordinal)
             .Select(p => new InventoryEntry(p.Key, p.Value)).ToList();
 
         // Item use must not consume the source if the result cannot be received.
         public bool TryExchange(string sourceId, string resultId)
         {
             var result = Find(resultId);
-            if (sourceId == resultId || !Has(sourceId) || result == null || Count(resultId) >= result.MaxStack)
+            if (sourceId == resultId || !Has(sourceId) || !Available(result) || Count(resultId) >= result.MaxStack)
                 return false;
             int remaining = Count(sourceId) - 1;
             if (remaining == 0) counts.Remove(sourceId);

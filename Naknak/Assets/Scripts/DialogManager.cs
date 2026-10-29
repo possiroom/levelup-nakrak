@@ -40,10 +40,25 @@ public class DialogManager : MonoBehaviour
     }
 
     private StoryData currentStory = null;
+    public StoryData CurrentStory => currentStory;
     private DialogViewer fallbackView;
     private DialogSelectViewer fallbackSelectView;
     public bool IsDialogOpen => currentStory != null && view != null && view.gameObject.activeSelf;
     public bool CanShowDialog => view != null && GameEventManager.Instance != null;
+
+    // Replays may fast-forward linear lines. Choices and end actions still use NextDialog.
+    public void SkipUntilChoice()
+    {
+        if (!SceneLoadManager.IsMemoryRevisit || GameMenuController.IsBlockingGameplay) return;
+        var visited = new HashSet<StoryData>();
+        while (currentStory != null && !isSelectActivate && visited.Add(currentStory))
+        {
+            if (isPlaying) TextSkip();
+            bool choice = currentStory.isSelect;
+            NextDialog();
+            if (choice) break;
+        }
+    }
 
     public void BindSceneViews(Scene scene)
     {
@@ -85,7 +100,7 @@ public class DialogManager : MonoBehaviour
         view.ChangeName(currentStory.charName);
         view.ChangeActivateImage(currentStory.activatedImage);
         view.ActivateEndMark(false);
-        Debug.Log("[DialogManager] Show Dialog : " + currentStory.text);
+        Debug.Log("[DialogManager] Show Dialog: " + currentStory.name);
     }
 
     public void ShowDialog(StoryData storyData)

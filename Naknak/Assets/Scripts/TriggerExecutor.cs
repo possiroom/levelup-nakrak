@@ -41,7 +41,7 @@ public sealed class TriggerExecutor : MonoBehaviour
     public void BuildIndex()
     {
         map.Clear();
-        if (trigTilemap == null) return;
+        if (grid == null || trigTilemap == null) return;
 
         TriggerBlock[] blocks = trigTilemap.GetComponentsInChildren<TriggerBlock>();
         for (int i = 0; i < blocks.Length; i++)
@@ -86,6 +86,7 @@ public sealed class TriggerExecutor : MonoBehaviour
 
     public bool OnStepStarted(Vector2 pos)
     {
+        if (grid == null) return false;
         bool pause = false;
         Vector2Int cell = CellTo2Int(grid.WorldToCell(pos));
         if (map.TryGetValue(cell, out List<TriggerBlock> blocks))
@@ -104,6 +105,7 @@ public sealed class TriggerExecutor : MonoBehaviour
 
     public bool OnStepCompleted(Vector2 pos)
     {
+        if (grid == null) return false;
         bool pause = false;
         Vector2Int cell = CellTo2Int(grid.WorldToCell(pos));
         if (map.TryGetValue(cell, out List<TriggerBlock> blocks))

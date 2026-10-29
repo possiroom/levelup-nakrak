@@ -10,6 +10,7 @@ namespace Naknak.FlashlightSystem
         [SerializeField, Range(0f, 1f)] private float darkness = 0f;
         [SerializeField] private bool includePlayer = false;
         [SerializeField] private Transform player;
+        [SerializeField] private Transform[] exclusions = new Transform[0];
 
         private readonly List<RendererMaterialState> rendererMaterialStates = new List<RendererMaterialState>();
         private Material desaturateMaterial;
@@ -116,6 +117,9 @@ namespace Naknak.FlashlightSystem
 
             if (!includePlayer && player != null && targetRenderer.transform.IsChildOf(player))
                 return false;
+
+            foreach (var excluded in exclusions)
+                if (excluded != null && targetRenderer.transform.IsChildOf(excluded)) return false;
 
             return targetRenderer is SpriteRenderer || targetRenderer is TilemapRenderer;
         }

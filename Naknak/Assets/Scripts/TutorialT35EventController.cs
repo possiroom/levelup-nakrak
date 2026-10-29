@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class TutorialT35EventController : MonoBehaviour
+public class TutorialT35EventController : MonoBehaviour, IInteractable
 {
     [Header("Player")]
-    [Tooltip("ºñ¿öµÎ¸é Player ÅÂ±× ¶Ç´Â PlayerMoveController3·Î ÀÚµ¿ Å½»ö")]
+    [Tooltip("ë¹„ì›Œë‘ë©´ Player íƒœê·¸ ë˜ëŠ” PlayerMoveController3ë¡œ ìë™ íƒìƒ‰")]
     [SerializeField] private Transform player;
 
     [Header("Darkness")]
@@ -20,29 +20,32 @@ public class TutorialT35EventController : MonoBehaviour
     [SerializeField] private Transform droppedOpenBoxInteract;
     [SerializeField] private GameObject sparkleIcon;
 
-    [Tooltip("ONÀÌ¸é ÇÃ·¹ÀÌ¾î°¡ °¡±îÀÌ ¿ÔÀ» ¶§¸¸ ¹İÂ¦ÀÌ Ç¥½Ã. Å×½ºÆ® ÁßÀÌ¸é OFF ÃßÃµ.")]
+    [Tooltip("ONì´ë©´ í”Œë ˆì´ì–´ê°€ ê°€ê¹Œì´ ì™”ì„ ë•Œë§Œ ë°˜ì§ì´ í‘œì‹œ. í…ŒìŠ¤íŠ¸ ì¤‘ì´ë©´ OFF ì¶”ì²œ.")]
     [SerializeField] private bool showSparkleOnlyWhenNearPlayer = true;
 
-    [Tooltip("ÇÃ·¹ÀÌ¾î°¡ ÀÌ °Å¸® ¾È¿¡ µé¾î¿À¸é ¹İÂ¦ÀÌ Ç¥½Ã")]
+    [Tooltip("í”Œë ˆì´ì–´ê°€ ì´ ê±°ë¦¬ ì•ˆì— ë“¤ì–´ì˜¤ë©´ ë°˜ì§ì´ í‘œì‹œ")]
     [SerializeField] private float revealDistance = 2.0f;
 
-    [Tooltip("ÇÃ·¹ÀÌ¾î°¡ ÀÌ °Å¸® ¾È¿¡¼­ »óÈ£ÀÛ¿ëÇÏ¸é È¹µæ")]
+    [Tooltip("í”Œë ˆì´ì–´ê°€ ì´ ê±°ë¦¬ ì•ˆì—ì„œ ìƒí˜¸ì‘ìš©í•˜ë©´ íšë“")]
     [SerializeField] private float interactDistance = 1.2f;
 
     [Header("Input")]
     [SerializeField] private KeyCode interactKey = KeyCode.Z;
 
     [Header("Built-in Monologue")]
+    [SerializeField] private StoryData boxFoundDialog;
+    [SerializeField] private Naknak.Inventory.InventoryItem foundEvidence;
+    [SerializeField] private ConditionID boxFound;
     [TextArea(2, 4)]
-    [SerializeField] private string getBoxMonologueText = "¹Ù´Ú¿¡ ¶³¾îÁø ¿­¸° »óÀÚ¸¦ È¹µæÇß´Ù.";
+    [SerializeField] private string getBoxMonologueText = "ë°”ë‹¥ì— ë–¨ì–´ì§„ ì—´ë¦° ìƒìë¥¼ íšë“í–ˆë‹¤.";
 
-    [Tooltip("ºñ¿öµÎ¸é ÀÚµ¿ »ı¼ºµÊ")]
+    [Tooltip("ë¹„ì›Œë‘ë©´ ìë™ ìƒì„±ë¨")]
     [SerializeField] private Canvas monologueCanvas;
 
-    [Tooltip("ºñ¿öµÎ¸é ÀÚµ¿ »ı¼ºµÊ")]
+    [Tooltip("ë¹„ì›Œë‘ë©´ ìë™ ìƒì„±ë¨")]
     [SerializeField] private GameObject monologuePanel;
 
-    [Tooltip("ºñ¿öµÎ¸é ÀÚµ¿ »ı¼ºµÊ")]
+    [Tooltip("ë¹„ì›Œë‘ë©´ ìë™ ìƒì„±ë¨")]
     [SerializeField] private TMP_Text monologueText;
 
     [SerializeField] private float monologueInputLockTime = 0.2f;
@@ -60,18 +63,26 @@ public class TutorialT35EventController : MonoBehaviour
     private void Awake()
     {
         AutoFindPlayer();
-        EnsureMonologueUI();
+        if (boxFoundDialog == null) EnsureMonologueUI();
     }
 
     private IEnumerator Start()
     {
-        yield return null;
+        while (SceneLoadManager.IsLoading || SceneLoadManager.IsRestoringSession ||
+               GameMenuController.IsBlockingGameplay ||
+               boxFound != null && ConditionManager.Instance == null ||
+               boxFoundDialog != null && (DialogManager.Instance == null || !DialogManager.Instance.CanShowDialog))
+            yield return null;
+
+        if (boxFound != null && ConditionManager.Instance.Get(boxFound) != 0)
+        { SceneLoadManager.Instance?.TryCompleteScene(); yield break; }
 
         StartT35();
     }
 
     private void Update()
     {
+        if (GameMenuController.IsBlockingGameplay || SceneLoadManager.IsRestoringSession) return;
         if (!isRunning)
             return;
 
@@ -86,7 +97,7 @@ public class TutorialT35EventController : MonoBehaviour
 
         if (Input.GetKeyDown(interactKey))
         {
-            TryGetDroppedBox();
+            Interact();
         }
     }
 
@@ -113,7 +124,7 @@ public class TutorialT35EventController : MonoBehaviour
 
         yield return FadeDarkOverlay(darkAlpha, darkFadeInTime);
 
-        Debug.Log("[TutorialT35EventController] T3.5 ½ÃÀÛ");
+        Debug.Log("[TutorialT35EventController] T3.5 ì‹œì‘");
     }
 
     private void UpdateSparkleVisibility()
@@ -138,8 +149,17 @@ public class TutorialT35EventController : MonoBehaviour
         sparkleIcon.SetActive(distance <= revealDistance);
     }
 
+    public void Interact()
+    {
+        if (GameMenuController.IsBlockingGameplay || SceneLoadManager.IsRestoringSession ||
+            GameStateManager.Instance != null && GameStateManager.Instance.GameState != GameState.Gameplay) return;
+        AutoFindPlayer();
+        TryGetDroppedBox();
+    }
+
     private void TryGetDroppedBox()
     {
+        if (!isRunning || obtainedBox || showingMonologue) return;
         if (player == null || droppedOpenBoxInteract == null)
             return;
 
@@ -153,19 +173,24 @@ public class TutorialT35EventController : MonoBehaviour
 
     private IEnumerator GetDroppedBoxRoutine()
     {
+        if (foundEvidence != null && (GameMenuController.Instance == null ||
+            !GameMenuController.Inventory.Has(foundEvidence.Id) && !GameMenuController.Inventory.Add(foundEvidence.Id)))
+            yield break;
         obtainedBox = true;
 
         if (sparkleIcon != null)
             sparkleIcon.SetActive(false);
 
-        Debug.Log("[TutorialT35EventController] ¿­¸° »óÀÚ »óÈ£ÀÛ¿ë");
+        Debug.Log("[TutorialT35EventController] ì—´ë¦° ìƒì ìƒí˜¸ì‘ìš©");
 
         yield return ShowMonologueRoutine(getBoxMonologueText);
+
+        if (boxFound != null) ConditionManager.Instance.Set(boxFound, 1);
 
         if (droppedOpenBoxInteract != null)
             droppedOpenBoxInteract.gameObject.SetActive(false);
 
-        Debug.Log("[TutorialT35EventController] ¹Ù´Ú¿¡ ¶³¾îÁø ¿­¸° »óÀÚ¸¦ È¹µæÇß½À´Ï´Ù.");
+        Debug.Log("[TutorialT35EventController] ë°”ë‹¥ì— ë–¨ì–´ì§„ ì—´ë¦° ìƒìë¥¼ íšë“í–ˆìŠµë‹ˆë‹¤.");
 
         yield return new WaitForSeconds(waitAfterGetBox);
 
@@ -183,17 +208,26 @@ public class TutorialT35EventController : MonoBehaviour
         }
         else
         {
-            Debug.Log("[TutorialT35EventController] T3.5 Á¾·á. ´ÙÀ½ ´Ü°è ÁøÇà °¡´É.");
+            Debug.Log("[TutorialT35EventController] T3.5 ì¢…ë£Œ. ë‹¤ìŒ ë‹¨ê³„ ì§„í–‰ ê°€ëŠ¥.");
         }
     }
 
     private IEnumerator ShowMonologueRoutine(string text)
     {
+        if (boxFoundDialog != null && DialogManager.Instance != null && DialogManager.Instance.CanShowDialog)
+        {
+            showingMonologue = true;
+            DialogManager.Instance.ShowDialog(boxFoundDialog);
+            yield return null;
+            while (DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen) yield return null;
+            showingMonologue = false;
+            yield break;
+        }
         EnsureMonologueUI();
 
         if (monologuePanel == null || monologueText == null)
         {
-            Debug.LogWarning("[TutorialT35EventController] ¸ğ³ë·Î±× UI°¡ ¾ø¾î ·Î±×·Î¸¸ Ãâ·Â: " + text);
+            Debug.LogWarning("[TutorialT35EventController] ëª¨ë…¸ë¡œê·¸ UIê°€ ì—†ì–´ ë¡œê·¸ë¡œë§Œ ì¶œë ¥: " + text);
             yield return new WaitForSeconds(1f);
             yield break;
         }
@@ -203,7 +237,7 @@ public class TutorialT35EventController : MonoBehaviour
         monologueText.text = text;
         monologuePanel.SetActive(true);
 
-        // »óÈ£ÀÛ¿ë¿¡ »ç¿ëÇÑ Z ÀÔ·ÂÀÌ ¹Ù·Î ¸ğ³ë·Î±×¸¦ ´İ¾Æ¹ö¸®´Â °Í ¹æÁö
+        // ìƒí˜¸ì‘ìš©ì— ì‚¬ìš©í•œ Z ì…ë ¥ì´ ë°”ë¡œ ëª¨ë…¸ë¡œê·¸ë¥¼ ë‹«ì•„ë²„ë¦¬ëŠ” ê²ƒ ë°©ì§€
         yield return new WaitForSeconds(monologueInputLockTime);
 
         while (!GetAdvanceInput())

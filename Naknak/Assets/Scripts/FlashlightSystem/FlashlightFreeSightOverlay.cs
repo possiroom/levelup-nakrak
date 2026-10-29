@@ -27,6 +27,8 @@ namespace Naknak.FlashlightSystem
         public float VisionRadiusWorld => visionRadiusWorld;
         public float Softness => softness;
 
+        public void SetCamera(Camera camera) { targetCamera = camera; }
+
         private void Awake()
         {
             if (targetCamera == null)
@@ -61,6 +63,11 @@ namespace Naknak.FlashlightSystem
             UpdateShaderValues();
         }
 
+        private void OnDestroy()
+        {
+            if (runtimeMaterial != null) Destroy(runtimeMaterial);
+        }
+
         public void SetActive(bool active)
         {
             if (overlayImage != null)
@@ -81,8 +88,9 @@ namespace Naknak.FlashlightSystem
         {
             Vector3 centerViewport = targetCamera.WorldToViewportPoint(sightCenter);
             Vector3 edgeViewport = targetCamera.WorldToViewportPoint(sightCenter + Vector3.right * visionRadiusWorld);
-            float radiusViewport = Mathf.Abs(edgeViewport.x - centerViewport.x);
             float aspect = Screen.height > 0 ? (float)Screen.width / Screen.height : 1f;
+            // The shader measures horizontal distance after applying aspect, so radius must use the same units.
+            float radiusViewport = Mathf.Abs(edgeViewport.x - centerViewport.x) * aspect;
 
             runtimeMaterial.SetVector("_Center", new Vector4(centerViewport.x, centerViewport.y, 0f, 0f));
             runtimeMaterial.SetFloat("_Radius", radiusViewport);

@@ -11,68 +11,164 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e4a4dd6bce734b269af3facb27778ab8, type: 3}
   m_Name: TutorialSceneFlow
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   scenes:
   - scene:
       path: Assets/Scenes/S1.unity
     entryDialog: {fileID: 0}
+    entryDialogs: {fileID: 0}
+    memorySpace: 0
+    memoryReplayEntry: 0
+    memoryEntryItem: {fileID: 0}
     hidePlayer: 1
+    lockPlayerInput: 0
+    useSharedCamera: 0
     placePlayer: 1
     playerPosition: {x: 0, y: 0}
   - scene:
       path: Assets/Scenes/S2.unity
-    entryDialog: {fileID: 0}
+    entryDialog: {fileID: 11400000, guid: f4361d2af34be3642ad6d51300597370, type: 2}
+    entryDialogs: {fileID: 0}
+    memorySpace: 0
+    memoryReplayEntry: 0
+    memoryEntryItem: {fileID: 0}
     hidePlayer: 0
+    lockPlayerInput: 1
+    useSharedCamera: 0
     placePlayer: 1
     playerPosition: {x: 0, y: 0}
   - scene:
       path: Assets/Scenes/T2.unity
-    entryDialog: {fileID: 11400000, guid: 93bcf92bc6350ae44b4ef0f554af783e, type: 2}
+    entryDialog: {fileID: 0}
+    entryDialogs: {fileID: 0}
+    memorySpace: 1
+    memoryReplayEntry: 0
+    memoryEntryItem: {fileID: 0}
     hidePlayer: 0
+    lockPlayerInput: 0
+    useSharedCamera: 1
     placePlayer: 1
     playerPosition: {x: 5, y: -1}
   - scene:
       path: Assets/Scenes/Tutorial_T3_VaseBreak.unity
     entryDialog: {fileID: 0}
-    hidePlayer: 1
-    placePlayer: 1
+    entryDialogs: {fileID: 0}
+    memorySpace: 1
+    memoryReplayEntry: 0
+    memoryEntryItem: {fileID: 0}
+    hidePlayer: 0
+    lockPlayerInput: 1
+    useSharedCamera: 1
+    placePlayer: 0
     playerPosition: {x: 0, y: 0}
   - scene:
       path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
     entryDialog: {fileID: 0}
-    hidePlayer: 1
-    placePlayer: 1
+    entryDialogs: {fileID: 0}
+    memorySpace: 1
+    memoryReplayEntry: 0
+    memoryEntryItem: {fileID: 0}
+    hidePlayer: 0
+    lockPlayerInput: 1
+    useSharedCamera: 1
+    placePlayer: 0
     playerPosition: {x: 0, y: 0}
   - scene:
       path: Assets/Scenes/S3.unity
-    entryDialog: {fileID: 11400000, guid: 9d4ee9d0b0848da4bac1da97be9cbb00, type: 2}
+    entryDialog: {fileID: 0}
+    entryDialogs: {fileID: 11400000, guid: 29b6081f63521e947988e19b8a027a51, type: 2}
+    memorySpace: 0
+    memoryReplayEntry: 0
+    memoryEntryItem: {fileID: 0}
     hidePlayer: 0
+    lockPlayerInput: 0
+    useSharedCamera: 1
     placePlayer: 1
     playerPosition: {x: 0, y: -1}
   - scene:
       path: Assets/Scenes/Tutorial_T35_BlackoutSearch.unity
     entryDialog: {fileID: 0}
+    entryDialogs: {fileID: 0}
+    memorySpace: 1
+    memoryReplayEntry: 0
+    memoryEntryItem: {fileID: 0}
     hidePlayer: 0
+    lockPlayerInput: 0
+    useSharedCamera: 1
     placePlayer: 1
-    playerPosition: {x: 0, y: 0}
+    playerPosition: {x: 5, y: -1}
   - scene:
       path: Assets/Scenes/Tutorial_S6_OwnerConfession.unity
     entryDialog: {fileID: 0}
+    entryDialogs: {fileID: 0}
+    memorySpace: 0
+    memoryReplayEntry: 0
+    memoryEntryItem: {fileID: 0}
     hidePlayer: 1
+    lockPlayerInput: 0
+    useSharedCamera: 0
     placePlayer: 1
     playerPosition: {x: 0, y: 0}
   - scene:
       path: Assets/Scenes/S#6.unity
     entryDialog: {fileID: 0}
+    entryDialogs: {fileID: 11400000, guid: 3ba39358a7beb8a4aac76577014328a5, type: 2}
+    memorySpace: 0
+    memoryReplayEntry: 0
+    memoryEntryItem: {fileID: 0}
     hidePlayer: 0
+    lockPlayerInput: 0
+    useSharedCamera: 1
     placePlayer: 1
     playerPosition: {x: 0, y: -1}
   - scene:
       path: Assets/Scenes/T0.unity
     entryDialog: {fileID: 11400000, guid: 82345c5d1b2a40d4e86369ebdcec4ff8, type: 2}
+    entryDialogs: {fileID: 0}
+    memorySpace: 1
+    memoryReplayEntry: 0
+    memoryEntryItem: {fileID: 0}
     hidePlayer: 0
+    lockPlayerInput: 0
+    useSharedCamera: 1
     placePlayer: 1
     playerPosition: {x: 0, y: 0}
+  - scene:
+      path: Assets/Scenes/T1.unity
+    entryDialog: {fileID: 11400000, guid: 93bcf92bc6350ae44b4ef0f554af783e, type: 2}
+    entryDialogs: {fileID: 0}
+    memorySpace: 1
+    memoryReplayEntry: 1
+    memoryEntryItem: {fileID: 11400000, guid: cd517998cd2b4ed495d8853dc783ab30, type: 2}
+    hidePlayer: 0
+    lockPlayerInput: 0
+    useSharedCamera: 1
+    placePlayer: 1
+    playerPosition: {x: 5, y: -1}
+  - scene:
+      path: Assets/Scenes/Tutorial_PA_Alibi.unity
+    entryDialog: {fileID: 11400000, guid: b7955d93a74dbc74cadb0f3e41fd56f6, type: 2}
+    entryDialogs: {fileID: 0}
+    memorySpace: 1
+    memoryReplayEntry: 0
+    memoryEntryItem: {fileID: 0}
+    hidePlayer: 0
+    lockPlayerInput: 1
+    useSharedCamera: 1
+    placePlayer: 1
+    playerPosition: {x: 2, y: -1}
+  - scene:
+      path: Assets/Scenes/Tutorial_PB_Alibi.unity
+    entryDialog: {fileID: 11400000, guid: 3779d99e8be4078409c896db19b90d16, type: 2}
+    entryDialogs: {fileID: 0}
+    memorySpace: 1
+    memoryReplayEntry: 0
+    memoryEntryItem: {fileID: 0}
+    hidePlayer: 0
+    lockPlayerInput: 1
+    useSharedCamera: 1
+    placePlayer: 1
+    playerPosition: {x: 2, y: -1}
   connections:
   - id: 68fd24e41937432aa3bded5710ca0cf5
     memo: Intro complete
@@ -81,6 +177,7 @@ MonoBehaviour:
     to:
       path: Assets/Scenes/S2.unity
     trigger: 2
+    fade: 0
     completedDialog: {fileID: 0}
     conditions: []
   - id: 10b1d61f0b8b4f6f981b9bc115765713
@@ -90,6 +187,7 @@ MonoBehaviour:
     to:
       path: Assets/Scenes/T0.unity
     trigger: 1
+    fade: 1
     completedDialog: {fileID: 11400000, guid: e2d87848c4a418a44b104466d0760f72, type: 2}
     conditions: []
   - id: 02e95392f00b44cdb659eb642ea5ccba
@@ -99,8 +197,12 @@ MonoBehaviour:
     to:
       path: Assets/Scenes/Tutorial_T3_VaseBreak.unity
     trigger: 1
+    fade: 0
     completedDialog: {fileID: 11400000, guid: 0741a2f63a685e24988170f6d1a8f74b, type: 2}
-    conditions: []
+    conditions:
+    - id: {fileID: 11400000, guid: b5979cc705284f0591c599ab10242d17, type: 2}
+      compare: 0
+      value: 1
   - id: 0f1a9818d476434187858758729c2342
     memo: Vase break complete
     from:
@@ -108,15 +210,7 @@ MonoBehaviour:
     to:
       path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
     trigger: 2
-    completedDialog: {fileID: 0}
-    conditions: []
-  - id: 676c86577f5d43c1a9960dda5be18db2
-    memo: Return to reality
-    from:
-      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
-    to:
-      path: Assets/Scenes/S3.unity
-    trigger: 2
+    fade: 0
     completedDialog: {fileID: 0}
     conditions: []
   - id: c061752ecde94cf7ac2d972610fd4b57
@@ -124,37 +218,376 @@ MonoBehaviour:
     from:
       path: Assets/Scenes/S3.unity
     to:
-      path: Assets/Scenes/T2.unity
+      path: Assets/Scenes/T1.unity
     trigger: 1
+    fade: 1
     completedDialog: {fileID: 11400000, guid: 96436b415a900544db115129845ebd8a, type: 2}
     conditions: []
-  - id: d06f52a18a3543599682f1973545a377
-    memo: Return after box search
-    from:
-      path: Assets/Scenes/Tutorial_T35_BlackoutSearch.unity
-    to:
-      path: Assets/Scenes/S#6.unity
-    trigger: 2
-    completedDialog: {fileID: 0}
-    conditions: []
-  - id: b9abfe1d87bf4ebbad8299b016b6f659
-    memo: Manual late-story search - add evidence conditions before use
-    from:
-      path: Assets/Scenes/S3.unity
-    to:
-      path: Assets/Scenes/Tutorial_T35_BlackoutSearch.unity
-    trigger: 0
-    completedDialog: {fileID: 0}
-    conditions: []
   - id: bb49a1bdc20c47de99f4c0d950000000
-    memo: T0 exit - use existing T2 until T1 is available
+    memo: T0 exit - watch sale in T1
     from:
       path: Assets/Scenes/T0.unity
     to:
-      path: Assets/Scenes/T2.unity
+      path: Assets/Scenes/T1.unity
     trigger: 0
+    fade: 0
     completedDialog: {fileID: 0}
     conditions:
     - id: {fileID: 11400000, guid: 3a624ba85a9547e08dda15fb92b5d433, type: 2}
       compare: 0
       value: 1
+  - id: ffa0b0fef720494b8b2c319a5193e8b9
+    memo: T1 watch sale finished
+    from:
+      path: Assets/Scenes/T1.unity
+    to:
+      path: Assets/Scenes/T2.unity
+    trigger: 1
+    fade: 0
+    completedDialog: {fileID: 11400000, guid: 6e27b27fd8f88014bb96a8b6b1eb902d, type: 2}
+    conditions: []
+  - id: pdf-owner-dark-search
+    memo: 'PDF: owner-dark-search'
+    from:
+      path: Assets/Scenes/S#6.unity
+    to:
+      path: Assets/Scenes/Tutorial_T35_BlackoutSearch.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 1fe7e92f8fb64e34cb38110b4664f503, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 882219bd09e73cc48a447c6584c4c779, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 985fc1ec7c45d5148ad052f9fc2b2ce8, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 85de5e4b901b4eb448aee2781b231ce4, type: 2}
+      compare: 2
+      value: 0
+  - id: pdf-found-open-box
+    memo: 'PDF: found-open-box'
+    from:
+      path: Assets/Scenes/Tutorial_T35_BlackoutSearch.unity
+    to:
+      path: Assets/Scenes/S#6.unity
+    trigger: 2
+    fade: 1
+    completedDialog: {fileID: 0}
+    conditions:
+    - id: {fileID: 11400000, guid: 85de5e4b901b4eb448aee2781b231ce4, type: 2}
+      compare: 2
+      value: 1
+  - id: pdf-late-reentry
+    memo: 'PDF: late-reentry'
+    from:
+      path: Assets/Scenes/S#6.unity
+    to:
+      path: Assets/Scenes/T1.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 92c53b54a1e72574b88ef69460c03ad4, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 96837d996a442ce44a653ab0b6124a74, type: 2}
+      compare: 2
+      value: 1
+  - id: pdf-exit-late-T1
+    memo: 'PDF: exit-late-T1'
+    from:
+      path: Assets/Scenes/T1.unity
+    to:
+      path: Assets/Scenes/S#6.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 59446408f5b99bc4784b4671c57fa289, type: 2}
+      compare: 2
+      value: 1
+  - id: pdf-exit-T1
+    memo: 'PDF: exit-T1'
+    from:
+      path: Assets/Scenes/T1.unity
+    to:
+      path: Assets/Scenes/S3.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 59446408f5b99bc4784b4671c57fa289, type: 2}
+      compare: 2
+      value: 0
+  - id: pdf-exit-late-T2
+    memo: 'PDF: exit-late-T2'
+    from:
+      path: Assets/Scenes/T2.unity
+    to:
+      path: Assets/Scenes/S#6.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 59446408f5b99bc4784b4671c57fa289, type: 2}
+      compare: 2
+      value: 1
+  - id: pdf-exit-T2
+    memo: 'PDF: exit-T2'
+    from:
+      path: Assets/Scenes/T2.unity
+    to:
+      path: Assets/Scenes/S3.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 59446408f5b99bc4784b4671c57fa289, type: 2}
+      compare: 2
+      value: 0
+  - id: pdf-exit-late-Tutorial_T3_VaseBreak
+    memo: 'PDF: exit-late-Tutorial_T3_VaseBreak'
+    from:
+      path: Assets/Scenes/Tutorial_T3_VaseBreak.unity
+    to:
+      path: Assets/Scenes/S#6.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 59446408f5b99bc4784b4671c57fa289, type: 2}
+      compare: 2
+      value: 1
+  - id: pdf-exit-Tutorial_T3_VaseBreak
+    memo: 'PDF: exit-Tutorial_T3_VaseBreak'
+    from:
+      path: Assets/Scenes/Tutorial_T3_VaseBreak.unity
+    to:
+      path: Assets/Scenes/S3.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 59446408f5b99bc4784b4671c57fa289, type: 2}
+      compare: 2
+      value: 0
+  - id: pdf-exit-late-Tutorial_T4_BroochMissing
+    memo: 'PDF: exit-late-Tutorial_T4_BroochMissing'
+    from:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    to:
+      path: Assets/Scenes/S#6.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 59446408f5b99bc4784b4671c57fa289, type: 2}
+      compare: 2
+      value: 1
+  - id: pdf-exit-Tutorial_T4_BroochMissing
+    memo: 'PDF: exit-Tutorial_T4_BroochMissing'
+    from:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    to:
+      path: Assets/Scenes/S3.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 59446408f5b99bc4784b4671c57fa289, type: 2}
+      compare: 2
+      value: 0
+  - id: pdf-start-PA-T2
+    memo: 'PDF: start-PA-T2'
+    from:
+      path: Assets/Scenes/T2.unity
+    to:
+      path: Assets/Scenes/Tutorial_PA_Alibi.unity
+    trigger: 0
+    fade: 1
+    completedDialog: {fileID: 0}
+    conditions:
+    - id: {fileID: 11400000, guid: 836a034672ae00f4c803a0985d5f3e73, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
+      compare: 2
+      value: 0
+    - id: {fileID: 11400000, guid: 6cb164bb71b1f3848ab4c0649016c72b, type: 2}
+      compare: 2
+      value: 1
+  - id: pdf-start-PB-T2
+    memo: 'PDF: start-PB-T2'
+    from:
+      path: Assets/Scenes/T2.unity
+    to:
+      path: Assets/Scenes/Tutorial_PB_Alibi.unity
+    trigger: 0
+    fade: 1
+    completedDialog: {fileID: 0}
+    conditions:
+    - id: {fileID: 11400000, guid: 836a034672ae00f4c803a0985d5f3e73, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 985fc1ec7c45d5148ad052f9fc2b2ce8, type: 2}
+      compare: 2
+      value: 0
+    - id: {fileID: 11400000, guid: b6fc8c9357fa4722a8586d1b60f61c9e, type: 2}
+      compare: 2
+      value: 1
+  - id: pdf-start-PA-Tutorial_T4_BroochMissing
+    memo: 'PDF: start-PA-Tutorial_T4_BroochMissing'
+    from:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    to:
+      path: Assets/Scenes/Tutorial_PA_Alibi.unity
+    trigger: 0
+    fade: 1
+    completedDialog: {fileID: 0}
+    conditions:
+    - id: {fileID: 11400000, guid: 836a034672ae00f4c803a0985d5f3e73, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
+      compare: 2
+      value: 0
+    - id: {fileID: 11400000, guid: 6cb164bb71b1f3848ab4c0649016c72b, type: 2}
+      compare: 2
+      value: 1
+  - id: pdf-start-PB-Tutorial_T4_BroochMissing
+    memo: 'PDF: start-PB-Tutorial_T4_BroochMissing'
+    from:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    to:
+      path: Assets/Scenes/Tutorial_PB_Alibi.unity
+    trigger: 0
+    fade: 1
+    completedDialog: {fileID: 0}
+    conditions:
+    - id: {fileID: 11400000, guid: 836a034672ae00f4c803a0985d5f3e73, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 985fc1ec7c45d5148ad052f9fc2b2ce8, type: 2}
+      compare: 2
+      value: 0
+    - id: {fileID: 11400000, guid: b6fc8c9357fa4722a8586d1b60f61c9e, type: 2}
+      compare: 2
+      value: 1
+  - id: pdf-PA-both-truths
+    memo: 'PDF: PA-both-truths'
+    from:
+      path: Assets/Scenes/Tutorial_PA_Alibi.unity
+    to:
+      path: Assets/Scenes/S#6.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: d3c76cc0fbfb53b48b011961de005609, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 985fc1ec7c45d5148ad052f9fc2b2ce8, type: 2}
+      compare: 2
+      value: 1
+  - id: pdf-PA-back-T2
+    memo: 'PDF: PA-back-T2'
+    from:
+      path: Assets/Scenes/Tutorial_PA_Alibi.unity
+    to:
+      path: Assets/Scenes/T2.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: d3c76cc0fbfb53b48b011961de005609, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 985fc1ec7c45d5148ad052f9fc2b2ce8, type: 2}
+      compare: 2
+      value: 0
+    - id: {fileID: 11400000, guid: 1870da33d3048ac42b2eb1df3ae06840, type: 2}
+      compare: 2
+      value: 2
+  - id: pdf-PA-back
+    memo: 'PDF: PA-back'
+    from:
+      path: Assets/Scenes/Tutorial_PA_Alibi.unity
+    to:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: d3c76cc0fbfb53b48b011961de005609, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 985fc1ec7c45d5148ad052f9fc2b2ce8, type: 2}
+      compare: 2
+      value: 0
+  - id: pdf-PB-both-truths
+    memo: 'PDF: PB-both-truths'
+    from:
+      path: Assets/Scenes/Tutorial_PB_Alibi.unity
+    to:
+      path: Assets/Scenes/S#6.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 3107a9d790c06984ca139a37762a2cc3, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
+      compare: 2
+      value: 1
+  - id: pdf-PB-back-T2
+    memo: 'PDF: PB-back-T2'
+    from:
+      path: Assets/Scenes/Tutorial_PB_Alibi.unity
+    to:
+      path: Assets/Scenes/T2.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 3107a9d790c06984ca139a37762a2cc3, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
+      compare: 2
+      value: 0
+    - id: {fileID: 11400000, guid: 1870da33d3048ac42b2eb1df3ae06840, type: 2}
+      compare: 2
+      value: 2
+  - id: pdf-PB-back
+    memo: 'PDF: PB-back'
+    from:
+      path: Assets/Scenes/Tutorial_PB_Alibi.unity
+    to:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 3107a9d790c06984ca139a37762a2cc3, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
+      compare: 2
+      value: 0
+  memoryVisitCount: {fileID: 11400000, guid: 4db037c0f88e42f790c0d47cd5641d09, type: 2}
+  memoryRunConditions:
+  - {fileID: 11400000, guid: 02243bd47dc440d5936ef41e99af47d4, type: 2}
+  - {fileID: 11400000, guid: 3a624ba85a9547e08dda15fb92b5d433, type: 2}
+  - {fileID: 11400000, guid: 1f8d391964f943d08d63251ea407b704, type: 2}
+  - {fileID: 11400000, guid: b5979cc705284f0591c599ab10242d17, type: 2}
+  - {fileID: 11400000, guid: 07b34bf495dc4c2888c7a2b4e4ce7f57, type: 2}
+  - {fileID: 11400000, guid: caf8579aecde4b0182f27cf136b04ea4, type: 2}
+  - {fileID: 11400000, guid: b67d5e32e82046fcbd46648a8bbeca1d, type: 2}

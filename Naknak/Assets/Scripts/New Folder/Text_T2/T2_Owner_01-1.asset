@@ -16,7 +16,10 @@ MonoBehaviour:
   text: "\uADF8\uB7FC \uBCF4\uC5EC\uC8FC\uC2DC\uC8E0."
   activatedImage: 0
   isSelect: 0
-  isEnd: 0
+  isEnd: 1
   selects: []
-  nextData: {fileID: 11400000, guid: 4863a2268c9e55d459ce72d9402e75b7, type: 2}
-  endActions: []
+  nextData: {fileID: 0}
+  endActions:
+  - type: 0
+    id: {fileID: 11400000, guid: 1f8d391964f943d08d63251ea407b704, type: 2}
+    value: 1

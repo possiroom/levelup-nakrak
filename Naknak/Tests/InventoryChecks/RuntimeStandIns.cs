@@ -9,6 +9,7 @@ namespace Naknak.Inventory
         public string Id { get; set; }
         public string DisplayName { get; set; }
         public bool IsKeyItem { get; set; }
+        public bool MemoryOnly { get; set; }
         public int MaxStack { get; set; }
     }
 }

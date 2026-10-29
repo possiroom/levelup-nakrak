@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91b08daa6dd949e6b9d9082e3829f160, type: 3}
+  m_Name: ClockworkToy
+  m_EditorClassIdentifier: 
+  id: evidence-clockwork-toy
+  displayName: "\uD0DC\uC5FD \uC7A5\uB09C\uAC10"
+  description: "\uAF43\uBCD1 \uC548\uC5D0 \uC228\uACA8\uC838 \uC788\uB358 \uC7A5\uB09C\uAC10.
+    \uD0DC\uC5FD\uACFC \uB098\uC0AC\uB85C \uC6C0\uC9C1\uC778\uB2E4."
+  icon: {fileID: 0}
+  keyItem: 1
+  memoryOnly: 0
+  inspectionDialogs: {fileID: 0}
+  inspectionResult: {fileID: 0}
+  descriptionCondition: {fileID: 0}
+  changedDescription: 
+  maxStack: 1

@@ -23,7 +23,7 @@ public sealed class TutorialRoom0 : MonoBehaviour
     private IEnumerator Start()
     {
         while (GameMenuController.Instance == null || ConditionManager.Instance == null ||
-               SceneLoadManager.IsRestoringSession || GameMenuController.IsBlockingGameplay) yield return null;
+               SceneLoadManager.IsRestoringSession || SceneLoadManager.IsPreparingMemory || GameMenuController.IsBlockingGameplay) yield return null;
         if (brooch == null || packedBox == null || initialized == null || packed == null)
         { Debug.LogError("[T0] 아이템과 진행 조건 연결을 확인해주세요.", this); yield break; }
         var inventory = GameMenuController.Inventory;

@@ -33,11 +33,18 @@ public class TutorialT3T4SceneController : MonoBehaviour
     [SerializeField] private bool handleDialogInputHere = true;
     [SerializeField] private KeyCode nextKey = KeyCode.Z;
 
+    [Header("T3 - Story")]
+    [SerializeField] private DialogContainer t3ReactionDialog;
+    [SerializeField] private ConditionID t3Occurred;
+    public enum T3Phase { WaitingForServices, Flicker, Dark, VaseBroken, Reaction, Finished }
+    public T3Phase Phase { get; private set; }
+    private bool completionSent;
+
     [Header("T3 - Dark Overlay")]
-    [Tooltip("È­¸é ÀüÃ¼¸¦ µ¤´Â °ËÀº UI Image")]
+    [Tooltip("í™”ë©´ ì „ì²´ë¥¼ ë®ëŠ” ê²€ì€ UI Image")]
     [SerializeField] private Image darkOverlayImage;
 
-    [SerializeField, Range(0f, 1f)] private float darkAlpha = 0.75f;
+    [SerializeField, Range(0f, 1f)] private float darkAlpha = 1f;
 
     [Header("T3 - Flicker")]
     [SerializeField] private int flickerCount = 3;
@@ -83,11 +90,22 @@ public class TutorialT3T4SceneController : MonoBehaviour
     {
         yield return null;
 
+        if (sceneType == TimelineSceneType.T3_VaseBreak)
+        {
+            Phase = T3Phase.WaitingForServices;
+            while (SceneLoadManager.IsLoading || SceneLoadManager.IsRestoringSession || SceneLoadManager.IsPreparingMemory || GameMenuController.IsBlockingGameplay ||
+                   DialogManager.Instance == null || !DialogManager.Instance.CanShowDialog || DialogManager.Instance.IsDialogOpen)
+                yield return null;
+            DialogManager.Instance.BindSceneViews(gameObject.scene);
+        }
+
         yield return RunScene();
     }
 
     private void Update()
     {
+        // Managed scenes have one input owner; otherwise one key advances twice.
+        if (SceneLoadManager.HasManagedScene || GameMenuController.IsBlockingGameplay) return;
         if (!waitingForDialogEnd)
             return;
 
@@ -132,6 +150,18 @@ public class TutorialT3T4SceneController : MonoBehaviour
             yield return RunT4();
         }
 
+        if (sceneType == TimelineSceneType.T3_VaseBreak && Phase == T3Phase.Finished && SceneLoadManager.HasManagedScene)
+        {
+            yield return new WaitForSeconds(waitBeforeLoadNextScene);
+            if (!completionSent)
+            {
+                completionSent = true;
+                if (!SceneLoadManager.Instance.TryCompleteScene())
+                    Debug.LogWarning("[T3] Scene Flow Containerì˜ T3 ì™„ë£Œ ì—°ê²°ì„ í™•ì¸í•´ì£¼ì„¸ìš”.", this);
+            }
+            yield break;
+        }
+
         if (loadNextSceneAfterEnd && !string.IsNullOrEmpty(nextSceneName))
         {
             yield return new WaitForSeconds(waitBeforeLoadNextScene);
@@ -145,8 +175,10 @@ public class TutorialT3T4SceneController : MonoBehaviour
 
         yield return new WaitForSeconds(waitBeforeBreak);
 
+        Phase = T3Phase.Flicker;
         yield return FlickerLight();
 
+        Phase = T3Phase.Dark;
         yield return FadeDarkOverlay(darkAlpha, darkFadeInTime);
 
         yield return new WaitForSeconds(waitAfterLightsOffBeforeBreak);
@@ -157,6 +189,8 @@ public class TutorialT3T4SceneController : MonoBehaviour
         if (vaseBroken != null)
             vaseBroken.SetActive(true);
 
+        Phase = T3Phase.VaseBroken;
+        if (t3Occurred != null && ConditionManager.Instance != null) ConditionManager.Instance.Set(t3Occurred, 1);
         PlayVaseBreakSound();
 
         yield return new WaitForSeconds(waitAfterBreak);
@@ -164,20 +198,31 @@ public class TutorialT3T4SceneController : MonoBehaviour
         if (restoreLightAfterBreak)
             yield return FadeDarkOverlay(0f, darkFadeOutTime);
 
-        StoryData t3Story = CreateStoryChain(
+        StoryData t3Story = t3ReactionDialog != null ? t3ReactionDialog.GetMatchingDialog() : CreateStoryChain(
             "T3",
             new CutsceneLine[]
             {
-                new CutsceneLine("Àü´çÆ÷ ÁÖÀÎ", "ÀÌ·± Á¨Àå! ´©°¡ °Çµå·È¾î?")
+                new CutsceneLine("ì „ë‹¹í¬ ì£¼ì¸", "ì´ëŸ° ì  ì¥! ëˆ„ê°€ ê±´ë“œë ¸ì–´?")
             }
         );
 
-        yield return PlayStory(t3Story);
+        Phase = T3Phase.Reaction;
+        if (t3Story == null)
+        {
+            Debug.LogError("[T3] ë°˜ì‘ ëŒ€í™” ì»¨í…Œì´ë„ˆì˜ ì‹œì‘ ëŒ€ì‚¬ì™€ ì¡°ê±´ì„ í™•ì¸í•´ì£¼ì„¸ìš”.", this);
+            yield break;
+        }
+        waitingForDialogEnd = true;
+        DialogManager.Instance.ShowDialog(t3Story);
+        yield return null;
+        while (DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen) yield return null;
+        waitingForDialogEnd = false;
 
         if (t3InvestigationObjects != null)
             t3InvestigationObjects.SetActive(true);
 
-        Debug.Log("[TutorialT3T4SceneController] T3 Á¾·á. Á¶»ç °¡´É »óÅÂ.");
+        Phase = T3Phase.Finished;
+        Debug.Log("[TutorialT3T4SceneController] T3 ì¢…ë£Œ. ì¡°ì‚¬ ê°€ëŠ¥ ìƒíƒœ.");
     }
 
     private IEnumerator RunT4()
@@ -188,16 +233,16 @@ public class TutorialT3T4SceneController : MonoBehaviour
             "T4",
             new CutsceneLine[]
             {
-                new CutsceneLine("Á¶¼ö", "Àá±ñ¸¸¿ä. Á¦ ºê·ÎÄ¡ºÎÅÍ µ¹·ÁÁÖ¼¼¿ä."),
-                new CutsceneLine("ÁÖÀÎ", "¾Æ, ±×·¡. ¿©±â ÀÖ¼Ò."),
-                new CutsceneLine("", "[ºê·ÎÄ¡°¡ ¾ø´Â º¸¼®ÇÔ ¾ÆÀÌÅÛÀ» È¹µæÇÑ´Ù.]"),
-                new CutsceneLine("Á¶¼ö", "¡¦¡¦."),
-                new CutsceneLine("Á¶¼ö", "ºê·ÎÄ¡°¡ ¾ø´Âµ¥¿ä."),
-                new CutsceneLine("ÁÖÀÎ", "¹¹?"),
-                new CutsceneLine("Á¶¼ö", "ºĞ¸í ¿©±â ³Ö¾îµ×Àİ¾Æ¿ä."),
-                new CutsceneLine("ÁÖÀÎ", "³­ ±×´ë·Î µ¹·ÁÁá¼Ò."),
-                new CutsceneLine("Á¶¼ö", "Áö±İ Àå³­ÇÏ¼¼¿ä?"),
-                new CutsceneLine("ÁÖÀÎ", "³ªÇÑÅ× µûÁ®ºÁ¾ß ¼Ò¿ë¾ø¼Ò!")
+                new CutsceneLine("ì¡°ìˆ˜", "ì ê¹ë§Œìš”. ì œ ë¸Œë¡œì¹˜ë¶€í„° ëŒë ¤ì£¼ì„¸ìš”."),
+                new CutsceneLine("ì£¼ì¸", "ì•„, ê·¸ë˜. ì—¬ê¸° ìˆì†Œ."),
+                new CutsceneLine("", "[ë¸Œë¡œì¹˜ê°€ ì—†ëŠ” ë³´ì„í•¨ ì•„ì´í…œì„ íšë“í•œë‹¤.]"),
+                new CutsceneLine("ì¡°ìˆ˜", "â€¦â€¦."),
+                new CutsceneLine("ì¡°ìˆ˜", "ë¸Œë¡œì¹˜ê°€ ì—†ëŠ”ë°ìš”."),
+                new CutsceneLine("ì£¼ì¸", "ë­?"),
+                new CutsceneLine("ì¡°ìˆ˜", "ë¶„ëª… ì—¬ê¸° ë„£ì–´ë’€ì–ì•„ìš”."),
+                new CutsceneLine("ì£¼ì¸", "ë‚œ ê·¸ëŒ€ë¡œ ëŒë ¤ì¤¬ì†Œ."),
+                new CutsceneLine("ì¡°ìˆ˜", "ì§€ê¸ˆ ì¥ë‚œí•˜ì„¸ìš”?"),
+                new CutsceneLine("ì£¼ì¸", "ë‚˜í•œí…Œ ë”°ì ¸ë´ì•¼ ì†Œìš©ì—†ì†Œ!")
             }
         );
 
@@ -206,7 +251,7 @@ public class TutorialT3T4SceneController : MonoBehaviour
         if (showEmptyJewelryBoxAfterDialog && emptyJewelryBoxObject != null)
             emptyJewelryBoxObject.SetActive(true);
 
-        Debug.Log("[TutorialT3T4SceneController] T4 Á¾·á. ÇÃ·¹ÀÌ¾î ÀÌµ¿ °¡´É »óÅÂ.");
+        Debug.Log("[TutorialT3T4SceneController] T4 ì¢…ë£Œ. í”Œë ˆì´ì–´ ì´ë™ ê°€ëŠ¥ ìƒíƒœ.");
     }
 
     private void SetupT3StartState()
@@ -285,13 +330,13 @@ public class TutorialT3T4SceneController : MonoBehaviour
 
         if (vaseBreakClip == null)
         {
-            Debug.LogWarning("[TutorialT3T4SceneController] Vase Break ClipÀÌ ºñ¾î ÀÖ½À´Ï´Ù. ±úÁö´Â È¿°úÀ½ÀÌ Àç»ıµÇÁö ¾Ê½À´Ï´Ù.");
+            Debug.LogWarning("[TutorialT3T4SceneController] Vase Break Clipì´ ë¹„ì–´ ìˆìŠµë‹ˆë‹¤. ê¹¨ì§€ëŠ” íš¨ê³¼ìŒì´ ì¬ìƒë˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
             return;
         }
 
         if (audioSource == null)
         {
-            Debug.LogWarning("[TutorialT3T4SceneController] AudioSource°¡ ¾ø½À´Ï´Ù. ±úÁö´Â È¿°úÀ½ÀÌ Àç»ıµÇÁö ¾Ê½À´Ï´Ù.");
+            Debug.LogWarning("[TutorialT3T4SceneController] AudioSourceê°€ ì—†ìŠµë‹ˆë‹¤. ê¹¨ì§€ëŠ” íš¨ê³¼ìŒì´ ì¬ìƒë˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
             return;
         }
 
@@ -370,13 +415,13 @@ public class TutorialT3T4SceneController : MonoBehaviour
     {
         if (storyData == null)
         {
-            Debug.LogWarning("[TutorialT3T4SceneController] StoryData°¡ ºñ¾î ÀÖ½À´Ï´Ù.");
+            Debug.LogWarning("[TutorialT3T4SceneController] StoryDataê°€ ë¹„ì–´ ìˆìŠµë‹ˆë‹¤.");
             yield break;
         }
 
         if (DialogManager.Instance == null)
         {
-            Debug.LogError("[TutorialT3T4SceneController] DialogManager.Instance°¡ ¾ø½À´Ï´Ù.");
+            Debug.LogError("[TutorialT3T4SceneController] DialogManager.Instanceê°€ ì—†ìŠµë‹ˆë‹¤.");
             yield break;
         }
 
@@ -408,7 +453,7 @@ public class TutorialT3T4SceneController : MonoBehaviour
         {
             if (GameStateManager.Instance == null)
             {
-                Debug.LogError("[TutorialT3T4SceneController] DialogViewerµµ ¾ø°í GameStateManagerµµ ¾ø¾î ´ë»ç Á¾·á¸¦ °¨ÁöÇÒ ¼ö ¾ø½À´Ï´Ù.");
+                Debug.LogError("[TutorialT3T4SceneController] DialogViewerë„ ì—†ê³  GameStateManagerë„ ì—†ì–´ ëŒ€ì‚¬ ì¢…ë£Œë¥¼ ê°ì§€í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
                 waitingForDialogEnd = false;
                 yield break;
             }
