@@ -6,7 +6,7 @@ using UnityEngine;
 [CustomPropertyDrawer(typeof(InvestigationPoint.Rule))]
 public sealed class InvestigationRuleDrawer : PropertyDrawer
 {
-    static readonly string[] Fields = { "memo", "conditions", "requiredItems", "anyItems", "rewards", "actions", "dialogue", "showUnknownSpace" };
+    static readonly string[] Fields = { "memo", "conditions", "requiredItems", "anyItems", "rewards", "actions", "dialogue", "showUnknownSpace", "presentEvidence", "evidencePrompt", "evidenceConditions", "wrongEvidenceDialog", "missingEvidenceDialog" };
     const float Gap = 2;
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)

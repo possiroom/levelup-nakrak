@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: T3_OwnerReaction
   m_EditorClassIdentifier:
   charName: 전당포 주인
-  text: 이런 젠장! 누가 건드렸어?
+  text: 아, 켜졌군.
   activatedImage: 0
   isSelect: 0
   isEnd: 1

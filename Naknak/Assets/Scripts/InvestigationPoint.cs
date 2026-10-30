@@ -19,6 +19,11 @@ public sealed class InvestigationPoint : MonoBehaviour, IInteractable
         public List<DialogAction> actions = new List<DialogAction>();
         public StoryData dialogue;
         public bool showUnknownSpace;
+        public bool presentEvidence;
+        public string evidencePrompt;
+        public List<DialogCondition> evidenceConditions = new List<DialogCondition>();
+        public StoryData wrongEvidenceDialog;
+        public StoryData missingEvidenceDialog;
         public string connectionId;
     }
 
@@ -46,27 +51,68 @@ public sealed class InvestigationPoint : MonoBehaviour, IInteractable
         var inventory = GameMenuController.Inventory;
         foreach (var rule in rules)
         {
-            if (rule == null || !SceneFlowContainer.Passes(rule.conditions) ||
-                rule.requiredItems.Any(item => item == null || !inventory.Has(item.Id)) ||
-                rule.anyItems.Length > 0 && !rule.anyItems.Any(item => item != null && inventory.Has(item.Id))) continue;
-            var rewards = new List<InventoryEntry>();
-            foreach (var item in rule.rewards)
-            {
-                if (item == null) { Debug.LogError("[Investigation] Missing reward asset: " + name, this); return; }
-                // Evidence is unique. Also accept older checkpoints containing the item but not its new flag.
-                if (!inventory.Has(item.Id)) rewards.Add(new InventoryEntry(item.Id, 1));
-            }
-            if (!inventory.TryAddAll(rewards)) return;
-            ConditionManager.Instance.ExecuteActions(rule.actions);
-            if (!string.IsNullOrEmpty(rule.connectionId))
-            {
-                var connection = flow != null ? flow.connections.Find(row => row.id == rule.connectionId) : null;
-                if (connection != null) SceneLoadManager.Instance?.Travel(flow, connection);
-                return;
-            }
-            if (rule.dialogue != null) StartCoroutine(Talk(rule));
+            if (rule == null || !SceneFlowContainer.Passes(rule.conditions)) continue;
+            if (rule.presentEvidence) { BeginEvidencePresentation(rule); return; }
+            if (!HasRequiredEvidence(rule, inventory)) continue;
+            Execute(rule);
             return;
         }
+    }
+
+    private static bool HasRequiredEvidence(Rule rule, InventoryModel inventory) =>
+        rule.requiredItems.All(item => item != null && inventory.Has(item.Id)) &&
+        (rule.anyItems.Length == 0 || rule.anyItems.Any(item => item != null && inventory.Has(item.Id)));
+
+    private void BeginEvidencePresentation(Rule rule)
+    {
+        busy = true;
+        if (!GameMenuController.Instance.SelectInventoryItem(rule.evidencePrompt,
+                item => SubmitEvidence(rule, item), () => busy = false)) busy = false;
+    }
+
+    private void SubmitEvidence(Rule rule, InventoryItem item)
+    {
+        busy = false;
+        if (this == null || !isActiveAndEnabled || SceneLoadManager.IsLoading || SceneLoadManager.IsRestoringSession ||
+            SceneLoadManager.IsCutscene || GameMenuController.IsBlockingGameplay || ConditionManager.Instance == null ||
+            GameMenuController.Instance == null || DialogManager.Instance == null || !DialogManager.Instance.CanShowDialog ||
+            DialogManager.Instance.IsDialogOpen || memoryOnly && !SceneLoadManager.IsMemorySpace ||
+            GameStateManager.Instance != null && GameStateManager.Instance.GameState != GameState.Gameplay) return;
+
+        var inventory = GameMenuController.Inventory;
+        bool related = item != null && inventory.Has(item.Id) &&
+            rule.requiredItems.Concat(rule.anyItems).Any(evidence => evidence != null && evidence.Id == item.Id);
+        if (!related) { Explain(rule.wrongEvidenceDialog); return; }
+        if (!SceneFlowContainer.Passes(rule.conditions) || !SceneFlowContainer.Passes(rule.evidenceConditions) ||
+            !HasRequiredEvidence(rule, inventory)) { Explain(rule.missingEvidenceDialog); return; }
+
+        // Presenting proof does not consume it. The same evidence remains available for later deductions and saves.
+        Execute(rule);
+    }
+
+    private void Explain(StoryData dialogue)
+    {
+        if (dialogue != null) StartCoroutine(Talk(new Rule { dialogue = dialogue }));
+    }
+
+    private void Execute(Rule rule)
+    {
+        var connection = !string.IsNullOrEmpty(rule.connectionId) && flow != null ?
+            flow.connections.Find(row => row.id == rule.connectionId) : null;
+        if (!string.IsNullOrEmpty(rule.connectionId) &&
+            (connection == null || !SceneFlowContainer.Passes(connection.conditions)))
+        { Explain(rule.missingEvidenceDialog); return; }
+        var inventory = GameMenuController.Inventory;
+        var rewards = new List<InventoryEntry>();
+        foreach (var item in rule.rewards)
+        {
+            if (item == null) { Debug.LogError("[Investigation] Missing reward asset: " + name, this); return; }
+            if (!inventory.Has(item.Id)) rewards.Add(new InventoryEntry(item.Id, 1));
+        }
+        if (!inventory.TryAddAll(rewards)) return;
+        ConditionManager.Instance.ExecuteActions(rule.actions);
+        if (connection != null) { SceneLoadManager.Instance?.Travel(flow, connection); return; }
+        if (rule.dialogue != null) StartCoroutine(Talk(rule));
     }
 
     private IEnumerator Talk(Rule rule)

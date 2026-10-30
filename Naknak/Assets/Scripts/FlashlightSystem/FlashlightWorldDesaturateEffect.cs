@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 namespace Naknak.FlashlightSystem
 {
@@ -15,6 +16,8 @@ namespace Naknak.FlashlightSystem
         private readonly List<RendererMaterialState> rendererMaterialStates = new List<RendererMaterialState>();
         private Material desaturateMaterial;
         private bool applied;
+        private HashSet<Transform> sceneExclusions;
+        private Scene? sceneScope;
 
         private void OnDisable()
         {
@@ -23,7 +26,12 @@ namespace Naknak.FlashlightSystem
 
         private void LateUpdate()
         {
-            if (!applied || desaturateMaterial == null)
+            UpdateMaterial();
+        }
+
+        private void UpdateMaterial()
+        {
+            if (desaturateMaterial == null)
                 return;
 
             Vector3 center = player != null ? player.position : Vector3.zero;
@@ -52,9 +60,10 @@ namespace Naknak.FlashlightSystem
             }
 
             desaturateMaterial = new Material(shader);
+            UpdateMaterial();
 
             Renderer[] renderers = FindObjectsByType<Renderer>(
-                FindObjectsInactive.Exclude,
+                sceneScope.HasValue ? FindObjectsInactive.Include : FindObjectsInactive.Exclude,
                 FindObjectsSortMode.None);
 
             foreach (Renderer targetRenderer in renderers)
@@ -73,6 +82,15 @@ namespace Naknak.FlashlightSystem
             }
 
             applied = true;
+        }
+
+        // Scope memory styling to its content scene, including props activated later in a cutscene.
+        public void ApplyToScene(Scene scene, IEnumerable<Transform> keepColor)
+        {
+            Clear();
+            sceneScope = scene;
+            sceneExclusions = keepColor != null ? new HashSet<Transform>(keepColor) : null;
+            Apply();
         }
 
         public void Clear()
@@ -111,6 +129,8 @@ namespace Naknak.FlashlightSystem
         {
             if (targetRenderer == null)
                 return false;
+            if (sceneScope.HasValue && targetRenderer.gameObject.scene != sceneScope.Value)
+                return false;
 
             if (targetRenderer.GetComponentInParent<Canvas>() != null)
                 return false;
@@ -120,6 +140,9 @@ namespace Naknak.FlashlightSystem
 
             foreach (var excluded in exclusions)
                 if (excluded != null && targetRenderer.transform.IsChildOf(excluded)) return false;
+            if (sceneExclusions != null)
+                foreach (var excluded in sceneExclusions)
+                    if (excluded != null && targetRenderer.transform.IsChildOf(excluded)) return false;
 
             return targetRenderer is SpriteRenderer || targetRenderer is TilemapRenderer;
         }

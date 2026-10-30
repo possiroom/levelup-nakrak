@@ -45,6 +45,9 @@ public class TutorialT3T4SceneController : MonoBehaviour
     [SerializeField] private Image darkOverlayImage;
 
     [SerializeField, Range(0f, 1f)] private float darkAlpha = 1f;
+    [SerializeField] private ConditionID s3Seen;
+    [Tooltip("Black overlay opacity when revisiting T3 after the S3 testimonies.")]
+    [SerializeField, Range(0f, 1f)] private float afterS3DarkAlpha = 0.5f;
 
     [Header("T3 - Flicker")]
     [SerializeField] private int flickerCount = 3;
@@ -172,6 +175,7 @@ public class TutorialT3T4SceneController : MonoBehaviour
     private IEnumerator RunT3()
     {
         SetupT3StartState();
+        bool afterS3 = s3Seen != null && ConditionManager.Instance != null && ConditionManager.Instance.Get(s3Seen) != 0;
 
         yield return new WaitForSeconds(waitBeforeBreak);
 
@@ -179,7 +183,7 @@ public class TutorialT3T4SceneController : MonoBehaviour
         yield return FlickerLight();
 
         Phase = T3Phase.Dark;
-        yield return FadeDarkOverlay(darkAlpha, darkFadeInTime);
+        yield return FadeDarkOverlay(afterS3 ? afterS3DarkAlpha : darkAlpha, darkFadeInTime);
 
         yield return new WaitForSeconds(waitAfterLightsOffBeforeBreak);
 

@@ -23,6 +23,9 @@ public static class T3CutsceneVerification
         var occurred = ScriptableObject.CreateInstance<ConditionID>();
         occurred.name = "T3Occurred";
         AssetDatabase.CreateAsset(occurred, "Assets/Resources/T3Occurred.asset");
+        var s3Seen = ScriptableObject.CreateInstance<ConditionID>();
+        s3Seen.name = "S3Seen";
+        AssetDatabase.CreateAsset(s3Seen, "Assets/Resources/S3Seen.asset");
         var story = ScriptableObject.CreateInstance<StoryData>();
         story.charName = "전당포 주인"; story.text = "이런 젠장! 누가 건드렸어?"; story.isEnd = true;
         AssetDatabase.CreateAsset(story, "Assets/Resources/T3ReactionLine.asset");
@@ -42,8 +45,10 @@ public static class T3CutsceneVerification
         var broken = new GameObject("T3 Vase Broken"); broken.SetActive(false);
         var investigations = new GameObject("T3 Investigations"); investigations.SetActive(false);
         var overlayObject = new GameObject("T3 Blackout", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        overlayObject.GetComponent<Image>().color = Color.clear;
         var director = new GameObject("T3 Director").AddComponent<TutorialT3T4SceneController>();
         Set(director, "t3ReactionDialog", container); Set(director, "t3Occurred", occurred);
+        Set(director, "s3Seen", AssetDatabase.LoadAssetAtPath<ConditionID>("Assets/Resources/S3Seen.asset"));
         Set(director, "vaseNormal", normal); Set(director, "vaseBroken", broken);
         Set(director, "t3InvestigationObjects", investigations); Set(director, "darkOverlayImage", overlayObject.GetComponent<Image>());
         Set(director, "flickerCount", 1); Set(director, "flickerDarkTime", 0.03f); Set(director, "flickerLightTime", 0.03f);
@@ -85,6 +90,8 @@ public static class T3CutsceneVerification
             if (director.Phase == TutorialT3T4SceneController.T3Phase.VaseBroken)
             {
                 sawBreak = true;
+                var overlay = (Image)typeof(TutorialT3T4SceneController).GetField("darkOverlayImage", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(director);
+                assert(overlay.color == Color.black, "Before S3, the blackout is completely opaque while the vase breaks");
                 var normal = SceneManager.GetSceneByName("TestT3").GetRootGameObjects();
                 foreach (var root in normal)
                 {
@@ -110,5 +117,20 @@ public static class T3CutsceneVerification
         assert(player.enabled && renderer.enabled, "Leaving T3 restores normal player control");
         assert(ConditionManager.Instance.Get(condition) == 1, "T3 event state survives the next scene");
         SceneManager.sceneLoaded -= Loaded;
+
+        ConditionManager.Instance.Set(Resources.Load<ConditionID>("S3Seen"), 1);
+        yield return SceneLoadManager.Instance.LoadContent("TestT3");
+        director = UnityEngine.Object.FindFirstObjectByType<TutorialT3T4SceneController>();
+        while (director.Phase != TutorialT3T4SceneController.T3Phase.VaseBroken) yield return null;
+        var replayOverlay = (Image)typeof(TutorialT3T4SceneController).GetField("darkOverlayImage", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(director);
+        assert(Mathf.Approximately(replayOverlay.color.a, 0.5f), "After S3, T3 uses a 50 percent black overlay");
+        assert(!player.enabled && SceneLoadManager.IsCutscene, "T3 keeps movement locked during replay blackout");
+        while (director.Phase != TutorialT3T4SceneController.T3Phase.Reaction) yield return null;
+        assert(Mathf.Approximately(replayOverlay.color.a, 0f) && DialogManager.Instance.IsDialogOpen,
+            "Lights return before the owner's line begins");
+        DialogManager.Instance.NextDialog();
+        if (DialogManager.Instance.IsDialogOpen) DialogManager.Instance.NextDialog();
+        while (!SceneManager.GetSceneByName("TestT4").isLoaded || SceneLoadManager.IsLoading) yield return null;
+        assert(player.enabled, "Finishing the owner's line advances to T4 and restores movement");
     }
 }

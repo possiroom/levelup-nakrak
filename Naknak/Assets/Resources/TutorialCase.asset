@@ -39,8 +39,7 @@ MonoBehaviour:
     - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
       compare: 2
       value: 1
-    text: "A\uC640 B\uC758 \uC9C4\uC220\uC744 \uAC80\uC99D\uD560 \uC99D\uAC70\uB97C
-      \uBAA8\uC73C\uACE0 \uB450 \uC0AC\uB78C\uC744 \uC870\uC0AC\uD558\uC790."
+    text: "A와 B의 진술을 검증할 증거를 모으고 두 사람에게 제시하자."
   - scene:
       path: Assets/Scenes/T2.unity
     conditions: []
@@ -60,8 +59,7 @@ MonoBehaviour:
     - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
       compare: 2
       value: 1
-    text: "A\uC640 B\uC758 \uC9C4\uC220\uC744 \uAC80\uC99D\uD560 \uC99D\uAC70\uB97C
-      \uBAA8\uC73C\uACE0 \uB450 \uC0AC\uB78C\uC744 \uC870\uC0AC\uD558\uC790."
+    text: "A와 B의 진술을 검증할 증거를 모으고 두 사람에게 제시하자."
   - scene:
       path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
     conditions: []

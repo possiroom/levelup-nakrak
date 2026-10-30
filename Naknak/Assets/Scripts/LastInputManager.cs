@@ -119,13 +119,6 @@ public class LastInputManager : MonoBehaviour
         return Input.GetKeyDown(KeyCode.Z);
     }
 
-    public bool GetKeyDownJump()
-    {
-        if (GameMenuController.IsBlockingGameplay) return false;
-        if (ignoreInputTime > 0f) return false;
-        return Input.GetKeyDown(KeyCode.Space);
-    }
-
     public bool GetKeyRun()
     {
         if (GameMenuController.IsBlockingGameplay) return false;

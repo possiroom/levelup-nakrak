@@ -17,6 +17,7 @@ public sealed class TutorialScene1Cutscene : MonoBehaviour
     [SerializeField] private Transform[] detectiveWaypoints = new Transform[0];
     [SerializeField] private Transform detectiveCenterPoint;
     [SerializeField, Min(0.1f)] private float walkSpeed = 2.5f;
+    [SerializeField] private Vector2 detectiveFinalFacing = Vector2.left;
 
     [Header("카메라 포인트")]
     [SerializeField] private Camera cutsceneCamera;
@@ -28,6 +29,7 @@ public sealed class TutorialScene1Cutscene : MonoBehaviour
     [SerializeField, Min(0.1f)] private float openingCameraSize = 2.6f;
     [SerializeField, Min(0.1f)] private float groupCameraSize = 3.8f;
     [SerializeField, Min(0f)] private float cameraMoveTime = 0.7f;
+    [SerializeField] private bool followDetectiveDuringWalk = true;
 
     [Header("페이드인")]
     [SerializeField] private Image fadeImage;
@@ -89,7 +91,7 @@ public sealed class TutorialScene1Cutscene : MonoBehaviour
             foreach (var point in detectiveWaypoints)
                 if (point != null) yield return WalkTo(point.position);
         yield return WalkTo(detectiveCenterPoint.position);
-        SetWalking(false, Vector2.up);
+        SetWalking(false, detectiveFinalFacing);
         yield return MoveCamera(groupCameraPoint, groupCameraSize);
 
         phase = CutscenePhase.Investigation;
@@ -138,6 +140,11 @@ public sealed class TutorialScene1Cutscene : MonoBehaviour
         {
             SetWalking(true, target - detective.position);
             detective.position = Vector3.MoveTowards(detective.position, target, walkSpeed * Time.deltaTime);
+            if (followDetectiveDuringWalk && cutsceneCamera != null)
+            {
+                var focus = new Vector3(detective.position.x, detective.position.y + 1f, cutsceneCamera.transform.position.z);
+                cutsceneCamera.transform.position = Vector3.Lerp(cutsceneCamera.transform.position, focus, 4f * Time.deltaTime);
+            }
             yield return null;
         }
         detective.position = target;

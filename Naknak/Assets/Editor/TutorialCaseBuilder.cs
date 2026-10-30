@@ -213,6 +213,7 @@ public static class TutorialCaseBuilder
         Line("DriverFound", "B가 가진 일자 드라이버를 조사했다. 작은 물건을 열기에 충분히 튼튼하다.");
         Line("ToyFound", "꽃병 안에서 태엽 장난감을 발견했다.");
         Line("AlreadyChecked", "이미 조사한 곳이다. 다른 단서를 찾아보자.");
+        Line("WrongEvidence", "이 물건으로는 이 사람의 실제 동선을 설명할 수 없어. 다른 증거를 제시해 보자.", "주인공");
         Line("PhoneClue", "전화기가 비스듬하게 놓여 있다. 누군가 전화기를 사용한 흔적이다.");
         Line("CabinetClue", "2번 진열장의 잠금장치에 억지로 비틀어 연 흔적이 있다.");
         Line("AHint", "A의 이야기를 검증하려면 회중시계, 시계 상자, 반송된 편지와 전화기의 흔적을 확인해야 한다.", "주인공");
@@ -303,26 +304,34 @@ public static class TutorialCaseBuilder
         var b = Objects(scene).FirstOrDefault(o => o.name == "B");
         if (b == null) b = CloneActor(actorB, root.transform, "B", new Vector2(2, 1));
         var arules = new List<InvestigationPoint.Rule>();
+        arules.Add(Rule(Existing("WatchBoxFoundHeavy"), new[] { C("ABoxCollected", 0), C("T3Occurred") }, new[] { "WatchBox" }, new[] { "ABoxCollected" }));
+        arules.Add(Rule(Existing("WatchBoxFound"), new[] { C("ABoxCollected", 0), C("T3Occurred", 0) }, new[] { "WatchBox" }, new[] { "ABoxCollected" }));
         if (name == T4 || name == "T2")
         {
             string route = Route("start-PA-" + name, name, "Tutorial_PA_Alibi", SceneConnectionTrigger.Manual, null, C("S3Seen"), C("PACompleted", 0), C("PhoneInspected"));
-            var deduction = Rule(null, new[] { C("S3Seen"), C("PACompleted", 0), C("PhoneInspected") }, required: new[] { "PocketWatch", "WatchBox" });
+            var deduction = Rule(null, new[] { C("S3Seen"), C("PACompleted", 0) }, required: new[] { "PocketWatch", "WatchBox" });
+            deduction.presentEvidence = true;
+            deduction.evidencePrompt = "A의 실제 동선을 확인할 증거를 제시하세요.";
+            deduction.evidenceConditions.Add(C("PhoneInspected"));
+            deduction.wrongEvidenceDialog = Existing("WrongEvidence"); deduction.missingEvidenceDialog = Existing("AHint");
             deduction.actions.Add(A("DeductionReturnPhase", name == "T2" ? 2 : 4));
             deduction.anyItems = new[] { items["ReturnedLetter"], items["CrumpledLetter"] }; deduction.connectionId = route; arules.Add(deduction);
         }
-        arules.Add(Rule(Existing("WatchBoxFoundHeavy"), new[] { C("ABoxCollected", 0), C("T3Occurred") }, new[] { "WatchBox" }, new[] { "ABoxCollected" }));
-        arules.Add(Rule(Existing("WatchBoxFound"), new[] { C("ABoxCollected", 0), C("T3Occurred", 0) }, new[] { "WatchBox" }, new[] { "ABoxCollected" }));
         arules.Add(Rule(Existing("ATruthRepeat"), new[] { C("PACompleted") })); arules.Add(Rule(Existing("AHint")));
         ConfigurePoint(a, true, null, arules.ToArray());
         var brules = new List<InvestigationPoint.Rule>();
+        brules.Add(Rule(Existing("DriverFound"), new[] { C("DriverCollected", 0) }, new[] { "FlatheadDriver" }, new[] { "DriverCollected" }));
         if (name == T4 || name == "T2")
         {
             string route = Route("start-PB-" + name, name, "Tutorial_PB_Alibi", SceneConnectionTrigger.Manual, null, C("S3Seen"), C("PBCompleted", 0), C("T4CabinetInspected"));
-            var deduction = Rule(null, new[] { C("S3Seen"), C("PBCompleted", 0), C("T4CabinetInspected") }, required: new[] { "FlatheadDriver", "ExpiredPawnTicket", "Spring", "Screw" });
+            var deduction = Rule(null, new[] { C("S3Seen"), C("PBCompleted", 0) }, required: new[] { "FlatheadDriver", "ExpiredPawnTicket", "Spring", "Screw" });
+            deduction.presentEvidence = true;
+            deduction.evidencePrompt = "B의 실제 동선을 확인할 증거를 제시하세요.";
+            deduction.evidenceConditions.Add(C("T4CabinetInspected"));
+            deduction.wrongEvidenceDialog = Existing("WrongEvidence"); deduction.missingEvidenceDialog = Existing("BHint");
             deduction.actions.Add(A("DeductionReturnPhase", name == "T2" ? 2 : 4));
             deduction.connectionId = route; brules.Add(deduction);
         }
-        brules.Add(Rule(Existing("DriverFound"), new[] { C("DriverCollected", 0) }, new[] { "FlatheadDriver" }, new[] { "DriverCollected" }));
         brules.Add(Rule(Existing("BTruthRepeat"), new[] { C("PBCompleted") })); brules.Add(Rule(Existing("BHint"))); ConfigurePoint(b, true, null, brules.ToArray());
         Collect(root.transform, "Counter Watch", new Vector2(6, 3), "WatchCollected", "WatchFound", "PocketWatch");
         Collect(root.transform, "Trash Can", Vector2.zero, "LetterCollected", "TrashFound", "ReturnedLetter", "ExpiredPawnTicket");
@@ -352,21 +361,42 @@ public static class TutorialCaseBuilder
         var root = Root(scene, "Tutorial Deduction");
         var grid = Open(T4).GetRootGameObjects().First(o => o.GetComponentInChildren<GridLayout>(true) != null);
         Object.Instantiate(grid, root.transform).name = "Existing Shop Tilemap";
-        var target = CloneActor(actor, root.transform, type == "PA" ? "A" : "B", new Vector2(2, 1));
+        var target = CloneActor(actor, root.transform, type == "PA" ? "A" : "B", type == "PA" ? new Vector2(-3, 1) : new Vector2(1, 2));
         foreach (var collider in target.GetComponentsInChildren<Collider2D>()) Object.DestroyImmediate(collider);
         var entry = Entry(name); entry.memorySpace = true; entry.useSharedCamera = true; entry.hidePlayer = false; entry.lockPlayerInput = true;
         entry.placePlayer = true; entry.playerPosition = new Vector2(2, -1); entry.entryDialog = Existing(type + "_01");
         Presentation(scene, root.transform, true, false, target.transform);
         var track = root.AddComponent<TutorialDeductionTrack>(); Set(track, "actor", target.transform);
-        var positions = type == "PA" ? new[] { Vector2.zero, new Vector2(5, 2), new Vector2(0, 2), new Vector2(3, 0) } :
-            new[] { Vector2.zero, new Vector2(4, 0), new Vector2(3, 2), new Vector2(3, 0) };
+        var positions = type == "PA" ? new[] { new Vector2(-4, -4), new Vector2(-2, 2), new Vector2(0, 3), new Vector2(1, 2) } :
+            new[] { new Vector2(-4, -4), new Vector2(5, -2), new Vector2(5, 4), new Vector2(1, 2) };
+        var paths = type == "PA" ? new[] {
+            new[] { new Vector2(-3, -2), new Vector2(-4, -2) },
+            new[] { new Vector2(-3, -4), new Vector2(-3, 2) },
+            new[] { new Vector2(0, 2) }, new[] { new Vector2(1, 3) }
+        } : new[] {
+            new[] { new Vector2(1, -2), new Vector2(-4, -2) },
+            new[] { new Vector2(-4, -2) }, Array.Empty<Vector2>(), new[] { new Vector2(1, 4) }
+        };
+        var facing = type == "PA" ? new[] { Vector2.left, Vector2.up, Vector2.left, Vector2.down } :
+            new[] { Vector2.left, Vector2.right, Vector2.up, Vector2.down };
         var lines = type == "PA" ? new[] { "01", "03", "04", "05" } : new[] { "01", "03", "04", "05" };
-        Set(track, "beats", positions.Select((p, i) => new TutorialDeductionTrack.Beat { dialogue = Existing(type + "_" + lines[i]), position = p }).ToArray());
+        Set(track, "beats", positions.Select((p, i) => new TutorialDeductionTrack.Beat {
+            dialogue = Existing(type + "_" + lines[i]), position = p, facing = facing[i],
+            point = DeductionMarker(root.transform, type + " " + lines[i] + " Destination", p),
+            waypoints = paths[i].Select((v, n) => DeductionMarker(root.transform, type + " " + lines[i] + " Via " + (n + 1), v)).ToArray()
+        }).ToArray());
         string other = type == "PA" ? "PBCompleted" : "PACompleted";
         Route(type + "-both-truths", name, Reality, SceneConnectionTrigger.DialogFinished, Last(entry.entryDialog), C(other));
         Route(type + "-back-T2", name, "T2", SceneConnectionTrigger.DialogFinished, Last(entry.entryDialog), C(other, 0), C("DeductionReturnPhase", 2));
         Route(type + "-back", name, T4, SceneConnectionTrigger.DialogFinished, Last(entry.entryDialog), C(other, 0));
         EditorSceneManager.SaveScene(scene, path);
+    }
+
+    static Transform DeductionMarker(Transform parent, string name, Vector2 position)
+    {
+        var marker = new GameObject(name).transform;
+        marker.SetParent(parent, false); marker.position = position;
+        return marker;
     }
 
     static void BuildReality()
@@ -403,13 +433,16 @@ public static class TutorialCaseBuilder
     {
         var obj = new GameObject("Memory Presentation"); obj.transform.SetParent(parent, false);
         var display = obj.AddComponent<TutorialScenePresentation>(); Set(display, "deduction", deduction); Set(display, "darkMemory", darkMemory); Set(display, "focusActor", focus);
+        Set(display, "colorObjects", Objects(scene).Where(o => o.CompareTag("Interactable") ||
+            o.GetComponent<Animator>() != null || o.GetComponent<NPC>() != null || o.GetComponent<InvestigationPoint>() != null ||
+            o.name == "VaseNormal" || o.name == "VaseBroken").Select(o => o.transform).ToArray());
         var canvasObject = new GameObject("Memory Vision", typeof(RectTransform), typeof(Canvas)); canvasObject.transform.SetParent(obj.transform, false);
         var canvas = canvasObject.GetComponent<Canvas>(); canvas.renderMode = RenderMode.ScreenSpaceOverlay; canvas.sortingOrder = -5;
         var imageObject = new GameObject("Unknown Space", typeof(RectTransform), typeof(Image)); imageObject.transform.SetParent(canvasObject.transform, false);
         var image = imageObject.GetComponent<Image>(); image.color = Color.black; image.raycastTarget = false;
         var rect = image.rectTransform; rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one; rect.offsetMin = rect.offsetMax = Vector2.zero;
         Set(display, "unknownOverlay", image); imageObject.SetActive(false);
-        if (deduction || darkMemory)
+        if (darkMemory)
         {
             var visionObject = new GameObject("Local Sight", typeof(RectTransform), typeof(Image)); visionObject.transform.SetParent(canvasObject.transform, false);
             var visionImage = visionObject.GetComponent<Image>(); visionImage.raycastTarget = false;
@@ -418,10 +451,7 @@ public static class TutorialCaseBuilder
             Set(vision, "overlayShader", Shader.Find("Naknak/Flashlight Free Sight Overlay")); Set(vision, "visionRadiusWorld", darkMemory ? 1.85f : 4f);
             Set(display, "vision", vision);
         }
-        if (deduction)
-        {
-            var effect = obj.AddComponent<FlashlightWorldDesaturateEffect>(); Set(effect, "exclusions", new[] { focus }); Set(display, "grayscale", effect);
-        }
+        var effect = obj.AddComponent<FlashlightWorldDesaturateEffect>(); Set(display, "grayscale", effect);
     }
     static void BuildObjectives()
     {
@@ -435,7 +465,7 @@ public static class TutorialCaseBuilder
         foreach (string name in new[] { "T2", T4 })
         {
             Objective(config, name, "정전 전후의 시계 상자를 아이템 메뉴에서 확인하고 현실로 돌아가자.", C("AQuestioned"));
-            Objective(config, name, "A와 B의 진술을 검증할 증거를 모으고 두 사람을 조사하자.", C("MemoryReturnUnlocked"));
+            Objective(config, name, "A와 B의 진술을 검증할 증거를 모으고 두 사람에게 제시하자.", C("MemoryReturnUnlocked"));
             Objective(config, name, "주인에게 감정을 의뢰하자. 주변 물건도 조사할 수 있다.");
         }
         Objective(config, "S3", "조수에게 말을 걸어 기억을 재탐색하자. 재탐색 중 Ctrl로 대사를 넘길 수 있다.");

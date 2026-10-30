@@ -36,7 +36,7 @@ MonoBehaviour:
     lockPlayerInput: 1
     useSharedCamera: 0
     placePlayer: 1
-    playerPosition: {x: 0, y: 0}
+    playerPosition: {x: 0, y: 2}
   - scene:
       path: Assets/Scenes/T2.unity
     entryDialog: {fileID: 0}
@@ -84,7 +84,7 @@ MonoBehaviour:
     lockPlayerInput: 0
     useSharedCamera: 1
     placePlayer: 1
-    playerPosition: {x: 0, y: -1}
+    playerPosition: {x: 0, y: 2}
   - scene:
       path: Assets/Scenes/Tutorial_T35_BlackoutSearch.unity
     entryDialog: {fileID: 0}
@@ -120,7 +120,7 @@ MonoBehaviour:
     lockPlayerInput: 0
     useSharedCamera: 1
     placePlayer: 1
-    playerPosition: {x: 0, y: -1}
+    playerPosition: {x: 0, y: 2}
   - scene:
       path: Assets/Scenes/T0.unity
     entryDialog: {fileID: 11400000, guid: 82345c5d1b2a40d4e86369ebdcec4ff8, type: 2}
@@ -132,7 +132,7 @@ MonoBehaviour:
     lockPlayerInput: 0
     useSharedCamera: 1
     placePlayer: 1
-    playerPosition: {x: 0, y: 0}
+    playerPosition: {x: -4, y: -2}
   - scene:
       path: Assets/Scenes/T1.unity
     entryDialog: {fileID: 11400000, guid: 93bcf92bc6350ae44b4ef0f554af783e, type: 2}

@@ -184,6 +184,7 @@ public sealed class SceneLoadManager : MonoBehaviour
 
     private void ConfigureScene(Scene scene, SceneFlowContainer.SceneEntry entry)
     {
+        if (entry.memorySpace) TutorialScenePresentation.EnsureForScene(scene);
         var core = SceneManager.GetSceneByName("PrototypeScene");
         if (core.isLoaded) SceneManager.SetActiveScene(core);
         Camera contentCamera = null;

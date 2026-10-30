@@ -124,6 +124,7 @@ public class DialogManager : MonoBehaviour
         if (GameMenuController.IsBlockingGameplay || currentStory == null) return;
         // 대사 스킵
         if (isPlaying) { TextSkip(); return; }
+        if (TutorialDeductionTrack.IsMoving) return;
 
         // 선택지 선택
         if (isSelectActivate)

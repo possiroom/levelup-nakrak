@@ -1,0 +1,15 @@
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Temp\EvidenceChecks\bin\net8.0\EvidenceChecks.exe
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Temp\EvidenceChecks\bin\net8.0\EvidenceChecks.deps.json
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Temp\EvidenceChecks\bin\net8.0\EvidenceChecks.runtimeconfig.json
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Temp\EvidenceChecks\bin\net8.0\EvidenceChecks.dll
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Temp\EvidenceChecks\bin\net8.0\EvidenceChecks.pdb
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Tests\EvidenceChecks\obj\Debug\net8.0\EvidenceChecks.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Tests\EvidenceChecks\obj\Debug\net8.0\EvidenceChecks.AssemblyInfoInputs.cache
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Tests\EvidenceChecks\obj\Debug\net8.0\EvidenceChecks.AssemblyInfo.cs
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Tests\EvidenceChecks\obj\Debug\net8.0\EvidenceChecks.csproj.CoreCompileInputs.cache
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Tests\EvidenceChecks\obj\Debug\net8.0\EvidenceChecks.sourcelink.json
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Tests\EvidenceChecks\obj\Debug\net8.0\EvidenceChecks.dll
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Tests\EvidenceChecks\obj\Debug\net8.0\refint\EvidenceChecks.dll
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Tests\EvidenceChecks\obj\Debug\net8.0\EvidenceChecks.pdb
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Tests\EvidenceChecks\obj\Debug\net8.0\EvidenceChecks.genruntimeconfig.cache
+C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Tests\EvidenceChecks\obj\Debug\net8.0\ref\EvidenceChecks.dll
