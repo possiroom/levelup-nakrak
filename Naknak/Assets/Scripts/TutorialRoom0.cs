@@ -27,10 +27,12 @@ public sealed class TutorialRoom0 : MonoBehaviour
         if (brooch == null || packedBox == null || initialized == null || packed == null)
         { Debug.LogError("[T0] 아이템과 진행 조건 연결을 확인해주세요.", this); yield break; }
         var inventory = GameMenuController.Inventory;
+        // Start with the brooch even if an older save already set the initialization flag.
+        // Packing exchanges it for the filled box, so never grant it again after packing.
+        if (!IsPacked && !inventory.Has(brooch.Id) && !inventory.Add(brooch.Id))
+        { Debug.LogError("[T0] 브로치가 아이템 목록에 등록되어 있지 않습니다.", this); yield break; }
         if (ConditionManager.Instance.Get(initialized) == 0)
         {
-            if (!IsPacked && !inventory.Has(brooch.Id) && !inventory.Add(brooch.Id))
-            { Debug.LogError("[T0] 브로치가 아이템 목록에 등록되어 있지 않습니다.", this); yield break; }
             ConditionManager.Instance.Set(initialized, 1);
         }
         ready = true;
