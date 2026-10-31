@@ -491,10 +491,9 @@ GameObject:
   m_Component:
   - component: {fileID: 249274111}
   - component: {fileID: 249274113}
-  - component: {fileID: 249274112}
   m_Layer: 6
   m_Name: Counter Watch
-  m_TagString: Interactable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -515,58 +514,6 @@ Transform:
   - {fileID: 792328624}
   m_Father: {fileID: 749677950}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &249274112
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 249274110}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a8fa46ed4d7d1647977c9c9405d06ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  memoryOnly: 1
-  flow: {fileID: 11400000, guid: 072ab0ab20aa44d2a23c4a371af53e03, type: 2}
-  rules:
-  - memo: WatchFound
-    conditions:
-    - id: {fileID: 11400000, guid: 554c65f38fd5a0e478eedd4d2df8a509, type: 2}
-      compare: 2
-      value: 0
-    requiredItems: []
-    anyItems: []
-    rewards:
-    - {fileID: 11400000, guid: 5f5ca788c83589046beea52d4235571c, type: 2}
-    actions:
-    - type: 0
-      id: {fileID: 11400000, guid: 554c65f38fd5a0e478eedd4d2df8a509, type: 2}
-      value: 1
-    dialogue: {fileID: 11400000, guid: fc5c6abce72781f4d8c78d3889199806, type: 2}
-    showUnknownSpace: 0
-    presentEvidence: 0
-    evidencePrompt: 
-    evidenceConditions: []
-    wrongEvidenceDialog: {fileID: 0}
-    missingEvidenceDialog: {fileID: 0}
-    connectionId: 
-  - memo: AlreadyChecked
-    conditions: []
-    requiredItems: []
-    anyItems: []
-    rewards: []
-    actions: []
-    dialogue: {fileID: 11400000, guid: d17f45fa23eb91c489af3a6f9e721885, type: 2}
-    showUnknownSpace: 0
-    presentEvidence: 0
-    evidencePrompt: 
-    evidenceConditions: []
-    wrongEvidenceDialog: {fileID: 0}
-    missingEvidenceDialog: {fileID: 0}
-    connectionId: 
-  sparkle: {fileID: 792328625}
-  collected: {fileID: 11400000, guid: 554c65f38fd5a0e478eedd4d2df8a509, type: 2}
 --- !u!61 &249274113
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -773,7 +720,7 @@ Transform:
   m_GameObject: {fileID: 308115989}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7, y: 0, z: 0}
+  m_LocalPosition: {x: -5, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -902,7 +849,7 @@ Transform:
   m_GameObject: {fileID: 373342728}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6, y: 0, z: 0}
+  m_LocalPosition: {x: -4, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1895,7 +1842,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 792328623}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -2155,7 +2102,7 @@ Transform:
   m_GameObject: {fileID: 958345209}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalPosition: {x: -4, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2531,8 +2478,7 @@ MonoBehaviour:
   available: {fileID: 11400000, guid: b67d5e32e82046fcbd46648a8bbeca1d, type: 2}
   inspected: {fileID: 11400000, guid: 25ace061f8d548e4b1a763b56b721b76, type: 2}
   rewards:
-  - {fileID: 11400000, guid: 62aa85b0d70c4baebd604bba55c1e8fc, type: 2}
-  - {fileID: 11400000, guid: faee4474e35f4f8d90cc4efc779ce300, type: 2}
+  - {fileID: 11400000, guid: 4f3381a53ad2d78468212fcf772d50ab, type: 2}
   firstDialog: {fileID: 11400000, guid: ed5598951ac9433e8a32fad2999082c7, type: 2}
   repeatDialog: {fileID: 11400000, guid: c0d1e68e596f427e998540203bd3bebe, type: 2}
   sparkle: {fileID: 0}
@@ -2570,7 +2516,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -1.6}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -2912,9 +2858,6 @@ MonoBehaviour:
     - id: {fileID: 11400000, guid: 836a034672ae00f4c803a0985d5f3e73, type: 2}
       compare: 2
       value: 1
-    - id: {fileID: 11400000, guid: 985fc1ec7c45d5148ad052f9fc2b2ce8, type: 2}
-      compare: 2
-      value: 0
     requiredItems:
     - {fileID: 11400000, guid: cccbcdb9b0cf31148a60a59bedaa3a83, type: 2}
     - {fileID: 11400000, guid: 3e28aad854e76ee448d002dc45148ae9, type: 2}
@@ -3089,6 +3032,7 @@ MonoBehaviour:
       \uC804\uB2F9\uD3EC\uC99D\uC744 \uBC84\uB838\uB2E4."
     evidence:
     - {fileID: 11400000, guid: 3e28aad854e76ee448d002dc45148ae9, type: 2}
+    requiredItems: []
     conditions: []
     observed: {fileID: 11400000, guid: 42c09f45c1154e440a5f343c0a05a401, type: 2}
     missingDialog: {fileID: 0}
@@ -3107,12 +3051,12 @@ MonoBehaviour:
     showDuringReplay: []
     hideTilemap: {fileID: 0}
     hideTileCell: {x: 0, y: 0, z: 0}
-  - label: "B\uB294 \uAF43\uBCD1 \uC548\uC5D0 \uD0DC\uC5FD \uC7A5\uB09C\uAC10\uC744
-      \uB123\uC5C8\uB2E4."
+  - label: "B\uB294 \uD56D\uC544\uB9AC\uAE4C\uC9C0 \uC774\uB3D9\uD574 \uD0DC\uC5FD
+      \uC7A5\uB09C\uAC10\uC744 \uB123\uC5C8\uB2E4."
     evidence:
     - {fileID: 11400000, guid: 5d30d8fa937490f4faf32bf075c2e072, type: 2}
-    - {fileID: 11400000, guid: 62aa85b0d70c4baebd604bba55c1e8fc, type: 2}
-    - {fileID: 11400000, guid: faee4474e35f4f8d90cc4efc779ce300, type: 2}
+    - {fileID: 11400000, guid: 4f3381a53ad2d78468212fcf772d50ab, type: 2}
+    requiredItems: []
     conditions: []
     observed: {fileID: 11400000, guid: 68f891b0741222648b4a0b316f32f238, type: 2}
     missingDialog: {fileID: 0}
@@ -3136,12 +3080,13 @@ MonoBehaviour:
       \uC7A0\uAE08\uC7A5\uCE58\uB97C \uBE44\uD2C0\uC5B4 \uC5F4\uB824\uACE0 \uD588\uB2E4."
     evidence:
     - {fileID: 11400000, guid: cccbcdb9b0cf31148a60a59bedaa3a83, type: 2}
-    conditions:
-    - id: {fileID: 11400000, guid: b6fc8c9357fa4722a8586d1b60f61c9e, type: 2}
-      compare: 2
-      value: 1
+    - {fileID: 11400000, guid: 5ea6ae53b7ac1404b98d61018dd8eb33, type: 2}
+    requiredItems:
+    - {fileID: 11400000, guid: cccbcdb9b0cf31148a60a59bedaa3a83, type: 2}
+    - {fileID: 11400000, guid: 5ea6ae53b7ac1404b98d61018dd8eb33, type: 2}
+    conditions: []
     observed: {fileID: 11400000, guid: c3b5648f3eccaae48b5b81a11f2425b9, type: 2}
-    missingDialog: {fileID: 11400000, guid: 4790013dfb0c5f1429f052c4977417e1, type: 2}
+    missingDialog: {fileID: 11400000, guid: 4068559fbe11ef840add2aa2b769c2ae, type: 2}
     startPoint: {fileID: 1122607402}
     startPosition: {x: -4, y: -1}
     beats:
@@ -4859,11 +4804,7 @@ MonoBehaviour:
     - id: {fileID: 11400000, guid: 836a034672ae00f4c803a0985d5f3e73, type: 2}
       compare: 2
       value: 1
-    - id: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
-      compare: 2
-      value: 0
     requiredItems:
-    - {fileID: 11400000, guid: 5f5ca788c83589046beea52d4235571c, type: 2}
     - {fileID: 11400000, guid: 94500d62bdf36884788784089179e8b7, type: 2}
     anyItems:
     - {fileID: 11400000, guid: 0984f2304b9e22b43b803045302592cf, type: 2}
@@ -5037,6 +4978,7 @@ MonoBehaviour:
     evidence:
     - {fileID: 11400000, guid: 0984f2304b9e22b43b803045302592cf, type: 2}
     - {fileID: 11400000, guid: 89120c539a5f9cc4c8ffc865ef34c602, type: 2}
+    requiredItems: []
     conditions: []
     observed: {fileID: 11400000, guid: 1141f5d3bb8e93e4280f32c076fa2467, type: 2}
     missingDialog: {fileID: 0}
@@ -5058,8 +5000,8 @@ MonoBehaviour:
   - label: "A\uB294 \uCE74\uC6B4\uD130\uC5D0\uC11C \uD68C\uC911\uC2DC\uACC4\uB97C
       \uD314\uC558\uB2E4."
     evidence:
-    - {fileID: 11400000, guid: 5f5ca788c83589046beea52d4235571c, type: 2}
     - {fileID: 11400000, guid: 94500d62bdf36884788784089179e8b7, type: 2}
+    requiredItems: []
     conditions: []
     observed: {fileID: 11400000, guid: 22474e1e0e7d19442bd0099fcfec03ab, type: 2}
     missingDialog: {fileID: 0}
@@ -5080,6 +5022,7 @@ MonoBehaviour:
       \uB193\uC778 \uC804\uD654\uAE30\uB294 \uADF8\uB54C \uC0AC\uC6A9\uD55C \uD754\uC801\uC774\uB2E4."
     evidence:
     - {fileID: 11400000, guid: cd6f4c546e14eaf4eb401edd5cc26e1b, type: 2}
+    requiredItems: []
     conditions: []
     observed: {fileID: 11400000, guid: 7751b4373a9465a4b953a0d762f00f75, type: 2}
     missingDialog: {fileID: 0}
@@ -5087,12 +5030,11 @@ MonoBehaviour:
     startPosition: {x: -2, y: 2}
     beats:
     - dialogue: {fileID: 11400000, guid: d1e4742835b3a354fbf1fcb6b2b1c8db, type: 2}
-      position: {x: 6, y: 0}
+      position: {x: -4, y: 1}
       point: {fileID: 373342729}
       waypoints:
       - {fileID: 958345210}
-      - {fileID: 683716985}
-      facing: {x: 1, y: 0}
+      facing: {x: -1, y: 0}
     hideDuringReplay: []
     showDuringReplay: []
     hideTilemap: {fileID: 0}
@@ -5613,12 +5555,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 291704aaf504c57479628273a4a7ccaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flow: {fileID: 11400000, guid: 072ab0ab20aa44d2a23c4a371af53e03, type: 2}
-  connectionIds:
-  - evidence-summary-PA-Tutorial_T4_BroochMissing
-  resetOnStart:
-  - {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
-  - {fileID: 11400000, guid: 985fc1ec7c45d5148ad052f9fc2b2ce8, type: 2}
+  witnesses:
+  - observed:
+    - {fileID: 11400000, guid: 1141f5d3bb8e93e4280f32c076fa2467, type: 2}
+    - {fileID: 11400000, guid: 22474e1e0e7d19442bd0099fcfec03ab, type: 2}
+    - {fileID: 11400000, guid: 7751b4373a9465a4b953a0d762f00f75, type: 2}
+    completed: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
+    completionDialog: {fileID: 11400000, guid: bb3b862104cd0a74aa53da9fec307192, type: 2}
+  - observed:
+    - {fileID: 11400000, guid: 42c09f45c1154e440a5f343c0a05a401, type: 2}
+    - {fileID: 11400000, guid: 68f891b0741222648b4a0b316f32f238, type: 2}
+    - {fileID: 11400000, guid: c3b5648f3eccaae48b5b81a11f2425b9, type: 2}
+    completed: {fileID: 11400000, guid: 985fc1ec7c45d5148ad052f9fc2b2ce8, type: 2}
+    completionDialog: {fileID: 11400000, guid: 331b536ec3757b34db6df138e002ba4e, type: 2}
+  bothCompleted: {fileID: 11400000, guid: 2ef03b2f9beb205479231c897fac70f0, type: 2}
+  bothCompletedDialog: {fileID: 11400000, guid: 77a8ea73d0a4d174ebe294d517140096, type: 2}
 --- !u!4 &1595291333
 Transform:
   m_ObjectHideFlags: 0
@@ -6631,6 +6582,46 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 2147483649
+  - first: {x: 0, y: 0, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 0
+      m_TileSpriteIndex: 0
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 2147483649
+  - first: {x: 1, y: 0, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 0
+      m_TileSpriteIndex: 0
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 2147483649
+  - first: {x: 2, y: 0, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 0
+      m_TileSpriteIndex: 0
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 2147483649
+  - first: {x: 3, y: 0, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 0
+      m_TileSpriteIndex: 0
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 2147483649
   - first: {x: 8, y: 0, z: 0}
     second:
       serializedVersion: 2
@@ -7073,7 +7064,7 @@ Tilemap:
       m_AllTileFlags: 2147483649
   m_AnimatedTiles: {}
   m_TileAssetArray:
-  - m_RefCount: 91
+  - m_RefCount: 95
     m_Data: {fileID: 11400000, guid: 514ce68810ed746c59f4aa0825262c7b, type: 2}
   - m_RefCount: 0
     m_Data: {fileID: 0}
@@ -7132,7 +7123,7 @@ Tilemap:
   - m_RefCount: 0
     m_Data: {fileID: 0}
   m_TileSpriteArray:
-  - m_RefCount: 91
+  - m_RefCount: 95
     m_Data: {fileID: 21300000, guid: 9b35a61d68b074c5891b84448de3b13f, type: 3}
   - m_RefCount: 0
     m_Data: {fileID: 0}
@@ -7191,7 +7182,7 @@ Tilemap:
   - m_RefCount: 0
     m_Data: {fileID: 0}
   m_TileMatrixArray:
-  - m_RefCount: 91
+  - m_RefCount: 95
     m_Data:
       e00: 1
       e01: 0
@@ -7210,7 +7201,7 @@ Tilemap:
       e32: 0
       e33: 1
   m_TileColorArray:
-  - m_RefCount: 91
+  - m_RefCount: 95
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
@@ -10057,14 +10048,16 @@ MonoBehaviour:
   memoryOnly: 1
   flow: {fileID: 11400000, guid: 072ab0ab20aa44d2a23c4a371af53e03, type: 2}
   rules:
-  - memo: CabinetClue
+  - memo: "\uC0AC\uAC74 \uD6C4: \uC9C4\uC5F4\uC7A5 \uD754\uC801 \uC544\uC774\uD15C
+      \uD68D\uB4DD/\uC7AC\uD655\uC778"
     conditions:
     - id: {fileID: 11400000, guid: 07b34bf495dc4c2888c7a2b4e4ce7f57, type: 2}
       compare: 2
       value: 1
     requiredItems: []
     anyItems: []
-    rewards: []
+    rewards:
+    - {fileID: 11400000, guid: 5ea6ae53b7ac1404b98d61018dd8eb33, type: 2}
     actions:
     - type: 0
       id: {fileID: 11400000, guid: b6fc8c9357fa4722a8586d1b60f61c9e, type: 2}
@@ -10077,13 +10070,13 @@ MonoBehaviour:
     wrongEvidenceDialog: {fileID: 0}
     missingEvidenceDialog: {fileID: 0}
     connectionId: 
-  - memo: AlreadyChecked
+  - memo: "\uC0AC\uAC74 \uC804 \uC9C4\uC5F4\uC7A5"
     conditions: []
     requiredItems: []
     anyItems: []
     rewards: []
     actions: []
-    dialogue: {fileID: 11400000, guid: d17f45fa23eb91c489af3a6f9e721885, type: 2}
+    dialogue: {fileID: 11400000, guid: ad23e13e155c31b44b0a39bed4d0c372, type: 2}
     showUnknownSpace: 0
     presentEvidence: 0
     evidencePrompt: 

@@ -52,6 +52,9 @@ public sealed class SceneFlowContainer : ScriptableObject
     public List<SceneEntry> scenes = new List<SceneEntry>();
     public List<Connection> connections = new List<Connection>();
     public ConditionID memoryVisitCount;
+    [Tooltip("첫 기억은 조수, 현실과 재탐색은 탐정으로 조작합니다.")]
+    public RuntimeAnimatorController assistantPlayerController;
+    public RuntimeAnimatorController detectivePlayerController;
     public List<ConditionID> memoryRunConditions = new List<ConditionID>();
 
     private void OnValidate()

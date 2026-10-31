@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
+  m_Name: AlibisVerified
+  m_EditorClassIdentifier:
+  charName: "\uC8FC\uC778\uACF5"
+  text: "\uB458\uC758 \uC54C\uB9AC\uBC14\uC774 \uAC80\uC99D\uC744 \uC644\uB8CC\uD588\uB2E4"
+  activatedImage: 0
+  isSelect: 0
+  isEnd: 0
+  selects: []
+  nextData: {fileID: 11400000, guid: ed859cc3807ec654eb83fd6340729e29, type: 2}
+  nextSceneName:
+  endActions:
+  - type: 0
+    id: {fileID: 11400000, guid: 2ef03b2f9beb205479231c897fac70f0, type: 2}
+    value: 1
+  - type: 0
+    id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
+    value: 1

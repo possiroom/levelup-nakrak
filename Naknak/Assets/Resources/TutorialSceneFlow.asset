@@ -36,7 +36,7 @@ MonoBehaviour:
     lockPlayerInput: 0
     useSharedCamera: 0
     placePlayer: 1
-    playerPosition: {x: 0, y: 1}
+    playerPosition: {x: 1, y: 2}
   - scene:
       path: Assets/Scenes/T2.unity
     entryDialog: {fileID: 0}
@@ -182,6 +182,40 @@ MonoBehaviour:
     placePlayer: 0
     playerPosition: {x: 0, y: 0}
   connections:
+  - id: pdf-verified-exit-Tutorial_T4_BroochMissing
+    memo: "\uC591\uCABD \uC54C\uB9AC\uBC14\uC774 \uAC80\uC99D \uD6C4 \uB098\uAC00\uAE30
+      \uC120\uD0DD \uC2DC \uD604\uC2E4\uB85C \uBCF5\uADC0"
+    from:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    to:
+      path: Assets/Scenes/S#6.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 985fc1ec7c45d5148ad052f9fc2b2ce8, type: 2}
+      compare: 2
+      value: 1
+  - id: pdf-verified-exit-T2
+    memo: "\uC591\uCABD \uC54C\uB9AC\uBC14\uC774 \uAC80\uC99D \uD6C4 \uB098\uAC00\uAE30
+      \uC120\uD0DD \uC2DC \uD604\uC2E4\uB85C \uBCF5\uADC0"
+    from:
+      path: Assets/Scenes/T2.unity
+    to:
+      path: Assets/Scenes/S#6.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 985fc1ec7c45d5148ad052f9fc2b2ce8, type: 2}
+      compare: 2
+      value: 1
   - id: evidence-summary-PA-to-PB
     memo: Complete A reconstruction, then B
     from:
@@ -771,6 +805,8 @@ MonoBehaviour:
     completedDialog: {fileID: 11400000, guid: 3aa30863bd2e71a4fb1a61f2fc9485e3, type: 2}
     conditions: []
   memoryVisitCount: {fileID: 11400000, guid: 4db037c0f88e42f790c0d47cd5641d09, type: 2}
+  assistantPlayerController: {fileID: 9100000, guid: ce1d2da66c2deb04cba62981d3ad5aab, type: 2}
+  detectivePlayerController: {fileID: 9100000, guid: c65f73359c82c4247ae9d22124c3734d, type: 2}
   memoryRunConditions:
   - {fileID: 11400000, guid: 02243bd47dc440d5936ef41e99af47d4, type: 2}
   - {fileID: 11400000, guid: 3a624ba85a9547e08dda15fb92b5d433, type: 2}

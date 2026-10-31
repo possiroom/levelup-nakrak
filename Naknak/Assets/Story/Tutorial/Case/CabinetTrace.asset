@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: CabinetTrace
   m_EditorClassIdentifier:
   id: evidence-cabinet-trace
-  displayName: "\uC9C4\uC5F4\uC7A5 \uC7A0\uAE08\uC7A5\uCE58\uC758 \uD754\uC801"
-  description: "2\uBC88 \uC9C4\uC5F4\uC7A5\uC758 \uC7A0\uAE08\uC7A5\uCE58\uC5D0 \uB3C4\uAD6C\uB85C
-    \uC5B5\uC9C0\uB85C \uBE44\uD2C0\uC5B4 \uC5F0 \uD754\uC801\uC774 \uB0A8\uC544
-    \uC788\uB2E4."
-  icon: {fileID: 0}
-  hideIconPlaceholder: 1
+  displayName: "\uC7A5\uC2DD\uC7A5 \uD754\uC801"
+  description: "\uC77C\uC790\uB4DC\uB77C\uC774\uBC84\uB85C \uC7A5\uC2DD\uC7A5\uC744
+    \uC5F4\uB824\uACE0 \uD55C \uD754\uC801\uC774\uB2E4."
+  icon: {fileID: 8649178933953811122, guid: a91d7c6eb7d470a449a85fb53c90084b, type: 3}
+  hideIconPlaceholder: 0
   keyItem: 1
   memoryOnly: 0
+  retired: 0
   inspectionDialogs: {fileID: 0}
   inspectionResult: {fileID: 0}
   combinedSources: []

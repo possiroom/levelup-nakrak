@@ -1,27 +1,40 @@
 using System.Linq;
 using UnityEngine;
 
-/// <summary>Starts the full A/B reconstruction after all six independent actions are observed.</summary>
+/// <summary>Announces each completed route, then offers to leave after both alibis are verified.</summary>
 public sealed class TutorialEvidenceConclusion : MonoBehaviour
 {
-    [SerializeField] private SceneFlowContainer flow;
-    [SerializeField] private string[] connectionIds = new string[0];
-    [SerializeField] private ConditionID[] resetOnStart = new ConditionID[0];
-    private bool starting;
+    [System.Serializable]
+    public sealed class Witness
+    {
+        public ConditionID[] observed = new ConditionID[0];
+        public ConditionID completed;
+        public StoryData completionDialog;
+
+        public bool Ready => observed.Length > 0 && observed.All(flag => flag != null && ConditionManager.Instance.Get(flag) != 0);
+    }
+
+    [SerializeField] private Witness[] witnesses = new Witness[0];
+    [SerializeField] private ConditionID bothCompleted;
+    [SerializeField] private StoryData bothCompletedDialog;
 
     private void Update()
     {
-        if (starting || flow == null || !SceneLoadManager.IsMemoryRevisit ||
+        if (ConditionManager.Instance == null || witnesses.Length == 0 || !SceneLoadManager.IsMemoryRevisit ||
             SceneLoadManager.CurrentScenePath != gameObject.scene.path || SceneLoadManager.IsCutscene ||
             SceneLoadManager.IsLoading || SceneLoadManager.IsRestoringSession || GameMenuController.IsBlockingGameplay ||
             DialogManager.Instance == null || DialogManager.Instance.IsDialogOpen ||
             GameStateManager.Instance == null || GameStateManager.Instance.GameState != GameState.Gameplay) return;
-        var connection = flow.connections.FirstOrDefault(c => connectionIds.Contains(c.id) && SceneFlowContainer.Passes(c.conditions));
-        if (connection != null)
+        foreach (var witness in witnesses)
         {
-            starting = SceneLoadManager.Instance.Travel(flow, connection);
-            if (starting)
-                foreach (var flag in resetOnStart) ConditionManager.Instance.Set(flag, 0);
+            if (witness == null || !witness.Ready || witness.completed == null || witness.completionDialog == null ||
+                ConditionManager.Instance.Get(witness.completed) != 0) continue;
+            DialogManager.Instance.ShowDialog(witness.completionDialog);
+            return;
         }
+        if (bothCompleted != null && bothCompletedDialog != null && ConditionManager.Instance.Get(bothCompleted) == 0 &&
+            witnesses.All(witness => witness != null && witness.Ready && witness.completed != null &&
+                ConditionManager.Instance.Get(witness.completed) != 0))
+            DialogManager.Instance.ShowDialog(bothCompletedDialog);
     }
 }

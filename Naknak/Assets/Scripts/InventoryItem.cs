@@ -14,6 +14,8 @@ namespace Naknak.Inventory
         [SerializeField] private bool keyItem;
         [Tooltip("Available only while exploring a memory.")]
         [SerializeField] private bool memoryOnly;
+        [Tooltip("Removed from gameplay; identifier retained only to accept older saves.")]
+        [SerializeField] private bool retired;
         [SerializeField] private DialogContainer inspectionDialogs;
         [SerializeField] private InventoryItem inspectionResult;
         [Tooltip("Legacy components automatically consolidated into this item when all are owned.")]
@@ -33,6 +35,7 @@ namespace Naknak.Inventory
         public bool HideIconPlaceholder => hideIconPlaceholder;
         public bool IsKeyItem => keyItem;
         public bool MemoryOnly => memoryOnly;
+        public bool Retired => retired;
         public int MaxStack => Mathf.Max(1, maxStack);
 
 #if UNITY_EDITOR

@@ -12,6 +12,8 @@ public sealed class EvidenceReconstruction : MonoBehaviour
     {
         public string label;
         public InventoryItem[] evidence = Array.Empty<InventoryItem>();
+        [Tooltip("All of these items must be held to explain this action. Presenting any recognized evidence is enough once the set is complete.")]
+        public InventoryItem[] requiredItems = Array.Empty<InventoryItem>();
         public System.Collections.Generic.List<DialogCondition> conditions = new System.Collections.Generic.List<DialogCondition>();
         public ConditionID observed;
         public StoryData missingDialog;
@@ -53,7 +55,8 @@ public sealed class EvidenceReconstruction : MonoBehaviour
     {
         if (replaying || !Recognizes(item) || !SceneLoadManager.IsMemoryRevisit || SceneLoadManager.IsCutscene) return false;
         var clip = clips.First(c => c.evidence.Any(e => e != null && e.Id == item.Id));
-        if (!SceneFlowContainer.Passes(clip.conditions))
+        if (!SceneFlowContainer.Passes(clip.conditions) ||
+            !clip.requiredItems.All(required => required != null && GameMenuController.Inventory.Has(required.Id)))
         {
             var hint = clip.missingDialog != null ? clip.missingDialog : missingEvidence;
             if (hint != null) DialogManager.Instance.ShowDialog(hint);

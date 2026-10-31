@@ -95,7 +95,9 @@ public class TutorialT35EventController : MonoBehaviour, IInteractable
         AutoFindPlayer();
         UpdateSparkleVisibility();
 
-        if (InteractionInput.ConfirmPressed)
+        // Wired scenes use PlayerMoveController3's raycast and shared confirm ownership.
+        if ((droppedOpenBoxInteract == null || droppedOpenBoxInteract.GetComponent<TutorialT35BoxPoint>() == null) &&
+            InteractionInput.ConfirmPressed)
         {
             InteractionInput.ConsumeConfirm();
             Interact();

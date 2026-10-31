@@ -36,7 +36,7 @@ namespace Naknak.Inventory
             if (ids.Count > 0) Changed?.Invoke();
         }
 
-        private bool Available(InventoryItem item) => item != null && (!item.MemoryOnly || IsMemorySpace);
+        private bool Available(InventoryItem item) => item != null && !item.Retired && (!item.MemoryOnly || IsMemorySpace);
 
         public InventoryModel(IEnumerable<InventoryItem> items)
         {
@@ -135,7 +135,8 @@ namespace Naknak.Inventory
                 }
             }
             counts.Clear();
-            foreach (var pair in replacement) counts.Add(pair.Key, pair.Value);
+            foreach (var pair in replacement)
+                if (!catalog[pair.Key].Retired) counts.Add(pair.Key, pair.Value);
             ConsolidateComponents();
             Changed?.Invoke();
         }

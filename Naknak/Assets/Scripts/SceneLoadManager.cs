@@ -240,6 +240,7 @@ public sealed class SceneLoadManager : MonoBehaviour
         var player = FindFirstObjectByType<PlayerMoveController3>(FindObjectsInactive.Include);
         if (player != null)
         {
+            ApplyPlayerAppearance(player);
             player.enabled = !entry.hidePlayer && !PlayerInputLocked;
             foreach (var renderer in player.GetComponentsInChildren<SpriteRenderer>(true)) renderer.enabled = !entry.hidePlayer;
             if (entry.placePlayer && !IsRestoringSession) player.TeleportToWorld(entry.playerPosition);
@@ -281,6 +282,21 @@ public sealed class SceneLoadManager : MonoBehaviour
             ConditionManager.Instance.Set(container.memoryVisitCount, 1);
         memoryActive = inMemory;
         memoryPending = false;
+        ApplyPlayerAppearance(FindFirstObjectByType<PlayerMoveController3>(FindObjectsInactive.Include));
+    }
+
+    private void ApplyPlayerAppearance(PlayerMoveController3 player)
+    {
+        if (player == null || container == null) return;
+        var animator = player.GetComponent<Animator>();
+        var appearance = IsMemorySpace && !IsMemoryRevisit ? container.assistantPlayerController : container.detectivePlayerController;
+        if (animator == null || appearance == null || animator.runtimeAnimatorController == appearance) return;
+        float direction = animator.GetFloat("direction");
+        bool moving = animator.GetBool("isMoving");
+        animator.runtimeAnimatorController = appearance;
+        animator.SetFloat("direction", direction);
+        animator.SetBool("isMoving", moving);
+        animator.Update(0f);
     }
 
     public void ResumeRestoredSession()

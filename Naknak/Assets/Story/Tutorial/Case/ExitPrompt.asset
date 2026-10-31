@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ExitPrompt
   m_EditorClassIdentifier: 
   charName: 
-  text: "\uAE30\uC5B5 \uACF5\uAC04\uC5D0\uC11C \uB098\uAC00\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+  text: "\uAE30\uC5B5\uACF5\uAC04\uC5D0\uC11C \uB098\uAC00\uACA0\uC2B5\uB2C8\uAE4C?"
   activatedImage: 0
   isSelect: 1
   isEnd: 0
