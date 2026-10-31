@@ -27,16 +27,16 @@ MonoBehaviour:
     playerPosition: {x: 0, y: 0}
   - scene:
       path: Assets/Scenes/S2.unity
-    entryDialog: {fileID: 11400000, guid: f4361d2af34be3642ad6d51300597370, type: 2}
+    entryDialog: {fileID: 0}
     entryDialogs: {fileID: 0}
     memorySpace: 0
     memoryReplayEntry: 0
     memoryEntryItem: {fileID: 0}
     hidePlayer: 0
-    lockPlayerInput: 1
+    lockPlayerInput: 0
     useSharedCamera: 0
     placePlayer: 1
-    playerPosition: {x: 0, y: 2}
+    playerPosition: {x: 0, y: 1}
   - scene:
       path: Assets/Scenes/T2.unity
     entryDialog: {fileID: 0}
@@ -169,6 +169,18 @@ MonoBehaviour:
     useSharedCamera: 1
     placePlayer: 1
     playerPosition: {x: 2, y: -1}
+  - scene:
+      path: Assets/Scenes/Tutorial_Prologue.unity
+    entryDialog: {fileID: 0}
+    entryDialogs: {fileID: 11400000, guid: 5243937e7a108724aa67d5898692c900, type: 2}
+    memorySpace: 0
+    memoryReplayEntry: 0
+    memoryEntryItem: {fileID: 0}
+    hidePlayer: 1
+    lockPlayerInput: 1
+    useSharedCamera: 1
+    placePlayer: 0
+    playerPosition: {x: 0, y: 0}
   connections:
   - id: evidence-summary-PA-to-PB
     memo: Complete A reconstruction, then B
@@ -228,7 +240,7 @@ MonoBehaviour:
     to:
       path: Assets/Scenes/Tutorial_T3_VaseBreak.unity
     trigger: 1
-    fade: 0
+    fade: 1
     completedDialog: {fileID: 11400000, guid: 0741a2f63a685e24988170f6d1a8f74b, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: b5979cc705284f0591c599ab10242d17, type: 2}
@@ -747,6 +759,17 @@ MonoBehaviour:
     - id: {fileID: 11400000, guid: 2ef03b2f9beb205479231c897fac70f0, type: 2}
       compare: 2
       value: 0
+  - id: prologue-to-S1
+    memo: "\uD504\uB864\uB85C\uADF8 \uB9C8\uC9C0\uB9C9 \uB300\uC0AC \uD6C4 \uAE30\uC874
+      S1 \uC2DC\uC791"
+    from:
+      path: Assets/Scenes/Tutorial_Prologue.unity
+    to:
+      path: Assets/Scenes/S1.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: 3aa30863bd2e71a4fb1a61f2fc9485e3, type: 2}
+    conditions: []
   memoryVisitCount: {fileID: 11400000, guid: 4db037c0f88e42f790c0d47cd5641d09, type: 2}
   memoryRunConditions:
   - {fileID: 11400000, guid: 02243bd47dc440d5936ef41e99af47d4, type: 2}

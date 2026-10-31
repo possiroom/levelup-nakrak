@@ -61,6 +61,7 @@ namespace Naknak.Inventory
             var item = Find(id);
             if (quantity <= 0 || !Available(item) || quantity > item.MaxStack - Count(id)) return false;
             counts[id] = Count(id) + quantity;
+            ConsolidateComponents();
             Changed?.Invoke();
             Acquired?.Invoke();
             return true;
@@ -90,6 +91,7 @@ namespace Naknak.Inventory
                 additions[entry.itemId] = pending + entry.quantity;
             }
             foreach (var pair in additions) counts[pair.Key] = Count(pair.Key) + pair.Value;
+            ConsolidateComponents();
             if (additions.Count > 0) Changed?.Invoke();
             if (additions.Count > 0) Acquired?.Invoke();
             return true;
@@ -108,6 +110,7 @@ namespace Naknak.Inventory
             if (remaining == 0) counts.Remove(sourceId);
             else counts[sourceId] = remaining;
             counts[resultId] = Count(resultId) + 1;
+            ConsolidateComponents();
             Changed?.Invoke();
             Acquired?.Invoke();
             return true;
@@ -133,7 +136,28 @@ namespace Naknak.Inventory
             }
             counts.Clear();
             foreach (var pair in replacement) counts.Add(pair.Key, pair.Value);
+            ConsolidateComponents();
             Changed?.Invoke();
+        }
+
+        private void ConsolidateComponents()
+        {
+            foreach (var result in catalog.Values)
+            {
+                var sources = result.CombinedSources;
+                if (!Available(result) || sources == null || sources.Length < 2 ||
+                    sources.Any(s => s == null || s.Id == result.Id || Find(s.Id) == null) ||
+                    sources.Select(s => s.Id).Distinct().Count() != sources.Length) continue;
+                int quantity = Math.Min(result.MaxStack - Count(result.Id), sources.Min(s => Count(s.Id)));
+                if (quantity <= 0) continue;
+                foreach (var source in sources)
+                {
+                    int remaining = Count(source.Id) - quantity;
+                    if (remaining == 0) counts.Remove(source.Id);
+                    else counts[source.Id] = remaining;
+                }
+                counts[result.Id] = Count(result.Id) + quantity;
+            }
         }
     }
 }

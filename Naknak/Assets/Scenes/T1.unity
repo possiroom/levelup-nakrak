@@ -171,17 +171,6 @@ MonoBehaviour:
   grayscale: {fileID: 11276568}
   vision: {fileID: 0}
   unknownOverlay: {fileID: 2090468404}
-  keepActorsAndCluesInColor: 1
-  colorObjects:
-  - {fileID: 308115993}
-  - {fileID: 586293415}
-  - {fileID: 1695141391}
-  - {fileID: 1972890180}
-  - {fileID: 500452923}
-  - {fileID: 1936489564}
-  - {fileID: 927157365}
-  - {fileID: 586866153}
-  - {fileID: 1781903590}
 --- !u!114 &11276568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -786,7 +775,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 1.125, y: 1.8125}
+    oldSize: {x: 1.03125, y: 1.90625}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -837,8 +826,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -755404771
   m_SortingLayer: 2
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 9053169870693548154, guid: 262905492d22d4752b9d6fc81f19f321, type: 3}
+  m_SortingOrder: 1
+  m_Sprite: {fileID: 8466672319293531365, guid: fc6794b971c7e3b42a45420545657cba, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -858,7 +847,7 @@ Transform:
   m_GameObject: {fileID: 586293411}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1, y: 2, z: 0}
+  m_LocalPosition: {x: -1, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1035,6 +1024,54 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: -5
   m_TargetDisplay: 0
+--- !u!1 &764540824
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 764540826}
+  - component: {fileID: 764540825}
+  m_Layer: 0
+  m_Name: Character_Anim_Change
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &764540825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 764540824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b34997622b389f429bec39a3ae0b82d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isman: 0
+  manAnimater: {fileID: 9100000, guid: c65f73359c82c4247ae9d22124c3734d, type: 2}
+  girlAnimater: {fileID: 9100000, guid: ce1d2da66c2deb04cba62981d3ad5aab, type: 2}
+  sprite: {fileID: 0}
+--- !u!4 &764540826
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 764540824}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.1274762, y: -2.141652, z: -0.040047437}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &811173033
 GameObject:
   m_ObjectHideFlags: 0
@@ -3359,7 +3396,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 1.125, y: 1.8125}
+    oldSize: {x: 1, y: 1.84375}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -3411,7 +3448,7 @@ SpriteRenderer:
   m_SortingLayerID: -755404771
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 9053169870693548154, guid: 262905492d22d4752b9d6fc81f19f321, type: 3}
+  m_Sprite: {fileID: -3285258750947675433, guid: 1fb67c593cc726d42943481f91161820, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -5129,7 +5166,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 1.125, y: 1.8125}
+    oldSize: {x: 1, y: 1.84375}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -5181,7 +5218,7 @@ SpriteRenderer:
   m_SortingLayerID: -755404771
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 9053169870693548154, guid: 262905492d22d4752b9d6fc81f19f321, type: 3}
+  m_Sprite: {fileID: 8224124334607301300, guid: 19a4b6cd4545bf54ea6b37c32eb54802, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -8310,3 +8347,4 @@ SceneRoots:
   - {fileID: 586293415}
   - {fileID: 377095770}
   - {fileID: 833021750}
+  - {fileID: 764540826}

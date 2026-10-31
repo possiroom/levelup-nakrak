@@ -43,11 +43,8 @@ public class TutorialT3T4SceneController : MonoBehaviour
     [Header("T3 - Dark Overlay")]
     [Tooltip("화면 전체를 덮는 검은 UI Image")]
     [SerializeField] private Image darkOverlayImage;
-
-    [SerializeField, Range(0f, 1f)] private float darkAlpha = 1f;
-    [SerializeField] private ConditionID s3Seen;
-    [Tooltip("Black overlay opacity when revisiting T3 after the S3 testimonies.")]
-    [SerializeField, Range(0f, 1f)] private float afterS3DarkAlpha = 0.5f;
+    [Tooltip("이전 씬에서 암전한 상태로 진입하고, 불이 다시 켜질 때까지 유지합니다.")]
+    [SerializeField] private bool startWithLightsOff = true;
 
     [Header("T3 - Flicker")]
     [SerializeField] private int flickerCount = 3;
@@ -87,6 +84,8 @@ public class TutorialT3T4SceneController : MonoBehaviour
     {
         AutoFindDialogView();
         AutoFindAudioSource();
+        if (sceneType == TimelineSceneType.T3_VaseBreak && startWithLightsOff)
+            SetDarkOverlayAlpha(1f);
     }
 
     private IEnumerator Start()
@@ -175,17 +174,17 @@ public class TutorialT3T4SceneController : MonoBehaviour
     private IEnumerator RunT3()
     {
         SetupT3StartState();
-        bool afterS3 = s3Seen != null && ConditionManager.Instance != null && ConditionManager.Instance.Get(s3Seen) != 0;
 
-        yield return new WaitForSeconds(waitBeforeBreak);
-
-        Phase = T3Phase.Flicker;
-        yield return FlickerLight();
-
+        if (!startWithLightsOff)
+        {
+            yield return new WaitForSeconds(waitBeforeBreak);
+            Phase = T3Phase.Flicker;
+            yield return FlickerLight();
+            yield return FadeDarkOverlay(1f, darkFadeInTime);
+        }
         Phase = T3Phase.Dark;
-        yield return FadeDarkOverlay(afterS3 ? afterS3DarkAlpha : darkAlpha, darkFadeInTime);
 
-        // Dialogue renders above the blackout; the world remains hidden on the first visit.
+        // Both first visits and revisits fully hide the world beneath the dialogue.
         Phase = T3Phase.Reaction;
         yield return PlayStory(CreateStoryChain("T3_LightsOff", new[]
         {
@@ -274,7 +273,7 @@ public class TutorialT3T4SceneController : MonoBehaviour
             var canvas = darkOverlayImage.GetComponentInParent<Canvas>();
             if (canvas != null) canvas.sortingOrder = -1;
         }
-        SetDarkOverlayAlpha(0f);
+        SetDarkOverlayAlpha(startWithLightsOff ? 1f : 0f);
 
         if (vaseNormal != null)
             vaseNormal.SetActive(true);

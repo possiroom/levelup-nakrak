@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameTitle: "\uB099\uB099"
   titleScene: Title
-  startScene: PrototypeScene
+  startScene: Tutorial_Prologue
   font: {fileID: 12800000, guid: a8424ddb2ff7b491ca1440f68ae55334, type: 3}
   itemAcquiredSound: {fileID: 0}
   itemAcquiredVolume: 0.6
@@ -35,3 +35,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5d30d8fa937490f4faf32bf075c2e072, type: 2}
   - {fileID: 11400000, guid: 8d88d0a2e88b8764181072e52bb6964b, type: 2}
   - {fileID: 11400000, guid: cd6f4c546e14eaf4eb401edd5cc26e1b, type: 2}
+  - {fileID: 11400000, guid: 4f3381a53ad2d78468212fcf772d50ab, type: 2}
+  - {fileID: 11400000, guid: 5ea6ae53b7ac1404b98d61018dd8eb33, type: 2}

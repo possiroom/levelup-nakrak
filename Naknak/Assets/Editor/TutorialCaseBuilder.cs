@@ -180,6 +180,11 @@ public static class TutorialCaseBuilder
         Item("OpenJewelryBox", "evidence-open-jewelry-box", "떨어진 보석함", "정전 당시 카운터 뒤 바닥에 떨어져 있던 열린 보석함. 브로치는 없다.");
         items["Spring"] = AssetDatabase.LoadAssetAtPath<InventoryItem>("Assets/Resources/InventoryItems/WindingSpring.asset");
         items["Screw"] = AssetDatabase.LoadAssetAtPath<InventoryItem>("Assets/Resources/InventoryItems/FlatheadScrew.asset");
+        Item("ClockworkParts", "evidence-clockwork-parts", "태엽과 나사", "도자기 파편 사이에서 발견한 태엽과 일자 나사. 같은 태엽 장난감에서 떨어져 나온 부품이다.");
+        Set(items["ClockworkParts"], "combinedSources", new[] { items["Spring"], items["Screw"] });
+        Set(items["ClockworkParts"], "maxStack", 99);
+        Item("CabinetTrace", "evidence-cabinet-trace", "진열장 잠금장치의 흔적", "2번 진열장의 잠금장치에 도구로 억지로 비틀어 연 흔적이 남아 있다.");
+        Set(items["CabinetTrace"], "hideIconPlaceholder", true);
         var config = AssetDatabase.LoadAssetAtPath<GameMenuConfiguration>("Assets/Resources/NaknakMenu.asset");
         config.items = config.items.Concat(items.Values).Where(i => i != null).Distinct().ToArray(); changed.Add(config);
     }
@@ -217,6 +222,7 @@ public static class TutorialCaseBuilder
         Line("WrongEvidence", "이 물건으로는 이 사람의 실제 동선을 설명할 수 없어. 다른 증거를 제시해 보자.", "주인공");
         Line("PhoneClue", "전화기가 비스듬하게 놓여 있다. 누군가 전화기를 사용한 흔적이다.");
         Line("CabinetClue", "2번 진열장의 잠금장치에 억지로 비틀어 연 흔적이 있다.");
+        Line("CabinetBeforeIncident", "2번 진열장이다. 잠금장치에는 특별한 흔적이 보이지 않는다.");
         Line("AHint", "F로 편지·회중시계·전화기 사용 흔적을 각각 제시해 행동을 확인하자. 세 행동과 전화기 조사를 마치면 Z / Enter로 최종 추궁할 수 있다.", "주인공");
         Line("BHint", "F로 전당포증·태엽 장난감(또는 태엽·나사)·드라이버를 각각 제시해 행동을 확인하자. 세 행동과 진열장 조사를 마치면 Z / Enter로 최종 추궁할 수 있다.", "주인공");
         Line("ATruthRepeat", "가족 이야기는 거짓이었지만, 그것만으로 브로치를 훔쳤다고 할 수는 없다.", "주인공");
@@ -248,8 +254,9 @@ public static class TutorialCaseBuilder
     {
         // Replace only the obsolete shortcut and unconditional exits; existing T0/T1/T2/T3 connections stay intact.
         flow.connections.RemoveAll(r => r.id.StartsWith("pdf-") || r.id == "b9abfe1d87bf4ebbad8299b016b6f659" || r.id == "676c86577f5d43c1a9960dda5be18db2" || r.id == "d06f52a18a3543599682f1973545a377");
-        Entry("S2").entryDialog = Existing("Ait_1"); Entry("S2").lockPlayerInput = true;
+        Entry("S2").entryDialog = null; Entry("S2").entryDialogs = null; Entry("S2").lockPlayerInput = false;
         Entry("S2").hidePlayer = false;
+        Entry("S2").placePlayer = true; Entry("S2").playerPosition = new Vector2(0, 1);
         foreach (string name in new[] { "T0", "S3", Reality }) { Entry(name).useSharedCamera = true; Entry(name).hidePlayer = false; }
         Entry("S3").entryDialog = null;
         Entry("S3").entryDialogs = Container("S3Entry", Slot(Existing("S"), C("S3Seen", 0)));
@@ -266,6 +273,7 @@ public static class TutorialCaseBuilder
             Route("exit-" + name, name, "S3", SceneConnectionTrigger.DialogFinished, Existing("ExitYes"), C("MemoryReturnUnlocked"), C("OwnerConfessed", 0));
         }
         foreach (var route in flow.connections) if (route.from.Name == "S2" || route.from.Name == "S3") route.fade = true;
+        foreach (var route in flow.connections) if (route.from.Name == "T2" && route.to.Name == T3) route.fade = true;
         changed.Add(flow);
     }
 
@@ -325,7 +333,7 @@ public static class TutorialCaseBuilder
         if (name == T4 || name == "T2")
         {
             string route = Route("start-PB-" + name, name, "Tutorial_PB_Alibi", SceneConnectionTrigger.Manual, null, C("S3Seen"), C("PBCompleted", 0), C("T4CabinetInspected"));
-            var deduction = Rule(null, new[] { C("S3Seen"), C("PBCompleted", 0) }, required: new[] { "FlatheadDriver", "ExpiredPawnTicket", "Spring", "Screw" });
+            var deduction = Rule(null, new[] { C("S3Seen"), C("PBCompleted", 0) }, required: new[] { "CabinetTrace", "ExpiredPawnTicket", "ClockworkParts" });
             deduction.presentEvidence = true;
             deduction.evidencePrompt = "B의 실제 동선을 확인할 증거를 제시하세요.";
             deduction.evidenceConditions.Add(C("T4CabinetInspected"));
@@ -339,15 +347,13 @@ public static class TutorialCaseBuilder
         var phone = Objects(scene).FirstOrDefault(o => o.name == "phone");
         if (phone != null) ConfigurePoint(phone, true, null, Rule(Existing("PhoneClue"), rewards: new[] { "TelephoneTrace" }, actions: new[] { "PhoneInspected" }));
         else Point(root.transform, "Telephone", new Vector2(7, 0), null, Rule(Existing("PhoneClue"), rewards: new[] { "TelephoneTrace" }, actions: new[] { "PhoneInspected" }));
-        Point(root.transform, "Cabinet Number 2", new Vector2(5, 5), Flag("T4CabinetInspected"), Rule(Existing("CabinetClue"), new[] { C("T3Occurred") }, actions: new[] { "T4CabinetInspected" }), Rule(Existing("AlreadyChecked")));
+        Point(root.transform, "Cabinet Number 2", new Vector2(5, 5), Flag("T4CabinetInspected"), Rule(Existing("CabinetClue"), new[] { C("T3Occurred") }, rewards: new[] { "CabinetTrace" }, actions: new[] { "T4CabinetInspected" }), Rule(Existing("CabinetBeforeIncident")));
         if (name == "T2")
         {
             var vase = Objects(scene).FirstOrDefault(o => o.name == "VaseNormal");
             if (vase != null) ConfigurePoint(vase, true, Flag("ToyCollected"), Rule(Existing("ToyFound"), new[] { C("ToyCollected", 0) }, new[] { "ClockworkToy" }, new[] { "ToyCollected" }), Rule(Existing("AlreadyChecked")));
             else Collect(root.transform, "Vase Toy", new Vector2(-5, -1), "ToyCollected", "ToyFound", "ClockworkToy");
         }
-        var unknown = Rule(Existing("UnknownSpace")); unknown.showUnknownSpace = true;
-        Point(root.transform, "Unremembered Back Door", new Vector2(-5, 5), null, unknown);
         Point(root.transform, "Memory Exit", new Vector2(1, -5), null, Rule(Existing("ExitPrompt"), new[] { C("MemoryReturnUnlocked") }), Rule(Existing("ExitPromptBlocked")));
         Presentation(scene, root.transform, false, false, null);
         EditorSceneManager.MarkSceneDirty(scene);
