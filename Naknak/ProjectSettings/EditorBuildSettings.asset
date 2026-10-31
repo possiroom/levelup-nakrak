@@ -6,8 +6,56 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Title.unity
+    guid: 63d32252f1494963929b64eaf63e279d
+  - enabled: 1
     path: Assets/Scenes/PrototypeScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/Map_01.unity
+    guid: 86f1a3c5e7b94d2f8a0c4e6b1d3f5a7c
+  - enabled: 1
+    path: Assets/Scenes/S1.unity
+    guid: a9c45d0e14b10274494417d8ccd04ed1
+  - enabled: 1
+    path: Assets/Scenes/S2.unity
+    guid: 4a46b3e58ba956e4a986b963aba9d659
+  - enabled: 1
+    path: Assets/Scenes/T2.unity
+    guid: ebe1245b907bd6741a3df86cd21c0255
+  - enabled: 1
+    path: Assets/Scenes/Tutorial_T3_VaseBreak.unity
+    guid: 793d14f738a7d8a4a8b5fe7d7942d1ae
+  - enabled: 1
+    path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    guid: 0d44e3e821955c44fbb34ce8a338e804
+  - enabled: 1
+    path: Assets/Scenes/S3.unity
+    guid: 6ea5b19bd4d5f9740865e0e78f3199b2
+  - enabled: 1
+    path: Assets/Scenes/Tutorial_T35_BlackoutSearch.unity
+    guid: 551dd1460a83d744aa95d68c7e9301e5
+  - enabled: 1
+    path: Assets/Scenes/Tutorial_S6_OwnerConfession.unity
+    guid: ad1345fbbef81744096db8198aba2d59
+  - enabled: 1
+    path: Assets/Scenes/S#6.unity
+    guid: 7861a53c99321be43985e20c6a871cac
+  - enabled: 1
+    path: Assets/Scenes/T0.unity
+    guid: 4403729d437dc51498d86f070decd0cd
+  - enabled: 1
+    path: Assets/Scenes/T1.unity
+    guid: c0b8db00b949454db7d3da19f562a2ad
+  - enabled: 1
+    path: Assets/Scenes/Tutorial_PA_Alibi.unity
+    guid: 017d92686372d134d974597ade896ec5
+  - enabled: 1
+    path: Assets/Scenes/Tutorial_PB_Alibi.unity
+    guid: 273339b8a3484a94f9d93c02949986a9
+  - enabled: 1
+    path: Assets/Scenes/Tutorial_Prologue.unity
+    guid: a1b70dffa9d319c4587c8f233b6af2aa
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

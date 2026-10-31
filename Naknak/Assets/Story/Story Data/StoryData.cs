@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "StoryData", menuName = "Scriptable Objects/Create New Story Data")]
@@ -17,6 +18,10 @@ public class StoryData : ScriptableObject
     [Header("연결")]
     public List<StorySelectData> selects;
     public StoryData nextData; 
+
+    [Header("Scene Transition")]
+    [Tooltip("Enter a scene name from Build Settings. Leave empty to stay in the current scene.")]
+    public string nextSceneName;
 
     public List<DialogAction> endActions = new List<DialogAction>();
 }

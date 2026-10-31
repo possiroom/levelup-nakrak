@@ -1,0 +1,32 @@
+using System.Collections.Generic;
+
+public class RoomGraph
+{
+	private Dictionary<int, RoomNode> nodes = new Dictionary<int, RoomNode>();
+
+	public void AddRoom(RoomData room)
+	{
+		if (!nodes.ContainsKey(room.roomID))
+		{
+			nodes.Add(room.roomID, new RoomNode(room.roomID));
+		}
+		RoomNode node = nodes[room.roomID];
+		AddNeighbor(node, room.upRoom);
+		AddNeighbor(node, room.downRoom);
+		AddNeighbor(node, room.leftRoom);
+		AddNeighbor(node, room.rightRoom);
+	}
+
+	private void AddNeighbor(RoomNode node, int id)
+	{
+		if (id != -1)
+		{
+			node.neighbors.Add(id);
+		}
+	}
+
+	public List<int> GetNeighbors(int roomID)
+	{
+		return nodes[roomID].neighbors;
+	}
+}

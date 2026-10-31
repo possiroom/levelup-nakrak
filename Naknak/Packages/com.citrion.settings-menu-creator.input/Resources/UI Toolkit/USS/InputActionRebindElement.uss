@@ -1,0 +1,55 @@
+.input-action-rebind-element {
+}
+
+.input-action-rebind-element__label {
+    -unity-text-align: middle-left;
+}
+
+.input-action-rebind-element__input {
+    flex-direction: row;
+}
+
+.input-action-rebind-element__rebind-button {
+    margin: 0;
+    flex-grow: 1;
+    width: 75%;
+}
+
+.input-action-rebind-element__reset-button {
+    margin: 0;
+    flex-grow: 1;
+/*     width: 20%; */
+    white-space: normal;
+    padding-left: 25px;
+    padding-right: 25px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.input-action-rebind-element__spacer {
+    flex-grow: 1;
+    max-width: 10px;
+}
+
+.input-action-rebind-element__rebind-button__highlight-image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.input-action-rebind-element__reset-button__highlight-image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.input-element__unfocused > .input-action-rebind-element__rebind-button__highlight-image {
+    display: none;
+}
+
+.input-element__unfocused > .input-action-rebind-element__reset-button__highlight-image {
+    display: none;
+}

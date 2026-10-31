@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b75499998a0ed204b9ac9d218870c719
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/Content/ScriptableObjects/SettingsCollections/Shadows/SettingsCollection_Preset_Shadows_Core.asset
+  uploadId: 988202

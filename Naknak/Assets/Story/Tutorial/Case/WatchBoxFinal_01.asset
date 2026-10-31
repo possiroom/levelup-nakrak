@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
+  m_Name: WatchBoxFinal_01
+  m_EditorClassIdentifier: 
+  charName: "\uC8FC\uC778\uACF5"
+  text: "\uBE48 \uC2DC\uACC4 \uC0C1\uC790\uAC00 \uBB34\uAC70\uC6CC\uC84C\uB2E4. \uBC14\uB010
+    \uC2DC\uC810\uC740 \uBD88\uC774 \uAEBC\uC9C0\uACE0 \uAF43\uBCD1\uC774 \uAE68\uC9C4
+    \uC9C1\uD6C4\uC57C."
+  activatedImage: 0
+  isSelect: 0
+  isEnd: 0
+  selects: []
+  nextData: {fileID: 11400000, guid: 4984385bf3210be4e8f2cd4401c24f88, type: 2}
+  nextSceneName: 
+  endActions: []

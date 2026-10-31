@@ -41,6 +41,7 @@ public class PlayerMoveController2 : MonoBehaviour
 
     void Update()
     {
+        if (GameMenuController.IsBlockingGameplay) return;
         // 입력 Enqueue는 상시
         enqueueMove();
 

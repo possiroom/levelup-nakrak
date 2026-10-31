@@ -23,10 +23,22 @@ public class PlayerMoveController3 : MonoBehaviour
 
     // 플레이어가 바라보는 방향 (항상 유지됨)
     private Vector2 facingDirection = Vector2.down;
+    public Vector2 FacingDirection => facingDirection;
+
+    public void SetFacingDirection(Vector2 direction)
+    {
+        if (direction != Vector2.up && direction != Vector2.down && direction != Vector2.left && direction != Vector2.right) return;
+        facingDirection = direction;
+        if (anim != null) anim.SetFloat("direction", (float)vector2Dir(direction));
+    }
 
     // 플레이어 애니메이션 우선 순위를 위함
     bool xFirst = false, yFirst = false;
     bool teleporting = false;
+    private Coroutine movementLockRoutine;
+
+    private GameState CurrentGameState =>
+        GameStateManager.Instance != null ? GameStateManager.Instance.GameState : GameState.Gameplay;
 
     private bool _isMoving;
     public bool isMoving
@@ -93,20 +105,6 @@ public class PlayerMoveController3 : MonoBehaviour
     internal bool isMovingY = false;
     private float elapsedTimeY = 0f;
 
-    // --- 점프 관련 변수 ---
-    private Vector2 jumpStartPos;
-    private int queuedJump = 0;
-    private bool isJumping = false;
-    private bool jumpPhase1 = false;
-    private bool jumpPhase2 = false;
-    private float jumpDuration = 0.6f;
-    private float elapsedTimeJump = 0f;
-
-    private float jumpHeight = 1.5f;
-    private int rho = 60;
-
-
-
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -124,14 +122,13 @@ public class PlayerMoveController3 : MonoBehaviour
 
     void Update()
     {
-        if (GameStateManager.Instance.GameState == GameState.Gameplay)
+        if (GameMenuController.IsBlockingGameplay) return;
+        GameState gameState = CurrentGameState;
+
+        if (gameState == GameState.Gameplay)
         {
-            if (!isJumping)
-            {
-                UpdateMoveX();
-                UpdateMoveY();
-            }
-            UpdateJump();
+            UpdateMoveX();
+            UpdateMoveY();
             if (isMovingX || isMovingY) anim.speed = lastInputManager.GetKeyRun() ? moveDuration/runDuration : 1f;
             else anim.speed = 1f;
         } 
@@ -157,15 +154,22 @@ public class PlayerMoveController3 : MonoBehaviour
         else if (yFirst && isMovingY) anim.SetFloat("direction", (float)vector2Dir(currentDirectionY));
         else if (!isMoving) anim.SetFloat("direction", (float)vector2Dir(facingDirection));
         
-        if (lastInputManager.GetKeyDownInteract() && 
-        (!isMoving || GameStateManager.Instance.GameState == GameState.Dialog)) TryInteract();   
+        if ((gameState != GameState.Dialog || !SceneLoadManager.HasManagedScene) && lastInputManager.GetKeyDownInteract() &&
+        (!isMoving || gameState == GameState.Dialog))
+        {
+            InteractionInput.ConsumeConfirm();
+            TryInteract();
+        }
+        if (gameState == GameState.Gameplay && !isMoving && Input.GetKeyDown(KeyCode.F))
+            TryPresentEvidence();
     }
 
     void TryInteract()
     {   
-        GameState gameState = GameStateManager.Instance.GameState;
+        GameState gameState = CurrentGameState;
         if (gameState == GameState.Dialog)
         {
+            if (SceneLoadManager.HasManagedScene) return;
             GameEventBase evt = GameEventFactory.CreateNextDialogEvent();
             GameEventManager.Instance.Submit(evt);
         } 
@@ -183,10 +187,27 @@ public class PlayerMoveController3 : MonoBehaviour
                 if (hit.collider != null && hit.collider.CompareTag("Interactable"))
                 {
                     Debug.Log("[PlayerMoveController3] Interact : " + hit.collider.name);
-                    hit.collider.GetComponent<IInteractable>().Interact();
+                    var point = hit.collider.GetComponent<InvestigationPoint>();
+                    if (SceneLoadManager.IsFirstMemoryVisit &&
+                        (point != null || hit.collider.GetComponent<MemoryInvestigationPoint>() != null)) return;
+                    var npc = hit.collider.GetComponent<NPC>();
+                    if (SceneLoadManager.IsFirstMemoryVisit && npc != null && !npc.AllowDuringFirstMemory) return;
+                    hit.collider.GetComponent<IInteractable>()?.Interact();
                     break;
                 }
             }
+        }
+    }
+
+    private void TryPresentEvidence()
+    {
+        if (!SceneLoadManager.IsMemoryRevisit || SceneLoadManager.IsCutscene || SceneLoadManager.IsLoading ||
+            DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen) return;
+        foreach (var hit in Physics2D.RaycastAll(transform.position - new Vector3(0, .5f, 0), facingDirection, moveDistance, layer))
+        {
+            if (hit.collider == null || !hit.collider.CompareTag("Interactable")) continue;
+            hit.collider.GetComponent<InvestigationPoint>()?.PresentEvidence();
+            return;
         }
     }
 
@@ -235,7 +256,7 @@ public class PlayerMoveController3 : MonoBehaviour
                     (lastInputManager.GetLastInputAxis() == "Horizontal" ||                 // (2-1) 마지막 입력 방향이 수평 방향이거나
                     (lastInputManager.GetAxisRaw("Vertical") == 1f && !canMoveXY[0])||      // (2-2) 마지막 입력이 수직, 위 방향인데 위로 움직일 수 없거나
                     (lastInputManager.GetAxisRaw("Vertical") == -1f && !canMoveXY[1]))      // (2-3) 마지막 입력이 수직, 아래 방향인데 아래로 움직일 수 없다면
-                    && !pause && queuedJump == 0)
+                    && !pause)
                     { StartMoveX(); }
                 else {
                     isMovingX = false;
@@ -246,7 +267,6 @@ public class PlayerMoveController3 : MonoBehaviour
 
     private void EnqueueMoveX()
     {
-        if (isJumping || queuedJump != 0) return;
         float moveValue = lastInputManager.GetAxisRaw("Horizontal");
         if (Mathf.Abs(moveValue) == 1f)
         {
@@ -343,7 +363,6 @@ public class PlayerMoveController3 : MonoBehaviour
 
     private void EnqueueMoveY()
     {
-        if (isJumping || queuedJump != 0) return;
         float moveValue = lastInputManager.GetAxisRaw("Vertical");
         if (Mathf.Abs(moveValue) == 1f)
         {
@@ -382,127 +401,6 @@ public class PlayerMoveController3 : MonoBehaviour
 
             if (!isMovingX) anim.SetFloat("direction", (float)vector2Dir(currentDirectionY));
             TriggerExecutor.Instance.OnStepStarted(targetPosY - new Vector2(0f, 0.5f));
-        }
-    }
-
-    /// <summary>
-    /// 위/아래로만 점프가 가능하고
-    /// -> 보고 있는 방향이 위/아래일 때 StartJump 가능
-    /// 우선은 멈춰있을 때에만 점프 할 수 있도록
-    /// </summary>
-    private void UpdateJump()
-    {
-        EnqueueJump();
-
-        if (!isMovingX && queuedJump != 0)
-        {
-            StartJump();
-        }
-
-        if (isJumping)
-        {
-            elapsedTimeJump += Time.deltaTime;
-            float tj = Mathf.Clamp01(elapsedTimeJump / jumpDuration);
-            float ty = Mathf.Clamp01(elapsedTimeY / moveDuration);
-            if (facingDirection == Vector2.up)
-                transform.position = jumpStartPos + Vector2.up * GetJumpPos(tj);
-            else if (facingDirection == Vector2.down)
-                transform.position = jumpStartPos + Vector2.up * (GetJumpPos(1-tj) - 2f);
-
-            if (ty + 2*tj >= 1f && !jumpPhase1) {
-                jumpPhase1 = true;
-                Debug.Log("[PlayerMoveController3] Jump Phase 1");
-
-                currentPosition = (jumpStartPos + targetPosY) / 2f - ty * facingDirection;
-                Debug.Log("Currnent Position: " + currentPosition.ToString());
-                TriggerExecutor.Instance.OnStepCompleted(currentPosition - new Vector2(0f, 0.5f));
-                TriggerExecutor.Instance.OnStepStarted(currentPosition + facingDirection - new Vector2(0f, 0.5f));
-            }
-
-            if (ty + 2*tj >= 2f && !jumpPhase2) {
-                jumpPhase2 = true;
-                Debug.Log("[PlayerMoveController3] Jump Phase 2");
-                
-                currentPosition = (jumpStartPos + targetPosY) / 2f + (1 - ty) * facingDirection;
-                Debug.Log("Currnent Position: " + currentPosition.ToString());
-                if (2*tj >= 2f) isJumping = false;
-                TriggerExecutor.Instance.OnStepCompleted(currentPosition - new Vector2(0f, 0.5f));
-                if (elapsedTimeY != 0f) TriggerExecutor.Instance.OnStepStarted(currentPosition + facingDirection - new Vector2(0f, 0.5f));
-            }
-
-            if (2*tj >= 2f)
-            {
-                transform.position = new Vector2(transform.position.x, targetPosY.y);
-                isJumping = false;
-                jumpPhase1 = false;
-                jumpPhase2 = false;
-
-                queuedJump = 0;
-                elapsedTimeJump = 0f;
-                
-                syncCanMoveXY(currentPosition);
-                syncCanMoveYX(currentPosition);
-
-                if (elapsedTimeY != 0f)
-                {
-                    targetPosY += (1 - ty) * moveDistance * facingDirection;
-                    startPosY = currentPosition;
-                    currentPosition.y = targetPosY.y;
-
-                    Debug.Log("start Position: " + startPosY.ToString());
-                    Debug.Log("target Position: " + targetPosY.ToString());
-                    Debug.Log("Current Position: " + currentPosition.ToString());
-                    isMovingY = true;
-                }
-                
-                Debug.Log("[PlayerMoveController3] Jump Complete");
-            }
-        }
-    }
-
-    /// <summary>
-    /// 0->1 : 
-    /// </summary>
-    private float GetJumpPos(float x)
-    {
-        return 2f*x - 4*jumpHeight*Mathf.Sin(Mathf.Deg2Rad*rho)*x*(x-1);
-    }
-
-    private void EnqueueJump()
-    {
-        if (!isMovingX && !isJumping && lastInputManager.GetKeyDownJump())
-        {
-            if (facingDirection == Vector2.up)
-            {
-                queuedJump = 1;
-            }
-            else if (facingDirection == Vector2.down)
-            {
-                queuedJump = -1;
-            }
-        }
-    }
-
-    private void StartJump()
-    {
-        if (facingDirection != Vector2.up && facingDirection != Vector2.down)
-        {
-            queuedJump = 0;
-            return;
-        }
-        isJumping = true;
-        jumpPhase1 = false;
-        jumpPhase2 = false;
-        elapsedTimeJump = 0f;
-        queuedJump = 0;
-        isMovingY = false;
-
-        jumpStartPos = transform.position;
-        targetPosY = jumpStartPos + facingDirection * 2;
-        
-        if (elapsedTimeY == 0f)
-        {
-            TriggerExecutor.Instance.OnStepStarted((jumpStartPos + targetPosY) / 2f - new Vector2(0f, 0.5f));
         }
     }
 
@@ -553,6 +451,7 @@ public class PlayerMoveController3 : MonoBehaviour
         if (newFloor >= 1 && newFloor <= 3)
         {
             layer = newFloor;
+            floorLayer = layer;
             Debug.Log("[PlayerMoveController3] Set Floor : " + newFloor);
         }
     }
@@ -562,15 +461,13 @@ public class PlayerMoveController3 : MonoBehaviour
     /// </summary>
     public int GetCurrentFloor()
     {
-        if (floorLayer == LayerMask.GetMask("Col 1F")) return 1;
-        else if (floorLayer == LayerMask.GetMask("Col 2F")) return 2;
-        else if (floorLayer == LayerMask.GetMask("Col 3F")) return 3;
-        else return 1;
+        return _layer;
     }
 
+    // Existing menu, stamina and obstacle callers still query this state.
     public bool GetIsJumping()
     {
-        return isJumping;
+        return false;
     }
 
     public IEnumerator Teleport(Vector2Int pos, float time = 1f)
@@ -583,23 +480,101 @@ public class PlayerMoveController3 : MonoBehaviour
         nextInputX = true;
         nextInputY = true;
 
-        // Jump Reset
-        isJumping = false;
-        elapsedTimeJump = 0f;
-        jumpPhase1 = false;
-        jumpPhase2 = false;
-
         // Ignore Input & Wait
         teleporting = true;
         lastInputManager.IgnoreInput(time + .5f);
         queuedDirectionX = Vector2.zero;
         queuedDirectionY = Vector2.zero;
-        queuedJump = 0;
         yield return new WaitForSeconds(time);
         
         // Teleport
         transform.position = new Vector3(pos.x + 0.5f, pos.y, 0);
         currentPosition = transform.position;
         teleporting = false;
+    }
+
+    public void LockMovement(float time)
+    {
+        ResetMovementState();
+
+        teleporting = true;
+        if (lastInputManager != null)
+            lastInputManager.IgnoreInput(time);
+
+        if (movementLockRoutine != null)
+            StopCoroutine(movementLockRoutine);
+
+        movementLockRoutine = StartCoroutine(UnlockMovementAfter(time));
+    }
+
+    private IEnumerator UnlockMovementAfter(float time)
+    {
+        yield return new WaitForSeconds(time);
+        teleporting = false;
+        movementLockRoutine = null;
+    }
+
+    private void ResetMovementState()
+    {
+        isMovingX = false;
+        isMovingY = false;
+        isMoving = false;
+
+        elapsedTimeX = 0f;
+        elapsedTimeY = 0f;
+        nextInputX = true;
+        nextInputY = true;
+
+        queuedDirectionX = Vector2.zero;
+        queuedDirectionY = Vector2.zero;
+
+        currentPosition = transform.position;
+        startPosX = currentPosition;
+        targetPosX = currentPosition;
+        startPosY = currentPosition;
+        targetPosY = currentPosition;
+    }
+
+
+    public void TeleportToWorld(Vector2 worldPos)
+    {
+        // 이동 상태 초기화
+        isMovingX = false;
+        isMovingY = false;
+        isMoving = false;
+
+        elapsedTimeX = 0f;
+        elapsedTimeY = 0f;
+        nextInputX = true;
+        nextInputY = true;
+
+        queuedDirectionX = Vector2.zero;
+        queuedDirectionY = Vector2.zero;
+
+
+        // 텔레포트 중 입력 꼬임 방지
+        teleporting = false;
+
+        if (lastInputManager != null)
+        {
+            lastInputManager.IgnoreInput(0.15f);
+        }
+
+        // 실제 위치 이동
+        Vector3 newPos = new Vector3(worldPos.x, worldPos.y, transform.position.z);
+        transform.position = newPos;
+
+        // PlayerMoveController3 내부 좌표 동기화
+        currentPosition = worldPos;
+
+        startPosX = worldPos;
+        targetPosX = worldPos;
+
+        startPosY = worldPos;
+        targetPosY = worldPos;
+
+        // 이동 가능 방향 다시 계산
+        syncCanMoveXY(currentPosition);
+        syncCanMoveYX(currentPosition);
     }
 }

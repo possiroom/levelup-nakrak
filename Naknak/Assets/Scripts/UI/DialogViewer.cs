@@ -15,6 +15,8 @@ public class DialogViewer : MonoBehaviour
     [SerializeField] private float blinkSpeed = 0.5f;
 
     private float elapedTime;
+    private bool portraitHiddenForTextOnly;
+    private bool portraitEnabledBeforeTextOnly;
 
 
     public void ChangeStoryText(string text)
@@ -30,6 +32,19 @@ public class DialogViewer : MonoBehaviour
     // 추후 이미지로 선택으로 변경 (darker가 될 필요가 없어보임)
     public void ChangeActivateImage(int code)
     {
+        // Negative portrait codes are text-only lines (for example the opening prologue).
+        if (code < 0)
+        {
+            if (!portraitHiddenForTextOnly) portraitEnabledBeforeTextOnly = character1.enabled;
+            portraitHiddenForTextOnly = true;
+            character1.enabled = false;
+            return;
+        }
+        if (portraitHiddenForTextOnly)
+        {
+            character1.enabled = portraitEnabledBeforeTextOnly;
+            portraitHiddenForTextOnly = false;
+        }
         switch (code)
         {
             case 1:

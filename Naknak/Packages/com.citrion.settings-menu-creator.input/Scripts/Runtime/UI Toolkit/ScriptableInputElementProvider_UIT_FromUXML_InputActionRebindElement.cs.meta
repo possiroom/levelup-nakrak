@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 9398f766cc10e7041bfb2ffdf131e036
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 275525
+  packageName: Settings & Options Menu Creator - Input Rebinding Addon
+  packageVersion: 1.2.3
+  assetPath: Packages/com.citrion.settings-menu-creator.input/Scripts/Runtime/UI
+    Toolkit/ScriptableInputElementProvider_UIT_FromUXML_InputActionRebindElement.cs
+  uploadId: 988204

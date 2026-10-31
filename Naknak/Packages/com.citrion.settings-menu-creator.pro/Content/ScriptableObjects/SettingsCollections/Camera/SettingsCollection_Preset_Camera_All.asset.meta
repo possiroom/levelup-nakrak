@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a653b2e7f6ae5f14bb5a27b4d0ccf78e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/Content/ScriptableObjects/SettingsCollections/Camera/SettingsCollection_Preset_Camera_All.asset
+  uploadId: 988202

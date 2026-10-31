@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e0f32ec0ea965fe4b94bb0cf467c1b52
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator/Content/Prefabs/InputElements/InputElement/Basic/InputElement_WithLabel_Dynamic_Vertical.prefab
+  uploadId: 988202

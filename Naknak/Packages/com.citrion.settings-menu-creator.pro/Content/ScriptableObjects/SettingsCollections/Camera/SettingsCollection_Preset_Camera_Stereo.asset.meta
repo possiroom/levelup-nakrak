@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9a06d3c873bb76941af740b1a52ab27c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/Content/ScriptableObjects/SettingsCollections/Camera/SettingsCollection_Preset_Camera_Stereo.asset
+  uploadId: 988202

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91b08daa6dd949e6b9d9082e3829f160, type: 3}
+  m_Name: CabinetTrace
+  m_EditorClassIdentifier:
+  id: evidence-cabinet-trace
+  displayName: "\uC9C4\uC5F4\uC7A5 \uC7A0\uAE08\uC7A5\uCE58\uC758 \uD754\uC801"
+  description: "2\uBC88 \uC9C4\uC5F4\uC7A5\uC758 \uC7A0\uAE08\uC7A5\uCE58\uC5D0 \uB3C4\uAD6C\uB85C
+    \uC5B5\uC9C0\uB85C \uBE44\uD2C0\uC5B4 \uC5F0 \uD754\uC801\uC774 \uB0A8\uC544
+    \uC788\uB2E4."
+  icon: {fileID: 0}
+  hideIconPlaceholder: 1
+  keyItem: 1
+  memoryOnly: 0
+  inspectionDialogs: {fileID: 0}
+  inspectionResult: {fileID: 0}
+  combinedSources: []
+  descriptionCondition: {fileID: 0}
+  changedDescription:
+  maxStack: 1

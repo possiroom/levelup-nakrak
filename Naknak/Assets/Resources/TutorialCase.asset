@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b3671a1e8d678748beb1c6b6f1e5b6a, type: 3}
+  m_Name: TutorialCase
+  m_EditorClassIdentifier: 
+  font: {fileID: 11400000, guid: d154c0022f7a04589a96010a24d98151, type: 2}
+  solved: {fileID: 11400000, guid: ffdde4ab350c45647bdc0c6df1505dad, type: 2}
+  objectives:
+  - scene:
+      path: Assets/Scenes/Tutorial_T35_BlackoutSearch.unity
+    conditions: []
+    text: "\uC815\uC804 \uB2F9\uC2DC \uC8FC\uC778\uC774 \uB5A8\uC5B4\uB728\uB9B0
+      \uBCF4\uC11D\uD568\uC744 \uCC3E\uC790. \uCE74\uC6B4\uD130 \uB4A4\uB97C \uC870\uC0AC\uD558\uC790."
+  - scene:
+      path: Assets/Scenes/T0.unity
+    conditions: []
+    text: "\uBE0C\uB85C\uCE58\uB97C \uC870\uC0AC\uD574 \uCC59\uAE34 \uB4A4 \uBCF4\uC11D\uD568\uC5D0
+      \uB123\uACE0 \uBC29\uC744 \uB098\uAC00\uC138\uC694."
+  - scene:
+      path: Assets/Scenes/T2.unity
+    conditions:
+    - id: {fileID: 11400000, guid: 96837d996a442ce44a653ab0b6124a74, type: 2}
+      compare: 2
+      value: 1
+    text: "\uC815\uC804 \uC804\uD6C4\uC758 \uC2DC\uACC4 \uC0C1\uC790\uB97C \uC544\uC774\uD15C
+      \uBA54\uB274\uC5D0\uC11C \uD655\uC778\uD558\uACE0 \uD604\uC2E4\uB85C \uB3CC\uC544\uAC00\uC790."
+  - scene:
+      path: Assets/Scenes/T2.unity
+    conditions:
+    - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
+      compare: 2
+      value: 1
+    text: "A\uC640 B\uC758 \uC9C4\uC220\uC744 \uAC80\uC99D\uD560 \uC99D\uAC70\uB97C
+      \uBAA8\uC73C\uACE0 \uB450 \uC0AC\uB78C\uC5D0\uAC8C \uC81C\uC2DC\uD558\uC790."
+  - scene:
+      path: Assets/Scenes/T2.unity
+    conditions: []
+    text: "\uC8FC\uC778\uC5D0\uAC8C \uAC10\uC815\uC744 \uC758\uB8B0\uD558\uC790.
+      Z / Enter\uB85C \uB300\uD654\uD558\uC790."
+  - scene:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    conditions:
+    - id: {fileID: 11400000, guid: 96837d996a442ce44a653ab0b6124a74, type: 2}
+      compare: 2
+      value: 1
+    text: "\uC815\uC804 \uC804\uD6C4\uC758 \uC2DC\uACC4 \uC0C1\uC790\uB97C \uC544\uC774\uD15C
+      \uBA54\uB274\uC5D0\uC11C \uD655\uC778\uD558\uACE0 \uD604\uC2E4\uB85C \uB3CC\uC544\uAC00\uC790."
+  - scene:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    conditions:
+    - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
+      compare: 2
+      value: 1
+    text: "A\uC640 B\uC758 \uC9C4\uC220\uC744 \uAC80\uC99D\uD560 \uC99D\uAC70\uB97C
+      \uBAA8\uC73C\uACE0 \uB450 \uC0AC\uB78C\uC5D0\uAC8C \uC81C\uC2DC\uD558\uC790."
+  - scene:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    conditions: []
+    text: "\uC8FC\uC778\uC5D0\uAC8C \uAC10\uC815\uC744 \uC758\uB8B0\uD558\uC790.
+      Z / Enter\uB85C \uB300\uD654\uD558\uC790."
+  - scene:
+      path: Assets/Scenes/S3.unity
+    conditions: []
+    text: "\uC870\uC218\uC5D0\uAC8C \uB9D0\uC744 \uAC78\uC5B4 \uAE30\uC5B5\uC744
+      \uC7AC\uD0D0\uC0C9\uD558\uC790. \uC7AC\uD0D0\uC0C9 \uC911 Ctrl\uB85C \uB300\uC0AC\uB97C
+      \uB118\uAE38 \uC218 \uC788\uB2E4."
+  - scene:
+      path: Assets/Scenes/S#6.unity
+    conditions:
+    - id: {fileID: 11400000, guid: 86aa0d51e76ff494497b8b84de1d1fa8, type: 2}
+      compare: 2
+      value: 1
+    text: "\uD604\uC2E4\uC758 A\uC5D0\uAC8C \uC2DC\uACC4 \uC0C1\uC790\uC758 \uBCC0\uD654\uB97C
+      \uBB3C\uC5B4\uBCF4\uC790."
+  - scene:
+      path: Assets/Scenes/S#6.unity
+    conditions:
+    - id: {fileID: 11400000, guid: 59446408f5b99bc4784b4671c57fa289, type: 2}
+      compare: 2
+      value: 1
+    text: "A\uB97C \uCD94\uAD81\uD55C \uB4A4 \uC870\uC218\uC640 \uD568\uAED8 \uC815\uC804
+      \uC804\uD6C4\uB97C \uB2E4\uC2DC \uD655\uC778\uD558\uC790."

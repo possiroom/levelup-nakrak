@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ba8d91e242ad5e54ba2154245a9f3675
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator/Content/Prefabs/InputElements/InputElement/Other/Highlights/Border/Border_Dynamic.prefab
+  uploadId: 988202

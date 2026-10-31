@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DialogManager : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class DialogManager : MonoBehaviour
 
     // Variables for Dialog Animation
     private bool isPlaying;
+    private bool allowFastForward;
+    private bool inputReady;
     private float elapedTime;
     private string showingText;
 
@@ -22,6 +25,7 @@ public class DialogManager : MonoBehaviour
         if (Instance == null) {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += RebindSceneViews;
         } else {
             Destroy(gameObject);
         }
@@ -29,6 +33,7 @@ public class DialogManager : MonoBehaviour
 
     void Start()
     {
+        if (currentStory != null) return;
         elapedTime = 0f;
         showingText = "";
         isPlaying = false;
@@ -37,6 +42,58 @@ public class DialogManager : MonoBehaviour
     }
 
     private StoryData currentStory = null;
+    public StoryData CurrentStory => currentStory;
+    private DialogViewer fallbackView;
+    private DialogSelectViewer fallbackSelectView;
+    public bool IsDialogOpen => currentStory != null && view != null && view.gameObject.activeSelf;
+    public bool CanShowDialog => view != null && GameEventManager.Instance != null;
+    public bool CanFastForward => IsDialogOpen && allowFastForward;
+
+    // Replays may fast-forward linear lines. Choices and end actions still use NextDialog.
+    public void SkipUntilChoice()
+    {
+        if (!SceneLoadManager.IsMemoryRevisit || GameMenuController.IsBlockingGameplay || !CanFastForward) return;
+        var visited = new HashSet<StoryData>();
+        while (currentStory != null && !isSelectActivate && visited.Add(currentStory))
+        {
+            if (isPlaying) TextSkip();
+            bool choice = currentStory.isSelect;
+            NextDialog();
+            if (choice) break;
+        }
+    }
+
+    public void BindSceneViews(Scene scene)
+    {
+        foreach (var root in scene.GetRootGameObjects())
+        {
+            var sceneView = root.GetComponentInChildren<DialogViewer>(true);
+            var sceneSelect = root.GetComponentInChildren<DialogSelectViewer>(true);
+            if (sceneView != null) view = sceneView;
+            if (sceneSelect != null) selectView = sceneSelect;
+        }
+        if (scene.name == "PrototypeScene")
+        {
+            if (view != null && view.gameObject.scene == scene) fallbackView = view;
+            if (selectView != null && selectView.gameObject.scene == scene) fallbackSelectView = selectView;
+        }
+        if (view == null) view = fallbackView;
+        if (selectView == null) selectView = fallbackSelectView;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance != this) return;
+        SceneManager.sceneLoaded -= RebindSceneViews;
+        Instance = null;
+    }
+
+    private void RebindSceneViews(Scene scene, LoadSceneMode mode)
+    {
+        if (view == null) view = FindFirstObjectByType<DialogViewer>(FindObjectsInactive.Include);
+        if (selectView == null) selectView = FindFirstObjectByType<DialogSelectViewer>(FindObjectsInactive.Include);
+        if (scene.name == "PrototypeScene") { fallbackView = view; fallbackSelectView = selectView; }
+    }
 
     private void ChangeUI()
     {
@@ -46,19 +103,36 @@ public class DialogManager : MonoBehaviour
         view.ChangeName(currentStory.charName);
         view.ChangeActivateImage(currentStory.activatedImage);
         view.ActivateEndMark(false);
-        Debug.Log("[DialogManager] Show Dialog : " + currentStory.text);
+        Debug.Log("[DialogManager] Show Dialog: " + currentStory.name);
     }
 
-    public void ShowDialog(StoryData storyData)
+    public void ShowDialog(StoryData storyData) => ShowDialog(storyData, false);
+
+    public void ShowDialog(StoryData storyData, bool canFastForward)
     {
+        if (storyData == null || view == null) return;
+        InteractionInput.ConsumeConfirm();
         view.gameObject.SetActive(true);
 
         GameEventBase evt = GameEventFactory.CreateGameStateChangeEvent(GameState.Dialog);
         GameEventManager.Instance.Submit(evt);
 
         currentStory = storyData;
+        // Investigation, inventory and evidence lines require a fresh confirmation.
+        // Only explicitly marked story sequences support holding Ctrl to fast-forward.
+        allowFastForward = canFastForward;
+        inputReady = false;
 
         ChangeUI();
+    }
+
+    // Opening a dialogue and advancing it must be separate presses, even when
+    // interaction finishes on a later frame or the operating system repeats a key.
+    public void AdvanceFromInput()
+    {
+        if (!inputReady || !IsDialogOpen) return;
+        inputReady = false;
+        NextDialog();
     }
 
     /// <summary>
@@ -66,8 +140,11 @@ public class DialogManager : MonoBehaviour
     /// </summary>
     public void NextDialog()
     {
+        if (GameMenuController.IsBlockingGameplay || currentStory == null) return;
+        InteractionInput.ConsumeConfirm();
         // 대사 스킵
         if (isPlaying) { TextSkip(); return; }
+        if (TutorialDeductionTrack.IsMoving) return;
 
         // 선택지 선택
         if (isSelectActivate)
@@ -110,6 +187,7 @@ public class DialogManager : MonoBehaviour
 
             // 다음 대사
             currentStory = currentStory.nextData;
+            if (currentStory == null) { EndDialog(); return; }
 
             // 만약 마지막 선택 후 Action을 위한 빈 대사라면
             if (currentStory.charName == "" && currentStory.text == "" && currentStory.isEnd)
@@ -137,6 +215,12 @@ public class DialogManager : MonoBehaviour
 
     private void Update()
     {
+        if (GameMenuController.IsBlockingGameplay) return;
+        if (IsDialogOpen && InteractionInput.CanConfirm &&
+            !Input.GetKey(KeyCode.Z) && !Input.GetKey(KeyCode.Return) &&
+            !Input.GetKey(KeyCode.KeypadEnter) && !Input.GetKey(KeyCode.Space) &&
+            !Input.GetMouseButton(0)) inputReady = true;
+        if (isPlaying && currentStory != null && showingText.Length >= currentStory.text.Length) TextSkip();
         if (isPlaying && showingText.Length < currentStory.text.Length)
         {
             elapedTime += Time.deltaTime;
@@ -185,6 +269,12 @@ public class DialogManager : MonoBehaviour
 
     private void EndDialog()
     {
+        InteractionInput.ConsumeConfirm();
+        var completed = currentStory;
+        allowFastForward = false;
+        isPlaying = false;
+        isSelectActivate = false;
+        if (selectView != null) selectView.gameObject.SetActive(false);
         view.ChangeName("");
         view.ChangeStoryText("");
         view.gameObject.SetActive(false); 
@@ -192,6 +282,12 @@ public class DialogManager : MonoBehaviour
         TriggerExecutor.Instance.AfterDialogEvent(currentStory);
         GameEventBase evt = GameEventFactory.CreateGameStateChangeEvent(GameState.Gameplay);
         GameEventManager.Instance.Submit(evt);
+
+        currentStory = null;
+        if (SceneLoadManager.Instance != null && SceneLoadManager.Instance.NotifyDialogFinished(completed)) return;
+        // Keep old data working, but route legacy transitions through the same loader.
+        if (completed != null && !string.IsNullOrWhiteSpace(completed.nextSceneName) && SceneLoadManager.Instance != null)
+            SceneLoadManager.Instance.StartCoroutine(SceneLoadManager.Instance.LoadContent(completed.nextSceneName));
     }
 
     // Action 실행

@@ -11,6 +11,7 @@ public abstract class ObstacleBlock : TriggerBlock
 
     protected override void OnTriggered()
     {
+        if (!TemporaryFeatureSwitches.ObstaclesEnabled) return;
         if (ignoreOnJump && PlayerStatus.Instance.GetIsJumping()) return;
 
         Debug.Log("Obstacle Triggered: " + gameObject.name);
