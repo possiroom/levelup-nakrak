@@ -59,8 +59,8 @@ public class TutorialT3T4SceneController : MonoBehaviour
     [SerializeField] private float waitBeforeBreak = 0.5f;
     [SerializeField] private float darkFadeInTime = 0.25f;
     [SerializeField] private float waitAfterLightsOffBeforeBreak = 0.75f;
-    [SerializeField] private float waitAfterBreak = 0.8f;
     [SerializeField] private float darkFadeOutTime = 0.45f;
+    [SerializeField, Min(0f)] private float waitAfterDarkReaction = 2f;
     [SerializeField] private bool restoreLightAfterBreak = true;
 
     [Header("T3 - Vase Break")]
@@ -118,7 +118,7 @@ public class TutorialT3T4SceneController : MonoBehaviour
         if (GetAdvanceInput())
         {
             if (DialogManager.Instance != null)
-                DialogManager.Instance.NextDialog();
+                DialogManager.Instance.AdvanceFromInput();
         }
     }
 
@@ -185,7 +185,15 @@ public class TutorialT3T4SceneController : MonoBehaviour
         Phase = T3Phase.Dark;
         yield return FadeDarkOverlay(afterS3 ? afterS3DarkAlpha : darkAlpha, darkFadeInTime);
 
-        yield return new WaitForSeconds(waitAfterLightsOffBeforeBreak);
+        // Dialogue renders above the blackout; the world remains hidden on the first visit.
+        Phase = T3Phase.Reaction;
+        yield return PlayStory(CreateStoryChain("T3_LightsOff", new[]
+        {
+            new CutsceneLine("전당포 주인", "뭐, 뭐야?")
+        }));
+
+        float breakDelay = Mathf.Min(waitAfterLightsOffBeforeBreak, waitAfterDarkReaction);
+        yield return new WaitForSeconds(breakDelay);
 
         if (vaseNormal != null)
             vaseNormal.SetActive(false);
@@ -197,7 +205,7 @@ public class TutorialT3T4SceneController : MonoBehaviour
         if (t3Occurred != null && ConditionManager.Instance != null) ConditionManager.Instance.Set(t3Occurred, 1);
         PlayVaseBreakSound();
 
-        yield return new WaitForSeconds(waitAfterBreak);
+        yield return new WaitForSeconds(Mathf.Max(0, waitAfterDarkReaction - breakDelay));
 
         if (restoreLightAfterBreak)
             yield return FadeDarkOverlay(0f, darkFadeOutTime);
@@ -217,7 +225,7 @@ public class TutorialT3T4SceneController : MonoBehaviour
             yield break;
         }
         waitingForDialogEnd = true;
-        DialogManager.Instance.ShowDialog(t3Story);
+        DialogManager.Instance.ShowDialog(t3Story, true);
         yield return null;
         while (DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen) yield return null;
         waitingForDialogEnd = false;
@@ -260,6 +268,12 @@ public class TutorialT3T4SceneController : MonoBehaviour
 
     private void SetupT3StartState()
     {
+        // Hide the world while keeping the existing dialogue canvas (order 0) readable.
+        if (darkOverlayImage != null)
+        {
+            var canvas = darkOverlayImage.GetComponentInParent<Canvas>();
+            if (canvas != null) canvas.sortingOrder = -1;
+        }
         SetDarkOverlayAlpha(0f);
 
         if (vaseNormal != null)
@@ -434,7 +448,7 @@ public class TutorialT3T4SceneController : MonoBehaviour
 
         waitingForDialogEnd = true;
 
-        DialogManager.Instance.ShowDialog(storyData);
+        DialogManager.Instance.ShowDialog(storyData, true);
 
         yield return null;
 

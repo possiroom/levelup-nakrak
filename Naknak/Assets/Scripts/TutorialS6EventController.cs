@@ -71,7 +71,7 @@ public class TutorialS6EventController : MonoBehaviour
         if (GetAdvanceInput())
         {
             if (DialogManager.Instance != null)
-                DialogManager.Instance.NextDialog();
+                DialogManager.Instance.AdvanceFromInput();
         }
     }
 
@@ -227,7 +227,7 @@ public class TutorialS6EventController : MonoBehaviour
         waitingForDialogEnd = true;
         inputLockUntil = Time.unscaledTime + inputLockAfterDialogStart;
 
-        DialogManager.Instance.ShowDialog(storyData);
+        DialogManager.Instance.ShowDialog(storyData, true);
 
         yield return null;
 

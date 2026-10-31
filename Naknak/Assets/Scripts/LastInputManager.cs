@@ -116,7 +116,7 @@ public class LastInputManager : MonoBehaviour
     {
         if (GameMenuController.IsBlockingGameplay) return false;
         if (ignoreInputTime > 0f) return false;
-        return Input.GetKeyDown(KeyCode.Z);
+        return InteractionInput.ConfirmPressed;
     }
 
     public bool GetKeyRun()

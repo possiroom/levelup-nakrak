@@ -11,10 +11,16 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91b08daa6dd949e6b9d9082e3829f160, type: 3}
   m_Name: WindingSpring
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   id: evidence-winding-spring
-  displayName: 태엽
-  description: 깨진 도자기 파편 사이에서 발견한 태엽.
-  icon: {fileID: 0}
+  displayName: "\uD0DC\uC5FD"
+  description: "\uAE68\uC9C4 \uB3C4\uC790\uAE30 \uD30C\uD3B8 \uC0AC\uC774\uC5D0\uC11C
+    \uBC1C\uACAC\uD55C \uD0DC\uC5FD."
+  icon: {fileID: 1008638033497936375, guid: 88202adb19728be4da79f2879e89450e, type: 3}
   keyItem: 1
+  memoryOnly: 0
+  inspectionDialogs: {fileID: 0}
+  inspectionResult: {fileID: 0}
+  descriptionCondition: {fileID: 0}
+  changedDescription: 
   maxStack: 99

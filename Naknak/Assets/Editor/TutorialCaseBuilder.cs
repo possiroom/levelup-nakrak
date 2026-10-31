@@ -176,6 +176,7 @@ public static class TutorialCaseBuilder
         Item("WatchBox", "evidence-watch-box", "시계 상자", "시계 제조사의 로고가 박혀 있다. 상태가 좋지 않은 빈 상자이다.");
         Item("FlatheadDriver", "evidence-flathead-driver", "일자 드라이버", "태엽 장난감 같은 작은 물건을 조작할 수 있는 튼튼한 드라이버.");
         Item("ClockworkToy", "evidence-clockwork-toy", "태엽 장난감", "꽃병 안에 숨겨져 있던 장난감. 태엽과 나사로 움직인다.");
+        Item("TelephoneTrace", "evidence-telephone-trace", "전화기 사용 흔적", "비스듬하게 놓인 전화기. 누군가 사용한 흔적이다.");
         Item("OpenJewelryBox", "evidence-open-jewelry-box", "떨어진 보석함", "정전 당시 카운터 뒤 바닥에 떨어져 있던 열린 보석함. 브로치는 없다.");
         items["Spring"] = AssetDatabase.LoadAssetAtPath<InventoryItem>("Assets/Resources/InventoryItems/WindingSpring.asset");
         items["Screw"] = AssetDatabase.LoadAssetAtPath<InventoryItem>("Assets/Resources/InventoryItems/FlatheadScrew.asset");
@@ -216,8 +217,8 @@ public static class TutorialCaseBuilder
         Line("WrongEvidence", "이 물건으로는 이 사람의 실제 동선을 설명할 수 없어. 다른 증거를 제시해 보자.", "주인공");
         Line("PhoneClue", "전화기가 비스듬하게 놓여 있다. 누군가 전화기를 사용한 흔적이다.");
         Line("CabinetClue", "2번 진열장의 잠금장치에 억지로 비틀어 연 흔적이 있다.");
-        Line("AHint", "A의 이야기를 검증하려면 회중시계, 시계 상자, 반송된 편지와 전화기의 흔적을 확인해야 한다.", "주인공");
-        Line("BHint", "B의 동선을 확인하려면 드라이버, 전당포증, 꽃병 속 태엽과 나사, 2번 진열장의 흔적이 필요하다.", "주인공");
+        Line("AHint", "F로 편지·회중시계·전화기 사용 흔적을 각각 제시해 행동을 확인하자. 세 행동과 전화기 조사를 마치면 Z / Enter로 최종 추궁할 수 있다.", "주인공");
+        Line("BHint", "F로 전당포증·태엽 장난감(또는 태엽·나사)·드라이버를 각각 제시해 행동을 확인하자. 세 행동과 진열장 조사를 마치면 Z / Enter로 최종 추궁할 수 있다.", "주인공");
         Line("ATruthRepeat", "가족 이야기는 거짓이었지만, 그것만으로 브로치를 훔쳤다고 할 수는 없다.", "주인공");
         Line("BTruthRepeat", "B가 노린 것은 자신의 전당품이었다. 브로치와는 다른 일이다.", "주인공");
         var pa = Chain("PA", "주인공|시계를 팔러 오기 전, A는 쓰레기통에 편지를 버렸다.", "주인공|반송된 편지였다. 시계 안쪽의 사진에 있던 가족에게 보낸 것이겠지.", "주인공|카운터에서 시계를 판 뒤에는 전화기 쪽으로 향했다.", "주인공|비스듬한 전화기는 그때 사용한 흔적이야.", "A|가족이 팔아 달라고 부탁한 게 아닙니다. 제게 남은 것을 팔러 온 거예요.", "A|편지는 돌아오고 연락도 되지 않아서… 마지막으로 전화를 걸었습니다.", "주인공|가족이 부탁했다는 말은 거짓이었군요.", "주인공|하지만 이 거짓말만으로 브로치 도난의 범인이라고 단정할 수는 없어."); Action(Last(pa), "PACompleted");
@@ -333,21 +334,21 @@ public static class TutorialCaseBuilder
             deduction.connectionId = route; brules.Add(deduction);
         }
         brules.Add(Rule(Existing("BTruthRepeat"), new[] { C("PBCompleted") })); brules.Add(Rule(Existing("BHint"))); ConfigurePoint(b, true, null, brules.ToArray());
-        Collect(root.transform, "Counter Watch", new Vector2(6, 3), "WatchCollected", "WatchFound", "PocketWatch");
-        Collect(root.transform, "Trash Can", Vector2.zero, "LetterCollected", "TrashFound", "ReturnedLetter", "ExpiredPawnTicket");
+        Collect(root.transform, "Counter Watch", new Vector2(-2, 3), "WatchCollected", "WatchFound", "PocketWatch");
+        Collect(root.transform, "Trash Can", new Vector2(4, -4), "LetterCollected", "TrashFound", "ReturnedLetter", "ExpiredPawnTicket");
         var phone = Objects(scene).FirstOrDefault(o => o.name == "phone");
-        if (phone != null) ConfigurePoint(phone, true, null, Rule(Existing("PhoneClue"), actions: new[] { "PhoneInspected" }));
-        else Point(root.transform, "Telephone", new Vector2(0, 2), null, Rule(Existing("PhoneClue"), actions: new[] { "PhoneInspected" }));
-        Point(root.transform, "Cabinet Number 2", new Vector2(3, 2), Flag("T4CabinetInspected"), Rule(Existing("CabinetClue"), new[] { C("T3Occurred") }, actions: new[] { "T4CabinetInspected" }), Rule(Existing("AlreadyChecked")));
+        if (phone != null) ConfigurePoint(phone, true, null, Rule(Existing("PhoneClue"), rewards: new[] { "TelephoneTrace" }, actions: new[] { "PhoneInspected" }));
+        else Point(root.transform, "Telephone", new Vector2(7, 0), null, Rule(Existing("PhoneClue"), rewards: new[] { "TelephoneTrace" }, actions: new[] { "PhoneInspected" }));
+        Point(root.transform, "Cabinet Number 2", new Vector2(5, 5), Flag("T4CabinetInspected"), Rule(Existing("CabinetClue"), new[] { C("T3Occurred") }, actions: new[] { "T4CabinetInspected" }), Rule(Existing("AlreadyChecked")));
         if (name == "T2")
         {
             var vase = Objects(scene).FirstOrDefault(o => o.name == "VaseNormal");
             if (vase != null) ConfigurePoint(vase, true, Flag("ToyCollected"), Rule(Existing("ToyFound"), new[] { C("ToyCollected", 0) }, new[] { "ClockworkToy" }, new[] { "ToyCollected" }), Rule(Existing("AlreadyChecked")));
-            else Collect(root.transform, "Vase Toy", new Vector2(4, 0), "ToyCollected", "ToyFound", "ClockworkToy");
+            else Collect(root.transform, "Vase Toy", new Vector2(-5, -1), "ToyCollected", "ToyFound", "ClockworkToy");
         }
         var unknown = Rule(Existing("UnknownSpace")); unknown.showUnknownSpace = true;
-        Point(root.transform, "Unremembered Back Door", new Vector2(0, 3), null, unknown);
-        Point(root.transform, "Memory Exit", new Vector2(5, -3), null, Rule(Existing("ExitPrompt"), new[] { C("MemoryReturnUnlocked") }), Rule(Existing("ExitPromptBlocked")));
+        Point(root.transform, "Unremembered Back Door", new Vector2(-5, 5), null, unknown);
+        Point(root.transform, "Memory Exit", new Vector2(1, -5), null, Rule(Existing("ExitPrompt"), new[] { C("MemoryReturnUnlocked") }), Rule(Existing("ExitPromptBlocked")));
         Presentation(scene, root.transform, false, false, null);
         EditorSceneManager.MarkSceneDirty(scene);
     }
@@ -361,30 +362,14 @@ public static class TutorialCaseBuilder
         var root = Root(scene, "Tutorial Deduction");
         var grid = Open(T4).GetRootGameObjects().First(o => o.GetComponentInChildren<GridLayout>(true) != null);
         Object.Instantiate(grid, root.transform).name = "Existing Shop Tilemap";
-        var target = CloneActor(actor, root.transform, type == "PA" ? "A" : "B", type == "PA" ? new Vector2(-3, 1) : new Vector2(1, 2));
+        var target = CloneActor(actor, root.transform, type == "PA" ? "A" : "B", new Vector2(1, 2));
         foreach (var collider in target.GetComponentsInChildren<Collider2D>()) Object.DestroyImmediate(collider);
         var entry = Entry(name); entry.memorySpace = true; entry.useSharedCamera = true; entry.hidePlayer = false; entry.lockPlayerInput = true;
-        entry.placePlayer = true; entry.playerPosition = new Vector2(2, -1); entry.entryDialog = Existing(type + "_01");
+        entry.placePlayer = true; entry.playerPosition = new Vector2(2, -1); entry.entryDialog = Existing(type + "_05");
         Presentation(scene, root.transform, true, false, target.transform);
         var track = root.AddComponent<TutorialDeductionTrack>(); Set(track, "actor", target.transform);
-        var positions = type == "PA" ? new[] { new Vector2(-4, -4), new Vector2(-2, 2), new Vector2(0, 3), new Vector2(1, 2) } :
-            new[] { new Vector2(-4, -4), new Vector2(5, -2), new Vector2(5, 4), new Vector2(1, 2) };
-        var paths = type == "PA" ? new[] {
-            new[] { new Vector2(-3, -2), new Vector2(-4, -2) },
-            new[] { new Vector2(-3, -4), new Vector2(-3, 2) },
-            new[] { new Vector2(0, 2) }, new[] { new Vector2(1, 3) }
-        } : new[] {
-            new[] { new Vector2(1, -2), new Vector2(-4, -2) },
-            new[] { new Vector2(-4, -2) }, Array.Empty<Vector2>(), new[] { new Vector2(1, 4) }
-        };
-        var facing = type == "PA" ? new[] { Vector2.left, Vector2.up, Vector2.left, Vector2.down } :
-            new[] { Vector2.left, Vector2.right, Vector2.up, Vector2.down };
-        var lines = type == "PA" ? new[] { "01", "03", "04", "05" } : new[] { "01", "03", "04", "05" };
-        Set(track, "beats", positions.Select((p, i) => new TutorialDeductionTrack.Beat {
-            dialogue = Existing(type + "_" + lines[i]), position = p, facing = facing[i],
-            point = DeductionMarker(root.transform, type + " " + lines[i] + " Destination", p),
-            waypoints = paths[i].Select((v, n) => DeductionMarker(root.transform, type + " " + lines[i] + " Via " + (n + 1), v)).ToArray()
-        }).ToArray());
+        // Item-specific routes live on the investigation NPCs. This scene is the final confession only.
+        Set(track, "beats", Array.Empty<TutorialDeductionTrack.Beat>());
         string other = type == "PA" ? "PBCompleted" : "PACompleted";
         Route(type + "-both-truths", name, Reality, SceneConnectionTrigger.DialogFinished, Last(entry.entryDialog), C(other));
         Route(type + "-back-T2", name, "T2", SceneConnectionTrigger.DialogFinished, Last(entry.entryDialog), C(other, 0), C("DeductionReturnPhase", 2));
@@ -433,9 +418,6 @@ public static class TutorialCaseBuilder
     {
         var obj = new GameObject("Memory Presentation"); obj.transform.SetParent(parent, false);
         var display = obj.AddComponent<TutorialScenePresentation>(); Set(display, "deduction", deduction); Set(display, "darkMemory", darkMemory); Set(display, "focusActor", focus);
-        Set(display, "colorObjects", Objects(scene).Where(o => o.CompareTag("Interactable") ||
-            o.GetComponent<Animator>() != null || o.GetComponent<NPC>() != null || o.GetComponent<InvestigationPoint>() != null ||
-            o.name == "VaseNormal" || o.name == "VaseBroken").Select(o => o.transform).ToArray());
         var canvasObject = new GameObject("Memory Vision", typeof(RectTransform), typeof(Canvas)); canvasObject.transform.SetParent(obj.transform, false);
         var canvas = canvasObject.GetComponent<Canvas>(); canvas.renderMode = RenderMode.ScreenSpaceOverlay; canvas.sortingOrder = -5;
         var imageObject = new GameObject("Unknown Space", typeof(RectTransform), typeof(Image)); imageObject.transform.SetParent(canvasObject.transform, false);
@@ -466,7 +448,7 @@ public static class TutorialCaseBuilder
         {
             Objective(config, name, "정전 전후의 시계 상자를 아이템 메뉴에서 확인하고 현실로 돌아가자.", C("AQuestioned"));
             Objective(config, name, "A와 B의 진술을 검증할 증거를 모으고 두 사람에게 제시하자.", C("MemoryReturnUnlocked"));
-            Objective(config, name, "주인에게 감정을 의뢰하자. 주변 물건도 조사할 수 있다.");
+            Objective(config, name, "주인에게 감정을 의뢰하자. Z / Enter로 대화하자.");
         }
         Objective(config, "S3", "조수에게 말을 걸어 기억을 재탐색하자. 재탐색 중 Ctrl로 대사를 넘길 수 있다.");
         Objective(config, Reality, "현실의 A에게 시계 상자의 변화를 물어보자.", C("FinalBoxEvidence"));

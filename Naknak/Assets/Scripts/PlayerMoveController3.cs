@@ -154,8 +154,14 @@ public class PlayerMoveController3 : MonoBehaviour
         else if (yFirst && isMovingY) anim.SetFloat("direction", (float)vector2Dir(currentDirectionY));
         else if (!isMoving) anim.SetFloat("direction", (float)vector2Dir(facingDirection));
         
-        if (lastInputManager.GetKeyDownInteract() && 
-        (!isMoving || gameState == GameState.Dialog)) TryInteract();   
+        if ((gameState != GameState.Dialog || !SceneLoadManager.HasManagedScene) && lastInputManager.GetKeyDownInteract() &&
+        (!isMoving || gameState == GameState.Dialog))
+        {
+            InteractionInput.ConsumeConfirm();
+            TryInteract();
+        }
+        if (gameState == GameState.Gameplay && !isMoving && Input.GetKeyDown(KeyCode.F))
+            TryPresentEvidence();
     }
 
     void TryInteract()
@@ -181,10 +187,27 @@ public class PlayerMoveController3 : MonoBehaviour
                 if (hit.collider != null && hit.collider.CompareTag("Interactable"))
                 {
                     Debug.Log("[PlayerMoveController3] Interact : " + hit.collider.name);
-                    hit.collider.GetComponent<IInteractable>().Interact();
+                    var point = hit.collider.GetComponent<InvestigationPoint>();
+                    if (SceneLoadManager.IsFirstMemoryVisit &&
+                        (point != null || hit.collider.GetComponent<MemoryInvestigationPoint>() != null)) return;
+                    var npc = hit.collider.GetComponent<NPC>();
+                    if (SceneLoadManager.IsFirstMemoryVisit && npc != null && !npc.AllowDuringFirstMemory) return;
+                    hit.collider.GetComponent<IInteractable>()?.Interact();
                     break;
                 }
             }
+        }
+    }
+
+    private void TryPresentEvidence()
+    {
+        if (!SceneLoadManager.IsMemoryRevisit || SceneLoadManager.IsCutscene || SceneLoadManager.IsLoading ||
+            DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen) return;
+        foreach (var hit in Physics2D.RaycastAll(transform.position - new Vector3(0, .5f, 0), facingDirection, moveDistance, layer))
+        {
+            if (hit.collider == null || !hit.collider.CompareTag("Interactable")) continue;
+            hit.collider.GetComponent<InvestigationPoint>()?.PresentEvidence();
+            return;
         }
     }
 

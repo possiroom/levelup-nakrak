@@ -18,6 +18,7 @@ namespace Naknak.FlashlightSystem
         private bool applied;
         private HashSet<Transform> sceneExclusions;
         private Scene? sceneScope;
+        private bool wholeMemory;
 
         private void OnDisable()
         {
@@ -85,10 +86,11 @@ namespace Naknak.FlashlightSystem
         }
 
         // Scope memory styling to its content scene, including props activated later in a cutscene.
-        public void ApplyToScene(Scene scene, IEnumerable<Transform> keepColor)
+        public void ApplyToScene(Scene scene, IEnumerable<Transform> keepColor, bool allMemoryObjects = false)
         {
             Clear();
             sceneScope = scene;
+            wholeMemory = allMemoryObjects;
             sceneExclusions = keepColor != null ? new HashSet<Transform>(keepColor) : null;
             Apply();
         }
@@ -129,18 +131,19 @@ namespace Naknak.FlashlightSystem
         {
             if (targetRenderer == null)
                 return false;
-            if (sceneScope.HasValue && targetRenderer.gameObject.scene != sceneScope.Value)
+            if (sceneScope.HasValue && targetRenderer.gameObject.scene != sceneScope.Value &&
+                !(wholeMemory && player != null && targetRenderer.transform.IsChildOf(player)))
                 return false;
 
             if (targetRenderer.GetComponentInParent<Canvas>() != null)
                 return false;
 
-            if (!includePlayer && player != null && targetRenderer.transform.IsChildOf(player))
+            if (!wholeMemory && !includePlayer && player != null && targetRenderer.transform.IsChildOf(player))
                 return false;
 
-            foreach (var excluded in exclusions)
+            if (!wholeMemory) foreach (var excluded in exclusions)
                 if (excluded != null && targetRenderer.transform.IsChildOf(excluded)) return false;
-            if (sceneExclusions != null)
+            if (!wholeMemory && sceneExclusions != null)
                 foreach (var excluded in sceneExclusions)
                     if (excluded != null && targetRenderer.transform.IsChildOf(excluded)) return false;
 

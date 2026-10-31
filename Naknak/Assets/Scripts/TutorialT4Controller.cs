@@ -60,13 +60,20 @@ public sealed class TutorialT4Controller : MonoBehaviour
 
     private static IEnumerator Play(StoryData story)
     {
-        DialogManager.Instance.ShowDialog(story);
+        DialogManager.Instance.ShowDialog(story, true);
         yield return null;
         while (DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen) yield return null;
     }
 
     private void BeginExploration()
     {
+        if (SceneLoadManager.IsFirstMemoryVisit)
+        {
+            SceneLoadManager.Instance?.SetPlayerInputLocked(true);
+            if (!SceneLoadManager.Instance.ReturnFromFirstMemory())
+                Debug.LogError("[T4] 첫 기억에서 현실로 돌아오는 연결을 확인해주세요.", this);
+            return;
+        }
         Phase = T4Phase.Exploration;
         if (investigationObjects != null) investigationObjects.SetActive(true);
         SceneLoadManager.Instance?.SetPlayerInputLocked(false);

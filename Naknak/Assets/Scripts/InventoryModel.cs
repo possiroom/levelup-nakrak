@@ -19,6 +19,8 @@ namespace Naknak.Inventory
         private readonly Dictionary<string, InventoryItem> catalog;
         private readonly Dictionary<string, int> counts = new Dictionary<string, int>();
         public event Action Changed;
+        // Successful acquisition transactions only. Restoring a save never raises this event.
+        public event Action Acquired;
         public bool IsMemorySpace { get; private set; }
 
         public void SetMemorySpace(bool active)
@@ -60,6 +62,7 @@ namespace Naknak.Inventory
             if (quantity <= 0 || !Available(item) || quantity > item.MaxStack - Count(id)) return false;
             counts[id] = Count(id) + quantity;
             Changed?.Invoke();
+            Acquired?.Invoke();
             return true;
         }
 
@@ -88,6 +91,7 @@ namespace Naknak.Inventory
             }
             foreach (var pair in additions) counts[pair.Key] = Count(pair.Key) + pair.Value;
             if (additions.Count > 0) Changed?.Invoke();
+            if (additions.Count > 0) Acquired?.Invoke();
             return true;
         }
 
@@ -105,6 +109,7 @@ namespace Naknak.Inventory
             else counts[sourceId] = remaining;
             counts[resultId] = Count(resultId) + 1;
             Changed?.Invoke();
+            Acquired?.Invoke();
             return true;
         }
 

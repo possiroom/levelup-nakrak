@@ -47,13 +47,34 @@ public sealed class TutorialDeductionTrack : MonoBehaviour
 
     private IEnumerator Start()
     {
+        if (ready) yield break; // An item-specific reconstruction has already supplied its track.
         while (SceneLoadManager.IsLoading || SceneLoadManager.IsPreparingMemory || SceneLoadManager.IsRestoringSession) yield return null;
         if (actor == null) yield break;
         animator = actor.GetComponent<Animator>();
+        if (beats.Length == 0) standingFacing = Vector2.down;
         destination = actor.position;
         trackingCamera = FindFirstObjectByType<CinemachineCamera>();
         if (trackingCamera != null) { previousFollow = trackingCamera.Follow; trackingCamera.Follow = actor; }
         ready = true;
+    }
+
+    public static TutorialDeductionTrack BeginSegment(Transform target, Beat[] segment)
+    {
+        var owner = new GameObject("Item Evidence Reconstruction");
+        UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(owner, target.gameObject.scene);
+        var track = owner.AddComponent<TutorialDeductionTrack>();
+        track.actor = target;
+        track.beats = segment;
+        track.animator = target.GetComponent<Animator>();
+        track.destination = target.position;
+        track.trackingCamera = FindFirstObjectByType<CinemachineCamera>();
+        if (track.trackingCamera != null)
+        {
+            track.previousFollow = track.trackingCamera.Follow;
+            track.trackingCamera.Follow = target;
+        }
+        track.ready = true;
+        return track;
     }
     private void Update()
     {

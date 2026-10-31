@@ -37,22 +37,39 @@ public sealed class InvestigationPoint : MonoBehaviour, IInteractable
     private void Update()
     {
         if (sparkle != null)
-            sparkle.enabled = collected == null || ConditionManager.Instance == null || ConditionManager.Instance.Get(collected) == 0;
+            sparkle.enabled = !SceneLoadManager.IsFirstMemoryVisit &&
+                (collected == null || ConditionManager.Instance == null || ConditionManager.Instance.Get(collected) == 0);
     }
 
     public void Interact()
     {
+        Interact(false);
+    }
+
+    public void PresentEvidence()
+    {
+        if (SceneLoadManager.IsMemoryRevisit) Interact(true);
+    }
+
+    private void Interact(bool evidence)
+    {
         if (busy || GameMenuController.Instance == null || ConditionManager.Instance == null ||
             DialogManager.Instance == null || !DialogManager.Instance.CanShowDialog ||
             GameMenuController.IsBlockingGameplay || SceneLoadManager.IsPreparingMemory || SceneLoadManager.IsRestoringSession ||
-            SceneLoadManager.IsCutscene || DialogManager.Instance.IsDialogOpen ||
+            SceneLoadManager.IsCutscene || SceneLoadManager.IsFirstMemoryVisit || DialogManager.Instance.IsDialogOpen ||
             memoryOnly && !SceneLoadManager.IsMemorySpace ||
             GameStateManager.Instance != null && GameStateManager.Instance.GameState != GameState.Gameplay) return;
         var inventory = GameMenuController.Inventory;
+        // Full conclusions are sequenced only after BOTH witnesses' evidence is resolved.
         foreach (var rule in rules)
         {
             if (rule == null || !SceneFlowContainer.Passes(rule.conditions)) continue;
-            if (rule.presentEvidence) { BeginEvidencePresentation(rule); return; }
+            if (rule.presentEvidence)
+            {
+                if (evidence) { BeginEvidencePresentation(rule); return; }
+                continue;
+            }
+            if (evidence) continue;
             if (!HasRequiredEvidence(rule, inventory)) continue;
             Execute(rule);
             return;
@@ -80,6 +97,13 @@ public sealed class InvestigationPoint : MonoBehaviour, IInteractable
             GameStateManager.Instance != null && GameStateManager.Instance.GameState != GameState.Gameplay) return;
 
         var inventory = GameMenuController.Inventory;
+        var reconstruction = GetComponent<EvidenceReconstruction>();
+        if (reconstruction != null)
+        {
+            if (!SceneFlowContainer.Passes(rule.conditions) || item == null || !inventory.Has(item.Id)) return;
+            if (!reconstruction.TryPlay(item, rule.missingEvidenceDialog)) Explain(rule.wrongEvidenceDialog);
+            return;
+        }
         bool related = item != null && inventory.Has(item.Id) &&
             rule.requiredItems.Concat(rule.anyItems).Any(evidence => evidence != null && evidence.Id == item.Id);
         if (!related) { Explain(rule.wrongEvidenceDialog); return; }

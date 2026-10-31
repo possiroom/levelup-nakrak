@@ -11,6 +11,12 @@ public sealed class TutorialObjectiveController : MonoBehaviour
     private bool completionShown;
     private float nextRefresh;
 
+    public void AcknowledgeRestoredCompletion()
+    {
+        if (definition != null && ConditionManager.Instance != null && ConditionManager.Instance.Get(definition.solved) != 0)
+            completionShown = true;
+    }
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
     {
@@ -69,6 +75,8 @@ public sealed class TutorialObjectiveController : MonoBehaviour
                 if (!SceneFlowContainer.Passes(objective.conditions)) continue;
                 text = objective.text; break;
             }
+        if (gameplay && SceneLoadManager.IsMemoryRevisit && !string.IsNullOrEmpty(text))
+            text += "\nZ / Enter: 조사·대화    F: 증거 제시·동선 확인";
         label.text = text ?? ""; panel.SetActive(!string.IsNullOrEmpty(text));
         if (solved && gameplay && !completionShown && GameMenuController.Instance != null)
         { completionShown = true; GameMenuController.Instance.ShowTutorialComplete(); }

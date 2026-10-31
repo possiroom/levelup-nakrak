@@ -23,8 +23,8 @@ MonoBehaviour:
   - scene:
       path: Assets/Scenes/T0.unity
     conditions: []
-    text: "\uBCF4\uC11D\uD568\uC744 \uC870\uC0AC\uD558\uACE0 \uBE0C\uB85C\uCE58\uB97C
-      \uB123\uC740 \uB4A4 \uC804\uB2F9\uD3EC\uB85C \uAC00\uC790."
+    text: "\uBE0C\uB85C\uCE58\uB97C \uC870\uC0AC\uD574 \uCC59\uAE34 \uB4A4 \uBCF4\uC11D\uD568\uC5D0
+      \uB123\uACE0 \uBC29\uC744 \uB098\uAC00\uC138\uC694."
   - scene:
       path: Assets/Scenes/T2.unity
     conditions:
@@ -39,12 +39,13 @@ MonoBehaviour:
     - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
       compare: 2
       value: 1
-    text: "A와 B의 진술을 검증할 증거를 모으고 두 사람에게 제시하자."
+    text: "A\uC640 B\uC758 \uC9C4\uC220\uC744 \uAC80\uC99D\uD560 \uC99D\uAC70\uB97C
+      \uBAA8\uC73C\uACE0 \uB450 \uC0AC\uB78C\uC5D0\uAC8C \uC81C\uC2DC\uD558\uC790."
   - scene:
       path: Assets/Scenes/T2.unity
     conditions: []
     text: "\uC8FC\uC778\uC5D0\uAC8C \uAC10\uC815\uC744 \uC758\uB8B0\uD558\uC790.
-      \uC8FC\uBCC0 \uBB3C\uAC74\uB3C4 \uC870\uC0AC\uD560 \uC218 \uC788\uB2E4."
+      Z / Enter\uB85C \uB300\uD654\uD558\uC790."
   - scene:
       path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
     conditions:
@@ -59,12 +60,13 @@ MonoBehaviour:
     - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
       compare: 2
       value: 1
-    text: "A와 B의 진술을 검증할 증거를 모으고 두 사람에게 제시하자."
+    text: "A\uC640 B\uC758 \uC9C4\uC220\uC744 \uAC80\uC99D\uD560 \uC99D\uAC70\uB97C
+      \uBAA8\uC73C\uACE0 \uB450 \uC0AC\uB78C\uC5D0\uAC8C \uC81C\uC2DC\uD558\uC790."
   - scene:
       path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
     conditions: []
     text: "\uC8FC\uC778\uC5D0\uAC8C \uAC10\uC815\uC744 \uC758\uB8B0\uD558\uC790.
-      \uC8FC\uBCC0 \uBB3C\uAC74\uB3C4 \uC870\uC0AC\uD560 \uC218 \uC788\uB2E4."
+      Z / Enter\uB85C \uB300\uD654\uD558\uC790."
   - scene:
       path: Assets/Scenes/S3.unity
     conditions: []

@@ -15,6 +15,9 @@ public sealed class TutorialRoom0 : MonoBehaviour
     [SerializeField] private StoryData wrongItemMessage;
     [SerializeField] private StoryData exitBlockedMessage;
     [SerializeField] private SceneTransitionPoint exit;
+    [SerializeField] private ConditionID broochCollected;
+    [SerializeField] private GameObject broochObject;
+    [SerializeField] private StoryData broochMessage;
     private bool ready;
 
     public bool IsPacked => ConditionManager.Instance != null && ConditionManager.Instance.Get(packed) != 0 ||
@@ -26,16 +29,15 @@ public sealed class TutorialRoom0 : MonoBehaviour
                SceneLoadManager.IsRestoringSession || SceneLoadManager.IsPreparingMemory || GameMenuController.IsBlockingGameplay) yield return null;
         if (brooch == null || packedBox == null || initialized == null || packed == null)
         { Debug.LogError("[T0] 아이템과 진행 조건 연결을 확인해주세요.", this); yield break; }
-        var inventory = GameMenuController.Inventory;
-        // Start with the brooch even if an older save already set the initialization flag.
-        // Packing exchanges it for the filled box, so never grant it again after packing.
-        if (!IsPacked && !inventory.Has(brooch.Id) && !inventory.Add(brooch.Id))
-        { Debug.LogError("[T0] 브로치가 아이템 목록에 등록되어 있지 않습니다.", this); yield break; }
+        // Older saves that already own or packed the brooch must not spawn another pickup.
+        if (broochCollected != null && (IsPacked || GameMenuController.Inventory.Has(brooch.Id)))
+            ConditionManager.Instance.Set(broochCollected, 1);
         if (ConditionManager.Instance.Get(initialized) == 0)
         {
             ConditionManager.Instance.Set(initialized, 1);
         }
         ready = true;
+        RefreshBrooch();
         RefreshSparkle();
     }
 
@@ -60,6 +62,23 @@ public sealed class TutorialRoom0 : MonoBehaviour
     private bool CanInteract => ready && !GameMenuController.IsBlockingGameplay &&
         (DialogManager.Instance == null || !DialogManager.Instance.IsDialogOpen) &&
         (GameStateManager.Instance == null || GameStateManager.Instance.GameState == GameState.Gameplay);
+
+    private void RefreshBrooch()
+    {
+        if (broochObject != null)
+            broochObject.SetActive(!IsPacked && !GameMenuController.Inventory.Has(brooch.Id) &&
+                (broochCollected == null || ConditionManager.Instance.Get(broochCollected) == 0));
+    }
+
+    public void CollectBrooch()
+    {
+        if (!CanInteract || IsPacked || GameMenuController.Inventory.Has(brooch.Id) ||
+            broochCollected != null && ConditionManager.Instance.Get(broochCollected) != 0) return;
+        if (!GameMenuController.Inventory.Add(brooch.Id)) return;
+        if (broochCollected != null) ConditionManager.Instance.Set(broochCollected, 1);
+        RefreshBrooch();
+        Show(broochMessage);
+    }
 
     public void InteractWithBox()
     {

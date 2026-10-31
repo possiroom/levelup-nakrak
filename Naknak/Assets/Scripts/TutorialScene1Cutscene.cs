@@ -119,7 +119,7 @@ public sealed class TutorialScene1Cutscene : MonoBehaviour
     private IEnumerator PlayStory(StoryData story)
     {
         waitingForDialog = true;
-        DialogManager.Instance.ShowDialog(story);
+        DialogManager.Instance.ShowDialog(story, true);
         while (DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen) yield return null;
         waitingForDialog = false;
         // The confirm key that closed this conversation cannot close the next one.
@@ -131,7 +131,7 @@ public sealed class TutorialScene1Cutscene : MonoBehaviour
         // Managed scenes have exactly one dialogue input owner: SceneLoadManager.
         if (!waitingForDialog || SceneLoadManager.HasManagedScene || GameMenuController.IsBlockingGameplay) return;
         if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) ||
-            Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) DialogManager.Instance?.NextDialog();
+            Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) DialogManager.Instance?.AdvanceFromInput();
     }
 
     private IEnumerator WalkTo(Vector3 target)

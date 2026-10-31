@@ -6,6 +6,7 @@ public sealed partial class GameMenuController
     private Action<InventoryItem> itemSelected;
     private Action itemSelectionCancelled;
     private string itemSelectionPrompt;
+    private bool completionSavePending;
 
     // Reuse the inventory window; ordinary inventory browsing keeps its existing behavior.
     public bool SelectInventoryItem(string prompt, Action<InventoryItem> onSelected, Action onCancelled = null,
@@ -16,7 +17,7 @@ public sealed partial class GameMenuController
         itemSelected = onSelected;
         itemSelectionCancelled = onCancelled;
         itemSelectionPrompt = prompt;
-        keyItems = importantItems;
+        inventoryCategory = importantItems ? 2 : 0;
         selected = 0;
         Pause();
         ShowPage(Page.Items);
@@ -45,7 +46,7 @@ public sealed partial class GameMenuController
 
     private void ReturnFromItems()
     {
-        if (itemSelected == null) { ShowPage(Page.Menu); return; }
+        if (itemSelected == null) { Resume(); return; }
         var callback = itemSelectionCancelled;
         ClearItemSelection();
         Resume();
@@ -62,8 +63,25 @@ public sealed partial class GameMenuController
     public void ShowTutorialComplete()
     {
         if (IsBlockingGameplay) return;
-        Pause(); ShowPage(Page.Menu);
-        Confirm("브로치 사건을 해결했습니다.\n튜토리얼을 마치고 타이틀로 돌아갈까요?",
+        completionSavePending = true;
+        Pause(); ShowPage(Page.Save);
+        Notice("튜토리얼이 끝났습니다.\n진행 상황을 저장한 뒤 메인메뉴로 돌아갑니다.");
+    }
+
+    private void ReturnFromSave()
+    {
+        if (!completionSavePending) { ShowPage(Page.Menu); return; }
+        Confirm("저장하지 않고 메인메뉴로 돌아갈까요?",
             () => StartCoroutine(ChangeSession(configuration.titleScene, null)));
+    }
+
+    private void HandleManualSaveSuccess(int slot)
+    {
+        if (completionSavePending)
+        {
+            completionSavePending = false;
+            StartCoroutine(ChangeSession(configuration.titleScene, null));
+        }
+        else Notice("슬롯 " + slot + "에 저장했습니다.");
     }
 }

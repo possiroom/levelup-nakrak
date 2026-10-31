@@ -2,14 +2,15 @@ using UnityEngine;
 
 public sealed class TutorialRoom0Point : MonoBehaviour, IInteractable
 {
-    public enum PointAction { JewelryBox, Exit }
+    public enum PointAction { JewelryBox, Exit, Brooch }
     [SerializeField] private TutorialRoom0 room;
     [SerializeField] private PointAction action;
 
     public void Interact()
     {
         if (room == null) return;
-        if (action == PointAction.JewelryBox) room.InteractWithBox();
+        if (action == PointAction.Brooch) room.CollectBrooch();
+        else if (action == PointAction.JewelryBox) room.InteractWithBox();
         else room.TryLeaveRoom();
     }
 

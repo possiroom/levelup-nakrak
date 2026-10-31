@@ -16,6 +16,8 @@ MonoBehaviour:
   titleScene: Title
   startScene: PrototypeScene
   font: {fileID: 12800000, guid: a8424ddb2ff7b491ca1440f68ae55334, type: 3}
+  itemAcquiredSound: {fileID: 0}
+  itemAcquiredVolume: 0.6
   items:
   - {fileID: 11400000, guid: 641867a14d1043de9dce5218736a21e0, type: 2}
   - {fileID: 11400000, guid: 641867a14d1043de9dce5218736a21e1, type: 2}
@@ -32,3 +34,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cccbcdb9b0cf31148a60a59bedaa3a83, type: 2}
   - {fileID: 11400000, guid: 5d30d8fa937490f4faf32bf075c2e072, type: 2}
   - {fileID: 11400000, guid: 8d88d0a2e88b8764181072e52bb6964b, type: 2}
+  - {fileID: 11400000, guid: cd6f4c546e14eaf4eb401edd5cc26e1b, type: 2}

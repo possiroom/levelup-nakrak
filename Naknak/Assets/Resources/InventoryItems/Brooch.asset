@@ -11,11 +11,16 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91b08daa6dd949e6b9d9082e3829f160, type: 3}
   m_Name: Brooch
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   id: tutorial-brooch
-  displayName: 브로치
-  description: 상당한 가치를 지닌 고급 브로치. 가족과의 추억이 담겨 있다.
-  icon: {fileID: 0}
+  displayName: "\uBE0C\uB85C\uCE58"
+  description: "\uC0C1\uB2F9\uD55C \uAC00\uCE58\uB97C \uC9C0\uB2CC \uACE0\uAE09 \uBE0C\uB85C\uCE58.
+    \uAC00\uC871\uACFC\uC758 \uCD94\uC5B5\uC774 \uB2F4\uACA8 \uC788\uB2E4."
+  icon: {fileID: -222442753451741087, guid: 2e8a681d3b3d0974cb698dc5d7d9cd7c, type: 3}
   keyItem: 1
   memoryOnly: 1
+  inspectionDialogs: {fileID: 0}
+  inspectionResult: {fileID: 0}
+  descriptionCondition: {fileID: 0}
+  changedDescription: 
   maxStack: 1

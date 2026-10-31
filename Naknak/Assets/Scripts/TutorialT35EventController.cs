@@ -95,8 +95,9 @@ public class TutorialT35EventController : MonoBehaviour, IInteractable
         AutoFindPlayer();
         UpdateSparkleVisibility();
 
-        if (Input.GetKeyDown(interactKey))
+        if (InteractionInput.ConfirmPressed)
         {
+            InteractionInput.ConsumeConfirm();
             Interact();
         }
     }

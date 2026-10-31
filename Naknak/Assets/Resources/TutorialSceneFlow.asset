@@ -170,6 +170,37 @@ MonoBehaviour:
     placePlayer: 1
     playerPosition: {x: 2, y: -1}
   connections:
+  - id: evidence-summary-PA-to-PB
+    memo: Complete A reconstruction, then B
+    from:
+      path: Assets/Scenes/Tutorial_PA_Alibi.unity
+    to:
+      path: Assets/Scenes/Tutorial_PB_Alibi.unity
+    trigger: 1
+    fade: 1
+    completedDialog: {fileID: 11400000, guid: d3c76cc0fbfb53b48b011961de005609, type: 2}
+    conditions:
+    - id: {fileID: 11400000, guid: 1141f5d3bb8e93e4280f32c076fa2467, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 22474e1e0e7d19442bd0099fcfec03ab, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 7751b4373a9465a4b953a0d762f00f75, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 42c09f45c1154e440a5f343c0a05a401, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 68f891b0741222648b4a0b316f32f238, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: c3b5648f3eccaae48b5b81a11f2425b9, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 985fc1ec7c45d5148ad052f9fc2b2ce8, type: 2}
+      compare: 2
+      value: 0
   - id: 68fd24e41937432aa3bded5710ca0cf5
     memo: Intro complete
     from:
@@ -441,6 +472,24 @@ MonoBehaviour:
     - id: {fileID: 11400000, guid: 6cb164bb71b1f3848ab4c0649016c72b, type: 2}
       compare: 2
       value: 1
+    - id: {fileID: 11400000, guid: 1141f5d3bb8e93e4280f32c076fa2467, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 22474e1e0e7d19442bd0099fcfec03ab, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 7751b4373a9465a4b953a0d762f00f75, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 42c09f45c1154e440a5f343c0a05a401, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 68f891b0741222648b4a0b316f32f238, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: c3b5648f3eccaae48b5b81a11f2425b9, type: 2}
+      compare: 2
+      value: 1
   - id: pdf-start-PB-T2
     memo: 'PDF: start-PB-T2'
     from:
@@ -458,6 +507,24 @@ MonoBehaviour:
       compare: 2
       value: 0
     - id: {fileID: 11400000, guid: b6fc8c9357fa4722a8586d1b60f61c9e, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 1141f5d3bb8e93e4280f32c076fa2467, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 22474e1e0e7d19442bd0099fcfec03ab, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 7751b4373a9465a4b953a0d762f00f75, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 42c09f45c1154e440a5f343c0a05a401, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 68f891b0741222648b4a0b316f32f238, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: c3b5648f3eccaae48b5b81a11f2425b9, type: 2}
       compare: 2
       value: 1
   - id: pdf-start-PA-Tutorial_T4_BroochMissing
@@ -479,6 +546,24 @@ MonoBehaviour:
     - id: {fileID: 11400000, guid: 6cb164bb71b1f3848ab4c0649016c72b, type: 2}
       compare: 2
       value: 1
+    - id: {fileID: 11400000, guid: 1141f5d3bb8e93e4280f32c076fa2467, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 22474e1e0e7d19442bd0099fcfec03ab, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 7751b4373a9465a4b953a0d762f00f75, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 42c09f45c1154e440a5f343c0a05a401, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 68f891b0741222648b4a0b316f32f238, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: c3b5648f3eccaae48b5b81a11f2425b9, type: 2}
+      compare: 2
+      value: 1
   - id: pdf-start-PB-Tutorial_T4_BroochMissing
     memo: 'PDF: start-PB-Tutorial_T4_BroochMissing'
     from:
@@ -496,6 +581,24 @@ MonoBehaviour:
       compare: 2
       value: 0
     - id: {fileID: 11400000, guid: b6fc8c9357fa4722a8586d1b60f61c9e, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 1141f5d3bb8e93e4280f32c076fa2467, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 22474e1e0e7d19442bd0099fcfec03ab, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 7751b4373a9465a4b953a0d762f00f75, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 42c09f45c1154e440a5f343c0a05a401, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 68f891b0741222648b4a0b316f32f238, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: c3b5648f3eccaae48b5b81a11f2425b9, type: 2}
       compare: 2
       value: 1
   - id: pdf-PA-both-truths
@@ -582,6 +685,68 @@ MonoBehaviour:
     - id: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
       compare: 2
       value: 0
+  - id: evidence-summary-PA-T2
+    memo: 'All six evidence actions resolved: PA'
+    from:
+      path: Assets/Scenes/T2.unity
+    to:
+      path: Assets/Scenes/Tutorial_PA_Alibi.unity
+    trigger: 0
+    fade: 1
+    completedDialog: {fileID: 0}
+    conditions:
+    - id: {fileID: 11400000, guid: 1141f5d3bb8e93e4280f32c076fa2467, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 22474e1e0e7d19442bd0099fcfec03ab, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 7751b4373a9465a4b953a0d762f00f75, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 42c09f45c1154e440a5f343c0a05a401, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 68f891b0741222648b4a0b316f32f238, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: c3b5648f3eccaae48b5b81a11f2425b9, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 2ef03b2f9beb205479231c897fac70f0, type: 2}
+      compare: 2
+      value: 0
+  - id: evidence-summary-PA-Tutorial_T4_BroochMissing
+    memo: 'All six evidence actions resolved: PA'
+    from:
+      path: Assets/Scenes/Tutorial_T4_BroochMissing.unity
+    to:
+      path: Assets/Scenes/Tutorial_PA_Alibi.unity
+    trigger: 0
+    fade: 1
+    completedDialog: {fileID: 0}
+    conditions:
+    - id: {fileID: 11400000, guid: 1141f5d3bb8e93e4280f32c076fa2467, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 22474e1e0e7d19442bd0099fcfec03ab, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 7751b4373a9465a4b953a0d762f00f75, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 42c09f45c1154e440a5f343c0a05a401, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 68f891b0741222648b4a0b316f32f238, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: c3b5648f3eccaae48b5b81a11f2425b9, type: 2}
+      compare: 2
+      value: 1
+    - id: {fileID: 11400000, guid: 2ef03b2f9beb205479231c897fac70f0, type: 2}
+      compare: 2
+      value: 0
   memoryVisitCount: {fileID: 11400000, guid: 4db037c0f88e42f790c0d47cd5641d09, type: 2}
   memoryRunConditions:
   - {fileID: 11400000, guid: 02243bd47dc440d5936ef41e99af47d4, type: 2}
@@ -591,3 +756,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 07b34bf495dc4c2888c7a2b4e4ce7f57, type: 2}
   - {fileID: 11400000, guid: caf8579aecde4b0182f27cf136b04ea4, type: 2}
   - {fileID: 11400000, guid: b67d5e32e82046fcbd46648a8bbeca1d, type: 2}
+  - {fileID: 11400000, guid: d893bf7e33ca9da458c6d4ed63bf0f39, type: 2}

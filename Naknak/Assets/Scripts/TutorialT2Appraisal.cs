@@ -36,6 +36,6 @@ public sealed class TutorialT2Appraisal : MonoBehaviour
         }
         // The conversation refuses the sale. Keep the item until T4 exchanges it on return.
         ConditionManager.Instance.Set(submitted, 1);
-        DialogManager.Instance.ShowDialog(appraisalStart);
+        DialogManager.Instance.ShowDialog(appraisalStart, true);
     }
 }

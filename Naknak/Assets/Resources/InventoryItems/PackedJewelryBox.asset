@@ -11,11 +11,17 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91b08daa6dd949e6b9d9082e3829f160, type: 3}
   m_Name: PackedJewelryBox
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   id: tutorial-packed-jewelry-box
-  displayName: 브로치가 담긴 보석함
-  description: 가족과의 추억이 담긴 브로치를 넣어 둔 작은 보석함. 잠금장치가 헐겁다.
-  icon: {fileID: 0}
+  displayName: "\uBE0C\uB85C\uCE58\uAC00 \uB2F4\uAE34 \uBCF4\uC11D\uD568"
+  description: "\uAC00\uC871\uACFC\uC758 \uCD94\uC5B5\uC774 \uB2F4\uAE34 \uBE0C\uB85C\uCE58\uB97C
+    \uB123\uC5B4 \uB454 \uC791\uC740 \uBCF4\uC11D\uD568. \uC7A0\uAE08\uC7A5\uCE58\uAC00
+    \uD5D0\uAC81\uB2E4."
+  icon: {fileID: 3868605820445974133, guid: 25831a8b14ad2304eb571bbce0f15dd7, type: 3}
   keyItem: 1
   memoryOnly: 1
+  inspectionDialogs: {fileID: 0}
+  inspectionResult: {fileID: 0}
+  descriptionCondition: {fileID: 0}
+  changedDescription: 
   maxStack: 1

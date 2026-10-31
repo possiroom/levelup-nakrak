@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogContainer: {fileID: 11400000, guid: 9b6983e3cffbb0a41b1d747cb3d58c51, type: 2}
+  allowDuringFirstMemory: 0
 --- !u!61 &620288437
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -517,6 +518,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogContainer: {fileID: 0}
+  allowDuringFirstMemory: 0
 --- !u!61 &784414119
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1028,7 +1030,7 @@ Transform:
   m_GameObject: {fileID: 1093051115}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 3, z: 0}
+  m_LocalPosition: {x: -2, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2748,6 +2750,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogContainer: {fileID: 0}
+  allowDuringFirstMemory: 0
 --- !u!61 &1521810293
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7189,7 +7192,7 @@ Transform:
   m_GameObject: {fileID: 1921998404}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: -2, z: 0}
+  m_LocalPosition: {x: -2, y: -2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7227,6 +7230,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogContainer: {fileID: 0}
+  allowDuringFirstMemory: 0
 --- !u!61 &1928624897
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7397,7 +7401,6 @@ MonoBehaviour:
   - {fileID: 1701068366}
   - {fileID: 1921998405}
   - {fileID: 1093051116}
-  - {fileID: 826893199}
   detectiveCenterPoint: {fileID: 930000041}
   walkSpeed: 2.5
   detectiveFinalFacing: {x: -1, y: 0}
@@ -7445,6 +7448,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogContainer: {fileID: 11400000, guid: 7fc68de9fcde7c74bb39260cd6e2ef33, type: 2}
+  allowDuringFirstMemory: 0
 --- !u!61 &1992883097
 BoxCollider2D:
   m_ObjectHideFlags: 0

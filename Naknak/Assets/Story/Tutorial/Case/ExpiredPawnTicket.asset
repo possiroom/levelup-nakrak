@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: "\uAE30\uD55C\uC774 \uC9C0\uB09C \uC804\uB2F9\uD3EC\uC99D"
   description: "\uAE30\uD55C\uC774 \uC9C0\uB09C \uC804\uB2F9\uD3EC\uC99D. \uC22B\uC790
     2\uAC00 \uD06C\uAC8C \uC801\uD600 \uC788\uB2E4."
-  icon: {fileID: 0}
+  icon: {fileID: -8531858993647260833, guid: 55d7b52974aa84145b97e8fcfd8c1464, type: 3}
   keyItem: 1
   memoryOnly: 0
   inspectionDialogs: {fileID: 0}

@@ -14,6 +14,7 @@ public sealed class SceneLoadManager : MonoBehaviour
     public static bool IsPreparingMemory => Instance != null && Instance.memoryPending;
     public static bool IsMemoryRevisit => IsMemorySpace && Instance.container != null &&
         ConditionManager.Instance != null && ConditionManager.Instance.Get(Instance.container.memoryVisitCount) > 1;
+    public static bool IsFirstMemoryVisit => IsMemorySpace && !IsPreparingMemory && !IsMemoryRevisit;
     public static bool IsCutscene => HasManagedScene && (Instance.current.hidePlayer || Instance.PlayerInputLocked);
     [SerializeField] private SceneFlowContainer container;
     private SceneFlowContainer.SceneEntry current;
@@ -67,6 +68,8 @@ public sealed class SceneLoadManager : MonoBehaviour
         var entry = container != null ? container.FindScene(scene.path) : null;
         if (entry == null)
         {
+            if (scene.name == "PrototypeScene" && IsMemorySpace)
+                TutorialScenePresentation.EnsureForScene(contentScene).ApplyMemoryStyle();
             if (mode == LoadSceneMode.Single)
             {
                 current = null; entryPending = false; memoryActive = false; memoryPending = false;
@@ -107,14 +110,14 @@ public sealed class SceneLoadManager : MonoBehaviour
         {
             entryPending = false;
             var entryStory = current.entryDialogs != null ? current.entryDialogs.GetMatchingDialog() : current.entryDialog;
-            if (entryStory != null) { DialogManager.Instance.ShowDialog(entryStory); return; }
+            if (entryStory != null) { DialogManager.Instance.ShowDialog(entryStory, true); return; }
         }
-        if (IsMemoryRevisit && DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen &&
+        if (IsMemoryRevisit && DialogManager.Instance != null && DialogManager.Instance.CanFastForward && InteractionInput.CanConfirm &&
             (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
         { DialogManager.Instance.SkipUntilChoice(); return; }
         if (DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen &&
-            (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) ||
-             Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))) DialogManager.Instance.NextDialog();
+            (InteractionInput.ConfirmPressed || InteractionInput.CanConfirm &&
+             (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)))) DialogManager.Instance.AdvanceFromInput();
     }
 
     public void SetContainer(SceneFlowContainer value) { container = value; }
@@ -136,12 +139,14 @@ public sealed class SceneLoadManager : MonoBehaviour
         if (!Application.CanStreamedLevelBeLoaded(connection.to.Path))
         { Debug.LogError("[SceneLoadManager] Add the target scene to Build Settings: " + connection.to.Path); return false; }
         container = flow;
-        StartCoroutine(connection.fade ? FadeTravel(connection.to.Path) : LoadContent(connection.to.Path));
+        StartCoroutine(connection.fade || RequiresMemoryTransition(connection.to.Path) ? FadeTravel(connection.to.Path) : LoadContentCore(connection.to.Path));
         return true;
     }
 
     private IEnumerator FadeTravel(string destination)
     {
+        if (IsLoading) yield break;
+        bool memoryBoundary = CrossesMemoryBoundary(destination);
         if (transitionOverlay == null)
         {
             var canvasObject = new GameObject("Scene Transition", typeof(RectTransform), typeof(Canvas));
@@ -158,8 +163,9 @@ public sealed class SceneLoadManager : MonoBehaviour
         { transitionOverlay.color = new Color(0, 0, 0, Mathf.Clamp01(elapsed / 0.25f)); yield return null; }
         transitionOverlay.color = Color.black;
         IsLoading = false;
-        yield return LoadContent(destination);
+        yield return LoadContentCore(destination, true);
         IsLoading = true;
+        if (memoryBoundary) yield return new WaitForSecondsRealtime(2f);
         for (float elapsed = 0; elapsed < 0.25f; elapsed += Time.unscaledDeltaTime)
         { transitionOverlay.color = new Color(0, 0, 0, 1 - Mathf.Clamp01(elapsed / 0.25f)); yield return null; }
         transitionOverlay.color = Color.clear;
@@ -167,6 +173,32 @@ public sealed class SceneLoadManager : MonoBehaviour
     }
 
     public IEnumerator LoadContent(string scenePathOrName)
+    {
+        return RequiresMemoryTransition(scenePathOrName) ? FadeTravel(scenePathOrName) : LoadContentCore(scenePathOrName);
+    }
+
+    private bool RequiresMemoryTransition(string destination)
+    {
+        var target = container != null ? container.FindScene(destination) : null;
+        return IsMemorySpace || target != null && target.memorySpace;
+    }
+
+    private bool CrossesMemoryBoundary(string destination)
+    {
+        var target = container != null ? container.FindScene(destination) : null;
+        return target != null && (current != null && current.memorySpace) != target.memorySpace;
+    }
+
+    public bool ReturnFromFirstMemory()
+    {
+        if (!IsFirstMemoryVisit || container == null) return false;
+        var exit = container.connections.Find(row => row.from.Path == contentScene.path &&
+            container.FindScene(row.to.Path) != null && !container.FindScene(row.to.Path).memorySpace &&
+            SceneFlowContainer.Passes(row.conditions));
+        return exit != null && Travel(container, exit);
+    }
+
+    private IEnumerator LoadContentCore(string scenePathOrName, bool keepLoading = false)
     {
         if (IsLoading) yield break;
         if (!Application.CanStreamedLevelBeLoaded(scenePathOrName))
@@ -179,12 +211,12 @@ public sealed class SceneLoadManager : MonoBehaviour
         yield return SceneManager.LoadSceneAsync(scenePathOrName, LoadSceneMode.Additive);
         yield return null;
         if (current != null) ConfigureScene(contentScene, current);
-        IsLoading = false;
+        if (!keepLoading) IsLoading = false;
     }
 
     private void ConfigureScene(Scene scene, SceneFlowContainer.SceneEntry entry)
     {
-        if (entry.memorySpace) TutorialScenePresentation.EnsureForScene(scene);
+        if (entry.memorySpace) TutorialScenePresentation.EnsureForScene(scene).ApplyMemoryStyle();
         var core = SceneManager.GetSceneByName("PrototypeScene");
         if (core.isLoaded) SceneManager.SetActiveScene(core);
         Camera contentCamera = null;

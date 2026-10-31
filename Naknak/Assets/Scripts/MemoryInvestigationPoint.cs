@@ -16,13 +16,13 @@ public sealed class MemoryInvestigationPoint : MonoBehaviour, IInteractable
 
     private void Update()
     {
-        if (sparkle != null) sparkle.enabled = !IsInspected;
+        if (sparkle != null) sparkle.enabled = !SceneLoadManager.IsFirstMemoryVisit && !IsInspected;
     }
 
     public void Interact()
     {
         if (GameMenuController.Instance == null || ConditionManager.Instance == null || inspected == null ||
-            GameMenuController.IsBlockingGameplay || SceneLoadManager.IsCutscene || DialogManager.Instance == null ||
+            GameMenuController.IsBlockingGameplay || SceneLoadManager.IsFirstMemoryVisit || SceneLoadManager.IsCutscene || DialogManager.Instance == null ||
             DialogManager.Instance.IsDialogOpen || GameStateManager.Instance != null && GameStateManager.Instance.GameState != GameState.Gameplay)
             return;
         if (available != null && ConditionManager.Instance.Get(available) == 0) return;

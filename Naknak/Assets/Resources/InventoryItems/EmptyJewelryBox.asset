@@ -11,11 +11,17 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91b08daa6dd949e6b9d9082e3829f160, type: 3}
   m_Name: EmptyJewelryBox
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   id: tutorial-empty-jewelry-box
-  displayName: 빈 보석함
-  description: 브로치를 넣어 두었던 보석함. 돌려받은 상자 안에는 브로치가 없다.
-  icon: {fileID: 0}
+  displayName: "\uBE48 \uBCF4\uC11D\uD568"
+  description: "\uBE0C\uB85C\uCE58\uB97C \uB123\uC5B4 \uB450\uC5C8\uB358 \uBCF4\uC11D\uD568.
+    \uB3CC\uB824\uBC1B\uC740 \uC0C1\uC790 \uC548\uC5D0\uB294 \uBE0C\uB85C\uCE58\uAC00
+    \uC5C6\uB2E4."
+  icon: {fileID: 3868605820445974133, guid: 25831a8b14ad2304eb571bbce0f15dd7, type: 3}
   keyItem: 1
   memoryOnly: 1
+  inspectionDialogs: {fileID: 0}
+  inspectionResult: {fileID: 0}
+  descriptionCondition: {fileID: 0}
+  changedDescription: 
   maxStack: 1

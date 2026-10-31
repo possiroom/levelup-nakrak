@@ -18,7 +18,7 @@ namespace Naknak.Inventory
 
         public void Interact()
         {
-            if (collected || item == null || GameMenuController.IsBlockingGameplay) return;
+            if (collected || item == null || GameMenuController.IsBlockingGameplay || SceneLoadManager.IsFirstMemoryVisit) return;
             if (GameStateManager.Instance != null && GameStateManager.Instance.GameState != GameState.Gameplay) return;
             if (!GameMenuController.Inventory.Add(item.Id, quantity)) return;
             collected = true;

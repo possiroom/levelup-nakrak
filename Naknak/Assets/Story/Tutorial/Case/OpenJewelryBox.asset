@@ -17,7 +17,7 @@ MonoBehaviour:
   description: "\uC815\uC804 \uB2F9\uC2DC \uCE74\uC6B4\uD130 \uB4A4 \uBC14\uB2E5\uC5D0
     \uB5A8\uC5B4\uC838 \uC788\uB358 \uC5F4\uB9B0 \uBCF4\uC11D\uD568. \uBE0C\uB85C\uCE58\uB294
     \uC5C6\uB2E4."
-  icon: {fileID: 0}
+  icon: {fileID: 3868605820445974133, guid: 25831a8b14ad2304eb571bbce0f15dd7, type: 3}
   keyItem: 1
   memoryOnly: 0
   inspectionDialogs: {fileID: 0}

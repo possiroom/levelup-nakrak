@@ -15,6 +15,8 @@ public class DialogManager : MonoBehaviour
 
     // Variables for Dialog Animation
     private bool isPlaying;
+    private bool allowFastForward;
+    private bool inputReady;
     private float elapedTime;
     private string showingText;
 
@@ -45,11 +47,12 @@ public class DialogManager : MonoBehaviour
     private DialogSelectViewer fallbackSelectView;
     public bool IsDialogOpen => currentStory != null && view != null && view.gameObject.activeSelf;
     public bool CanShowDialog => view != null && GameEventManager.Instance != null;
+    public bool CanFastForward => IsDialogOpen && allowFastForward;
 
     // Replays may fast-forward linear lines. Choices and end actions still use NextDialog.
     public void SkipUntilChoice()
     {
-        if (!SceneLoadManager.IsMemoryRevisit || GameMenuController.IsBlockingGameplay) return;
+        if (!SceneLoadManager.IsMemoryRevisit || GameMenuController.IsBlockingGameplay || !CanFastForward) return;
         var visited = new HashSet<StoryData>();
         while (currentStory != null && !isSelectActivate && visited.Add(currentStory))
         {
@@ -103,17 +106,33 @@ public class DialogManager : MonoBehaviour
         Debug.Log("[DialogManager] Show Dialog: " + currentStory.name);
     }
 
-    public void ShowDialog(StoryData storyData)
+    public void ShowDialog(StoryData storyData) => ShowDialog(storyData, false);
+
+    public void ShowDialog(StoryData storyData, bool canFastForward)
     {
         if (storyData == null || view == null) return;
+        InteractionInput.ConsumeConfirm();
         view.gameObject.SetActive(true);
 
         GameEventBase evt = GameEventFactory.CreateGameStateChangeEvent(GameState.Dialog);
         GameEventManager.Instance.Submit(evt);
 
         currentStory = storyData;
+        // Investigation, inventory and evidence lines require a fresh confirmation.
+        // Only explicitly marked story sequences support holding Ctrl to fast-forward.
+        allowFastForward = canFastForward;
+        inputReady = false;
 
         ChangeUI();
+    }
+
+    // Opening a dialogue and advancing it must be separate presses, even when
+    // interaction finishes on a later frame or the operating system repeats a key.
+    public void AdvanceFromInput()
+    {
+        if (!inputReady || !IsDialogOpen) return;
+        inputReady = false;
+        NextDialog();
     }
 
     /// <summary>
@@ -122,6 +141,7 @@ public class DialogManager : MonoBehaviour
     public void NextDialog()
     {
         if (GameMenuController.IsBlockingGameplay || currentStory == null) return;
+        InteractionInput.ConsumeConfirm();
         // 대사 스킵
         if (isPlaying) { TextSkip(); return; }
         if (TutorialDeductionTrack.IsMoving) return;
@@ -196,6 +216,10 @@ public class DialogManager : MonoBehaviour
     private void Update()
     {
         if (GameMenuController.IsBlockingGameplay) return;
+        if (IsDialogOpen && InteractionInput.CanConfirm &&
+            !Input.GetKey(KeyCode.Z) && !Input.GetKey(KeyCode.Return) &&
+            !Input.GetKey(KeyCode.KeypadEnter) && !Input.GetKey(KeyCode.Space) &&
+            !Input.GetMouseButton(0)) inputReady = true;
         if (isPlaying && currentStory != null && showingText.Length >= currentStory.text.Length) TextSkip();
         if (isPlaying && showingText.Length < currentStory.text.Length)
         {
@@ -245,7 +269,9 @@ public class DialogManager : MonoBehaviour
 
     private void EndDialog()
     {
+        InteractionInput.ConsumeConfirm();
         var completed = currentStory;
+        allowFastForward = false;
         isPlaying = false;
         isSelectActivate = false;
         if (selectView != null) selectView.gameObject.SetActive(false);

@@ -20,6 +20,8 @@ public sealed partial class GameMenuController : MonoBehaviour
     private InventoryModel inventory;
     private GameMenuOptions options;
     private bool loading;
+    private AudioSource itemAudio;
+    private AudioClip generatedItemSound;
     private bool paused;
     private float previousTimeScale = 1;
     private GameState previousState;
@@ -43,11 +45,14 @@ public sealed partial class GameMenuController : MonoBehaviour
     {
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 240;
         DontDestroyOnLoad(gameObject);
         configuration = Resources.Load<GameMenuConfiguration>("NaknakMenu");
         if (configuration == null) configuration = ScriptableObject.CreateInstance<GameMenuConfiguration>();
         inventory = new InventoryModel(configuration.items);
         inventory.Changed += OnInventoryChanged;
+        inventory.Acquired += PlayItemAcquiredSound;
         try { options = new GameMenuOptions(); }
         catch (Exception exception) { Debug.LogException(exception); }
         BuildCanvas();
@@ -66,6 +71,8 @@ public sealed partial class GameMenuController : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneUnloaded -= OnSceneUnloaded;
         inventory.Changed -= OnInventoryChanged;
+        inventory.Acquired -= PlayItemAcquiredSound;
+        if (generatedItemSound != null) Destroy(generatedItemSound);
         options?.Dispose();
         if (menuFont != null) Destroy(menuFont);
         if (paused) Time.timeScale = previousTimeScale;
@@ -100,6 +107,8 @@ public sealed partial class GameMenuController : MonoBehaviour
                 var player = FindFirstObjectByType<PlayerMoveController3>();
                 if (GameStateManager.Instance != null && GameStateManager.Instance.GameState != GameState.Gameplay) return;
                 if (player == null || player.isMoving || player.GetIsJumping()) return;
+                inventoryCategory = 0;
+                selected = 0;
                 Pause();
                 ShowPage(Input.GetKeyDown(KeyCode.I) ? Page.Items : Page.Menu);
                 return;
@@ -122,6 +131,7 @@ public sealed partial class GameMenuController : MonoBehaviour
 
     private void Resume()
     {
+        InteractionInput.ConsumeConfirm();
         ShowPage(Page.Closed);
         if (paused)
         {
@@ -241,7 +251,7 @@ public sealed partial class GameMenuController : MonoBehaviour
             var player = FindFirstObjectByType<PlayerMoveController3>();
             if (player == null) { Notice("플레이어를 찾을 수 없어 저장하지 못했습니다."); return; }
             GameCheckpointStore.WriteManual(slot, CaptureCheckpoint(player));
-            Notice("슬롯 " + slot + "에 저장했습니다.");
+            HandleManualSaveSuccess(slot);
         }
         catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException || exception is ArgumentException)
         { Debug.LogWarning("[Save] " + exception.Message); Notice("저장하지 못했습니다. 저장 폴더의 공간과 권한을 확인해 주세요."); }
@@ -266,6 +276,7 @@ public sealed partial class GameMenuController : MonoBehaviour
     private IEnumerator ChangeSession(string sceneName, GameCheckpoint checkpoint)
     {
         if (!Application.CanStreamedLevelBeLoaded(sceneName)) { Notice("시작할 씬을 찾을 수 없습니다."); yield break; }
+        completionSavePending = false;
         SceneLoadManager.IsRestoringSession = checkpoint != null;
         loading = true;
         Pause();
@@ -311,6 +322,8 @@ public sealed partial class GameMenuController : MonoBehaviour
         {
             inventory.Restore(checkpoint.inventory);
             ConditionManager.Instance?.RestoreValues(checkpoint.conditions);
+            var tutorialObjective = FindFirstObjectByType<TutorialObjectiveController>();
+            if (tutorialObjective != null) tutorialObjective.AcknowledgeRestoredCompletion();
             foreach (var state in checkpoint.mansions)
                 if (state != null && trackedMansions.TryGetValue(state.path, out var mansion) && mansion != null) mansion.RestoreCheckpoint(state);
             foreach (var state in checkpoint.world)
@@ -341,5 +354,36 @@ public sealed partial class GameMenuController : MonoBehaviour
         }
     }
 
-    private void OnInventoryChanged() { if (page == Page.Items) ShowPage(Page.Items); }
+    private void OnInventoryChanged() { if (IsInventoryPage) ShowPage(page); }
+
+    private void PlayItemAcquiredSound()
+    {
+        if (SceneLoadManager.IsRestoringSession || loading) return;
+        if (itemAudio == null)
+        {
+            itemAudio = gameObject.AddComponent<AudioSource>();
+            itemAudio.playOnAwake = false;
+            itemAudio.spatialBlend = 0;
+            itemAudio.ignoreListenerPause = true;
+        }
+        var clip = configuration.itemAcquiredSound;
+        if (clip == null)
+        {
+            if (generatedItemSound == null)
+            {
+                const int rate = 22050;
+                var samples = new float[(int)(rate * .18f)];
+                for (int i = 0; i < samples.Length; i++)
+                {
+                    float t = (float)i / rate;
+                    float envelope = Mathf.Min(1, t / .006f) * Mathf.Pow(1 - (float)i / samples.Length, 2);
+                    samples[i] = .25f * envelope * (Mathf.Sin(2 * Mathf.PI * 880 * t) + .35f * Mathf.Sin(2 * Mathf.PI * 1320 * t));
+                }
+                generatedItemSound = AudioClip.Create("Item acquired", samples.Length, 1, rate, false);
+                generatedItemSound.SetData(samples, 0);
+            }
+            clip = generatedItemSound;
+        }
+        itemAudio.PlayOneShot(clip, configuration.itemAcquiredVolume);
+    }
 }
