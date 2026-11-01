@@ -14,6 +14,7 @@ public sealed class TutorialDeductionTrack : MonoBehaviour
         public Transform point;
         [Tooltip("Walk through these scene markers in order before reaching the destination.")]
         public Transform[] waypoints = Array.Empty<Transform>();
+        [Tooltip("Facing after arrival: up (0,1), right (1,0), down (0,-1), left (-1,0). Walking faces the route automatically.")]
         public Vector2 facing = Vector2.up;
     }
     [SerializeField] private Transform actor;
@@ -50,7 +51,7 @@ public sealed class TutorialDeductionTrack : MonoBehaviour
         if (ready) yield break; // An item-specific reconstruction has already supplied its track.
         while (SceneLoadManager.IsLoading || SceneLoadManager.IsPreparingMemory || SceneLoadManager.IsRestoringSession) yield return null;
         if (actor == null) yield break;
-        animator = actor.GetComponent<Animator>();
+        animator = TutorialActorAnimation.Find(actor);
         if (beats.Length == 0) standingFacing = Vector2.down;
         destination = actor.position;
         trackingCamera = FindFirstObjectByType<CinemachineCamera>();
@@ -65,7 +66,7 @@ public sealed class TutorialDeductionTrack : MonoBehaviour
         var track = owner.AddComponent<TutorialDeductionTrack>();
         track.actor = target;
         track.beats = segment;
-        track.animator = target.GetComponent<Animator>();
+        track.animator = TutorialActorAnimation.Find(target);
         track.destination = target.position;
         track.trackingCamera = FindFirstObjectByType<CinemachineCamera>();
         if (track.trackingCamera != null)
@@ -100,14 +101,8 @@ public sealed class TutorialDeductionTrack : MonoBehaviour
         while ((destination - actor.position).sqrMagnitude <= 0.001f && path.Count > 0)
             destination = path.Dequeue();
         var delta = destination - actor.position;
-        if (animator != null)
-        {
-            animator.SetBool("isMoving", delta.sqrMagnitude > 0.001f);
-            if (delta.sqrMagnitude > 0.001f) animator.SetFloat("direction", (float)(Mathf.Abs(delta.x) > Mathf.Abs(delta.y) ?
-                (delta.x > 0 ? Direction.Right : Direction.Left) : (delta.y > 0 ? Direction.Up : Direction.Down)));
-            else animator.SetFloat("direction", (float)(Mathf.Abs(standingFacing.x) > Mathf.Abs(standingFacing.y) ?
-                (standingFacing.x > 0 ? Direction.Right : Direction.Left) : (standingFacing.y > 0 ? Direction.Up : Direction.Down)));
-        }
+        bool moving = delta.sqrMagnitude > 0.001f;
+        TutorialActorAnimation.SetMotion(animator, moving ? (Vector2)delta : standingFacing, moving);
         actor.position = Vector3.MoveTowards(actor.position, destination, walkingSpeed * Time.deltaTime);
     }
 
@@ -123,6 +118,7 @@ public sealed class TutorialDeductionTrack : MonoBehaviour
     }
     private void OnDisable()
     {
+        TutorialActorAnimation.SetMotion(animator, Vector2.zero, false);
         if (activeTrack == this) activeTrack = null;
         if (trackingCamera != null && trackingCamera.Follow == actor) trackingCamera.Follow = previousFollow;
     }

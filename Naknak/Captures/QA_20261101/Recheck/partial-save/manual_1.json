@@ -1,0 +1,110 @@
+﻿{
+    "version": 1,
+    "savedAt": "2026-11-01T20:33:58.4182267+09:00",
+    "scene": "PrototypeScene",
+    "additiveScenes": [
+        "T2"
+    ],
+    "position": {
+        "x": 5.0,
+        "y": -1.0,
+        "z": 0.0
+    },
+    "facing": {
+        "x": 0.0,
+        "y": 1.0
+    },
+    "floor": 1,
+    "health": 100,
+    "playSeconds": 0.0,
+    "inventory": [
+        {
+            "itemId": "evidence-expired-ticket",
+            "quantity": 1
+        },
+        {
+            "itemId": "evidence-returned-letter",
+            "quantity": 1
+        },
+        {
+            "itemId": "evidence-telephone-trace",
+            "quantity": 1
+        },
+        {
+            "itemId": "evidence-watch-box",
+            "quantity": 1
+        }
+    ],
+    "conditions": [
+        {
+            "key": "npc1_meet",
+            "value": 0
+        },
+        {
+            "key": "MemoryVisitCount",
+            "value": 2
+        },
+        {
+            "key": "S3Seen",
+            "value": 1
+        },
+        {
+            "key": "MemoryReturnUnlocked",
+            "value": 1
+        },
+        {
+            "key": "T0Initialized",
+            "value": 0
+        },
+        {
+            "key": "T0BroochPacked",
+            "value": 0
+        },
+        {
+            "key": "T2AwaitingItem",
+            "value": 0
+        },
+        {
+            "key": "T2AppraisalSubmitted",
+            "value": 0
+        },
+        {
+            "key": "T3Occurred",
+            "value": 0
+        },
+        {
+            "key": "T4BoxReturned",
+            "value": 0
+        },
+        {
+            "key": "T4DialogueCompleted",
+            "value": 0
+        },
+        {
+            "key": "T0BroochCollected",
+            "value": 0
+        },
+        {
+            "key": "LetterCollected",
+            "value": 1
+        },
+        {
+            "key": "PhoneInspected",
+            "value": 1
+        },
+        {
+            "key": "ABoxCollected",
+            "value": 1
+        },
+        {
+            "key": "Evidence_A_LetterSeen",
+            "value": 1
+        },
+        {
+            "key": "Evidence_A_PhoneSeen",
+            "value": 1
+        }
+    ],
+    "world": [],
+    "mansions": []
+}

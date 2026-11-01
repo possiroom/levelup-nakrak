@@ -16,7 +16,8 @@ public sealed class TutorialAttentionMarker : MonoBehaviour
         marker = owner.AddComponent<SpriteRenderer>();
         marker.sprite = icon;
         marker.color = new Color(1f, 0.85f, 0.35f);
-        marker.sortingOrder = 200;
+        marker.sortingLayerName = "Foreground";
+        marker.sortingOrder = 31000;
     }
 
     private void LateUpdate()

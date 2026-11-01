@@ -1,6 +1,7 @@
 PASS
 S0 has 18 ordered dialogue/sound beats
 S0 sleeping portrait
+S0/S1 footsteps and door bell finish before S1
 S1 detective walks before entrance dialogue
 S2 assistant attention marker
 Memory narration appears over the black transition
@@ -8,9 +9,14 @@ T0 memory uses grayscale
 T0 packing opens inventory
 T0 packing assistant line
 T1 assistant starts at the entrance
+T1 assistant faces away from the camera
+A starts walking after the A/owner conversation in T1
+A is already at the telephone on T2 entry
+Owner stands behind the center of the counter
+Owner is reachable from the counter front through normal interaction
 Ctrl skip follows the first price choice and closes appraisal
-T2 waits for A's walk before changing scenes
-T2 continues to blackout after A moves
+Assistant appraisal does not start another A walk
+Blackout remains held longer after the vase breaks
 First memory returns through T4 without enabling investigation
 Second memory enables investigation
 Pre-blackout cabinet is ordinary
@@ -35,8 +41,9 @@ B opens evidence menu by interaction (2)
 B distinct route count 2
 Driver without cabinet investigation does not complete the third route
 T3 revisit remains dark and playable
+Dark T3 cabinet investigation works through normal interaction without B blocking it
 All six actions trigger combined completion
 PA is a stationary reality conversation
 PB is a reality conversation
 Both truth confirmations remain complete after memory exit
-Reconstruction walking avoids people and walls (456 samples)
+Reconstruction walking avoids people and walls (387 samples)

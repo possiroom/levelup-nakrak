@@ -1,0 +1,35 @@
+PASS | A successful count 1
+PASS | A successful count 2
+PASS | 12 presentation cancellations preserve 2/3 progress and control
+PASS | Partial evidence save reads
+PASS | Save restores A evidence progress 2/3
+PASS | Reality removes memory-only clue and retains physical letter
+PASS | Natural memory reentry preserves A progress 2/3
+PASS | A successful count 3
+PASS | Completed A shows summary after saved/reentered partial progress
+PASS | Pausing during movement freezes position
+PASS | Resuming completes movement without tile drift
+PASS | Simultaneous axes reach correct diagonal tile; first=(1.00, 0.00)
+PASS | Simultaneous axes reach correct diagonal tile; first=(0.00, 1.00)
+PASS | Wall collision blocks movement
+RECONFIRMED | counter targeted=Counter Watch response=False
+B PHYSICAL | pos=(4.00, 3.00) page=Closed
+B PHYSICAL | pos=(4.00, 4.00) page=Items
+FRAGMENTS | Tutorial_T3_VaseBreak response=False story=none
+FRAGMENTS | Tutorial_T4_BroochMissing response=True story=T4_Fragments_First
+CIRCLE OBJECT | S#3 sprite=Circle position=(1.30, 2.71, 0.00)
+PASS | Autosave rotation slot 1
+PASS | Autosave rotation slot 2
+PASS | Autosave rotation slot 3
+PASS | Independent manual slot 1
+PASS | Independent manual slot 2
+PASS | Independent manual slot 3
+PASS | Malformed save rejected: {"version":1,
+PASS | Malformed save rejected: null
+PASS | Malformed save rejected: {}
+PASS | Malformed save rejected: {broken
+SAVE BACKUP | valid .bak exists=True auto-recovered=False
+SEMANTIC SAVE | unknown item accepted=True
+SEMANTIC SAVE | restore throws ArgumentException: Invalid or unavailable inventory item in save data.
+CHECKS=24
+FINISHED

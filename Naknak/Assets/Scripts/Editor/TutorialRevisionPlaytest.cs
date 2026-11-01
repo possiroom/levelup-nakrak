@@ -38,6 +38,57 @@ public static class TutorialRevisionPlaytest
         Menu.enabled = false;
         SceneLoadManager.Instance.StartCoroutine(Guarded(BootstrapEvidence()));
     }
+    public static void BeginDepth()
+    {
+        if (!EditorApplication.isPlaying || Running) throw new InvalidOperationException("Enter Play mode first.");
+        Passed.Clear(); Result = "Running"; Running = true;
+        Menu.enabled = false;
+        SceneLoadManager.Instance.StartCoroutine(Guarded(RunDepth(), false));
+    }
+
+    private static IEnumerator RunDepth()
+    {
+        if (!SceneManager.GetSceneByName("PrototypeScene").isLoaded)
+            yield return SceneManager.LoadSceneAsync("PrototypeScene", LoadSceneMode.Additive);
+        typeof(GameMenuController).GetMethod("Resume", Private).Invoke(Menu, null);
+        yield return CloseDialog();
+        ConditionManager.Instance.ResetForNewGame();
+        GameStateManager.Instance.ChangeGameState(GameState.Gameplay);
+        yield return SceneLoadManager.Instance.LoadContent("T2");
+        yield return Wait(() => Scene == "T2" && !SceneLoadManager.IsLoading, "Depth preview shop");
+        SceneLoadManager.Instance.SetPlayerInputLocked(true);
+        var player = UnityEngine.Object.FindFirstObjectByType<PlayerMoveController3>();
+        var sprite = player.GetComponent<SpriteRenderer>();
+        var camera = UnityEngine.Object.FindFirstObjectByType<Unity.Cinemachine.CinemachineCamera>();
+        var focus = new GameObject("Depth preview focus");
+        focus.transform.position = new Vector3(1, 1, 0);
+        camera.Follow = focus.transform;
+        var lens = camera.Lens; lens.OrthographicSize = 7.5f; camera.Lens = lens;
+        var counter = Find<UnityEngine.Rendering.SortingGroup>("Depth - Counter");
+        var display = Find<UnityEngine.Rendering.SortingGroup>("Depth - Display left");
+        var person = Find<EvidenceReconstruction>("A").GetComponent<SpriteRenderer>();
+        foreach (var test in new[]
+        {
+            (new Vector2(-2, counter.transform.position.y + .6f), (Renderer)null, counter, false, "counter-behind"),
+            (new Vector2(-2, counter.transform.position.y - .6f), (Renderer)null, counter, true, "counter-front"),
+            (new Vector2(0, display.transform.position.y + .6f), (Renderer)null, display, false, "display-behind"),
+            (new Vector2(0, display.transform.position.y - .6f), (Renderer)null, display, true, "display-front"),
+            (new Vector2(-3, person.bounds.min.y + .7f), (Renderer)person, (UnityEngine.Rendering.SortingGroup)null, false, "person-behind"),
+            (new Vector2(-3, person.bounds.min.y - .7f), (Renderer)person, (UnityEngine.Rendering.SortingGroup)null, true, "person-front")
+        })
+        {
+            var position = test.Item1;
+            position.y -= player.GetComponent<WorldDepthSort>().GroundY - player.transform.position.y;
+            player.TeleportToWorld(position);
+            yield return null;
+            yield return Capture("depth-" + test.Item5);
+            int otherOrder = test.Item2 != null ? test.Item2.sortingOrder : test.Item3.sortingOrder;
+            int otherLayer = test.Item2 != null ? test.Item2.sortingLayerID : test.Item3.sortingLayerID;
+            Check(sprite.sortingLayerID == otherLayer && (test.Item4 ? sprite.sortingOrder > otherOrder : sprite.sortingOrder < otherOrder),
+                "Depth: " + test.Item5);
+        }
+        UnityEngine.Object.Destroy(focus);
+    }
     private static IEnumerator BootstrapEvidence()
     {
         if (!SceneManager.GetSceneByName("PrototypeScene").isLoaded)
@@ -48,7 +99,7 @@ public static class TutorialRevisionPlaytest
         GameMenuController.Inventory.Restore(null);
         yield return RunEvidence();
     }
-    private static IEnumerator Guarded(IEnumerator root)
+    private static IEnumerator Guarded(IEnumerator root, bool requireWalking = true)
     {
         bool background = Application.runInBackground;
         Application.runInBackground = true;
@@ -67,7 +118,7 @@ public static class TutorialRevisionPlaytest
             }
             if (Result == "Running")
             {
-                Check(walkingSamples > 0, "Reconstruction walking avoids people and walls (" + walkingSamples + " samples)");
+                if (requireWalking) Check(walkingSamples > 0, "Reconstruction walking avoids people and walls (" + walkingSamples + " samples)");
                 Result = "PASS\n" + string.Join("\n", Passed);
             }
         }
@@ -89,6 +140,7 @@ public static class TutorialRevisionPlaytest
     {
         if (!TutorialDeductionTrack.IsMoving) return;
         var people = UnityEngine.Object.FindObjectsByType<NPC>(FindObjectsSortMode.None).Select(p => p.transform)
+            .Concat(UnityEngine.Object.FindObjectsByType<EvidenceReconstruction>(FindObjectsSortMode.None).Select(p => p.transform))
             .Concat(UnityEngine.Object.FindObjectsByType<PlayerMoveController3>(FindObjectsSortMode.None).Select(p => p.transform)).ToArray();
         foreach (var track in UnityEngine.Object.FindObjectsByType<TutorialDeductionTrack>(FindObjectsSortMode.None))
         {
@@ -183,6 +235,7 @@ public static class TutorialRevisionPlaytest
         yield return Capture("s0");
         yield return CloseDialog();
         yield return Wait(() => Scene == "S1" && !SceneLoadManager.IsLoading, "S1 entry");
+        Check(TutorialEntranceAudio.PlayCount > 0 && !TutorialEntranceAudio.IsPlaying, "S0/S1 footsteps and door bell finish before S1");
         var cutscene = UnityEngine.Object.FindFirstObjectByType<TutorialScene1Cutscene>();
         bool walked = false, entranceAfterWalk = false;
         float deadline = Time.realtimeSinceStartup + 35;
@@ -221,27 +274,53 @@ public static class TutorialRevisionPlaytest
         var player = UnityEngine.Object.FindFirstObjectByType<PlayerMoveController3>();
         Check(Vector2.Distance(player.transform.position, new Vector2(1, -4)) < .05f, "T1 assistant starts at the entrance");
         yield return Wait(() => Dialog.IsDialogOpen, "T1 conversation");
+        yield return null;
+        Check(player.FacingDirection == Vector2.up, "T1 assistant faces away from the camera");
+        var t1Staging = UnityEngine.Object.FindFirstObjectByType<TutorialWitnessStaging>();
         yield return CloseDialog();
-        if (Scene == "T1") yield return SceneLoadManager.Instance.LoadContent("T2");
+        Check(Scene == "T1" && !t1Staging.AppraisalWalkComplete, "A starts walking after the A/owner conversation in T1");
         yield return Wait(() => Scene == "T2" && !SceneLoadManager.IsLoading, "T2 entry");
         yield return null;
-        Find<NPC>("Owner").Interact();
+        var witnessA = Find<EvidenceReconstruction>("A").transform;
+        var phonePosition = new SerializedObject(UnityEngine.Object.FindFirstObjectByType<TutorialWitnessStaging>()).FindProperty("phonePosition").vector2Value;
+        Check(Vector2.Distance(witnessA.position, phonePosition) < .05f, "A is already at the telephone on T2 entry");
+        var counter = Find<UnityEngine.Rendering.SortingGroup>("Depth - Counter");
+        var owner = Find<NPC>("Owner");
+        Check(Mathf.Abs(owner.transform.position.x - counter.transform.position.x) < .01f &&
+            owner.GetComponent<SpriteRenderer>().sortingOrder < counter.sortingOrder, "Owner stands behind the center of the counter");
+        player.TeleportToWorld(new Vector2(owner.transform.position.x, 1));
+        player.SetFacingDirection(Vector2.up);
+        Physics2D.SyncTransforms();
+        typeof(PlayerMoveController3).GetMethod("TryInteract", Private).Invoke(player, null);
+        Check(Dialog.IsDialogOpen, "Owner is reachable from the counter front through normal interaction");
         Dialog.SkipUntilChoice();
         yield return Wait(() => Selecting, "Owner asks for appraisal item");
         Select("tutorial-packed-jewelry-box");
         yield return Wait(() => Dialog.IsDialogOpen, "Appraisal dialogue");
         Dialog.SkipUntilChoice();
         Check(!Dialog.IsDialogOpen, "Ctrl skip follows the first price choice and closes appraisal");
-        Check(Scene == "T2", "T2 waits for A's walk before changing scenes");
-        yield return Wait(() => Scene == "Tutorial_T3_VaseBreak" && !SceneLoadManager.IsLoading, "A walks to telephone");
-        Check(Scene == "Tutorial_T3_VaseBreak", "T2 continues to blackout after A moves");
+        Check(Vector2.Distance(witnessA.position, phonePosition) < .05f, "Assistant appraisal does not start another A walk");
+        yield return Wait(() => Scene == "Tutorial_T3_VaseBreak" && !SceneLoadManager.IsLoading, "Appraisal proceeds to blackout");
+        float breakAt = -1;
+        bool extendedBlackout = false;
         deadline = Time.realtimeSinceStartup + 35;
         while (Scene != "S3" || SceneLoadManager.IsLoading)
         {
             if (Time.realtimeSinceStartup > deadline) throw new TimeoutException("First memory return: " + Scene);
+            if (Scene == "Tutorial_T3_VaseBreak")
+            {
+                var blackout = UnityEngine.Object.FindFirstObjectByType<TutorialT3T4SceneController>();
+                if (blackout != null)
+                {
+                    if (blackout.Phase == TutorialT3T4SceneController.T3Phase.VaseBroken && breakAt < 0) breakAt = Time.realtimeSinceStartup;
+                    if (breakAt >= 0 && blackout.Phase == TutorialT3T4SceneController.T3Phase.Reaction)
+                        extendedBlackout |= Time.realtimeSinceStartup - breakAt >= 2.2f;
+                }
+            }
             if (Dialog.IsDialogOpen) Dialog.NextDialog();
             yield return null;
         }
+        Check(extendedBlackout, "Blackout remains held longer after the vase breaks");
         Check(true, "First memory returns through T4 without enabling investigation");
         yield return RunEvidence(true);
     }
@@ -302,7 +381,14 @@ public static class TutorialRevisionPlaytest
         var controller = UnityEngine.Object.FindFirstObjectByType<TutorialT3T4SceneController>();
         var overlay = new SerializedObject(controller).FindProperty("darkOverlayImage").objectReferenceValue as UnityEngine.UI.Image;
         Check(overlay != null && overlay.color.a > .6f && overlay.color.a < 1, "T3 revisit remains dark and playable");
-        Find<InvestigationPoint>("Cabinet Number 2").Interact(); yield return CloseDialog();
+        var player = UnityEngine.Object.FindFirstObjectByType<PlayerMoveController3>();
+        player.TeleportToWorld(new Vector2(5, 4));
+        player.SetFacingDirection(Vector2.up);
+        Physics2D.SyncTransforms();
+        typeof(PlayerMoveController3).GetMethod("TryInteract", Private).Invoke(player, null);
+        Check(Dialog.IsDialogOpen && !Selecting, "Dark T3 cabinet investigation works through normal interaction without B blocking it");
+        yield return Capture("t3-dark-investigation");
+        yield return CloseDialog();
         Find<InvestigationPoint>("B").Interact(); Select("evidence-flathead-driver");
         yield return CloseDialog();
         yield return Wait(() => Dialog.IsDialogOpen && Dialog.CurrentStory.name == "AlibisVerified", "Automatic combined completion");

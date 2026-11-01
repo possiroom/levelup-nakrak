@@ -1,0 +1,136 @@
+    static int checks;
+    static void Verify(bool ok,string message) { checks++; Note((ok?"PASS | ":"ISSUE | ")+message); }
+    static void Page(string name) { Call(M,"ShowPage",Enum.Parse(Get(M,"page").GetType(),name)); }
+    static InventoryItem[] Catalog { get { return Resources.Load<GameMenuConfiguration>("NaknakMenu").items; } }
+    static EvidenceReconstruction.Clip[] Clips(EvidenceReconstruction e) { return (EvidenceReconstruction.Clip[])Get(e,"clips"); }
+    static void ClearRoutes()
+    {
+        foreach(var e in UnityEngine.Object.FindObjectsByType<EvidenceReconstruction>(FindObjectsSortMode.None))
+            foreach(var c in Clips(e)) ConditionManager.Instance.Set(c.observed,0);
+        foreach(var n in new[]{"AObserved","BObserved","AlibisVerified","PACompleted","PBCompleted"})
+        {
+            var flag=AssetDatabase.LoadAssetAtPath<ConditionID>("Assets/Story/Tutorial/Case/"+n+".asset");
+            if(flag!=null)ConditionManager.Instance.Set(flag,0);
+        }
+    }
+    static IEnumerator SurveyAll()
+    {
+        foreach(var scene in new[]{"T2","Tutorial_T3_VaseBreak","Tutorial_T4_BroochMissing","S3","S#6"})
+        {
+            yield return Reset(scene,true);yield return Close();
+            yield return Wait(()=>!SceneLoadManager.IsCutscene,"survey ready");yield return null;
+            var seen=Reach();int rays=0;
+            var found=new Dictionary<Transform,int>();
+            foreach(var p in seen.Keys)foreach(var dir in Dirs){var target=Hit(p,dir);rays++;if(target!=null){if(!found.ContainsKey(target))found[target]=0;found[target]++;}}
+            Note("SURVEY | "+scene+" cells="+seen.Count+" directional-rays="+rays);
+            var targets=UnityEngine.Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .Where(o=>o.gameObject.scene.path==SceneLoadManager.CurrentScenePath&&o is IInteractable).Select(o=>o.transform).Distinct().ToArray();
+            foreach(var t in targets)Verify(found.ContainsKey(t),scene+" reachable "+t.name+" at "+t.position+" approaches="+(found.ContainsKey(t)?found[t]:0));
+            foreach(var t in targets.Where(t=>t.GetComponent<NPC>()!=null||t.GetComponent<EvidenceReconstruction>()!=null))
+                Verify(!seen.ContainsKey(Vector2Int.RoundToInt(t.position)),scene+" cannot stand inside "+t.name);
+        }
+    }
+    static IEnumerator EvidenceMatrix()
+    {
+        foreach(var scene in new[]{"T2","Tutorial_T3_VaseBreak","Tutorial_T4_BroochMissing"})
+        {
+            yield return Reset(scene,true);yield return Close();yield return Wait(()=>!SceneLoadManager.IsCutscene,"matrix ready");
+            var inventory=GameMenuController.Inventory;
+            foreach(var item in Catalog.Where(i=>i!=null&&!i.Retired))inventory.Add(item.Id);
+            if(scene!="T2") {Find<InvestigationPoint>("Cabinet Number 2").Interact();yield return Close();}
+            foreach(var who in new[]{"A","B"})
+            {
+                var actor=Find<EvidenceReconstruction>(who);var point=Find<InvestigationPoint>(who);var clips=Clips(actor);
+                foreach(var clip in clips)Note("CLIP | "+scene+" "+who+" "+clip.label+" evidence="+string.Join(",",clip.evidence.Where(i=>i!=null).Select(i=>i.Id).ToArray())+" required="+string.Join(",",clip.requiredItems.Where(i=>i!=null).Select(i=>i.Id).ToArray())+" conditions="+string.Join(",",clip.conditions.Select(c=>c.id.name+":"+c.compare+":"+c.value).ToArray()));
+                foreach(var item in Catalog.Where(i=>i!=null&&!i.Retired&&inventory.Has(i.Id)).ToArray())
+                {
+                    ClearRoutes();yield return null;
+                    point.Interact();yield return null;
+                    if(Get(M,"itemSelected")==null){Verify(false,scene+" "+who+" menu failed for "+item.Id);yield return Close();continue;}
+                    var clip=clips.FirstOrDefault(c=>c.evidence.Any(e=>e!=null&&e.Id==item.Id));
+                    bool expected=clip!=null&&SceneFlowContainer.Passes(clip.conditions)&&clip.requiredItems.All(i=>i!=null&&inventory.Has(i.Id));
+                    Vector3 pos=actor.transform.position;var cols=actor.GetComponentsInChildren<Collider2D>(true);var states=cols.Select(c=>c.enabled).ToArray();
+                    SelectItem(item.Id);yield return Close();yield return Wait(()=>!actor.IsReplaying,"matrix replay restore");yield return null;
+                    Verify(actor.CompletedEvidence.Length==(expected?1:0),scene+" "+who+" <- "+item.Id+" expected="+expected+" progress="+actor.CompletedEvidence.Length);
+                    Verify(Vector3.Distance(pos,actor.transform.position)<.01f&&cols.Select((c,i)=>c.enabled==states[i]).All(v=>v)&&Time.timeScale>0&&!GameMenuController.IsBlockingGameplay,scene+" "+who+" restores actor/collision/control after "+item.Id);
+                }
+            }
+            ClearRoutes();
+        }
+    }
+    static IEnumerable<int[]> Permutations(int[] values)
+    {
+        if(values.Length==0){yield return new int[0];yield break;}
+        for(int i=0;i<values.Length;i++)foreach(var rest in Permutations(values.Where((v,j)=>j!=i).ToArray()))yield return new[]{values[i]}.Concat(rest).ToArray();
+    }
+    static IEnumerator CompletionOrders()
+    {
+        yield return Reset("Tutorial_T3_VaseBreak",true);yield return Close();yield return Wait(()=>!SceneLoadManager.IsCutscene,"orders ready");
+        var conclusion=UnityEngine.Object.FindFirstObjectByType<TutorialEvidenceConclusion>();
+        var witnesses=(TutorialEvidenceConclusion.Witness[])Get(conclusion,"witnesses");
+        var all=witnesses.SelectMany(w=>w.observed).ToArray();var both=(ConditionID)Get(conclusion,"bothCompleted");
+        int orders=0;int premature=0;int missed=0;
+        foreach(var order in Permutations(Enumerable.Range(0,all.Length).ToArray()))
+        {
+            Dismiss();foreach(var f in all)ConditionManager.Instance.Set(f,0);foreach(var w in witnesses)ConditionManager.Instance.Set(w.completed,0);ConditionManager.Instance.Set(both,0);
+            for(int step=0;step<order.Length;step++)
+            {
+                ConditionManager.Instance.Set(all[order[step]],1);Call(conclusion,"Update");
+                if(step<order.Length-1&&D.IsDialogOpen)premature++;
+            }
+            if(!D.IsDialogOpen||D.CurrentStory.name!="AlibisVerified")missed++;orders++;
+            if(orders%60==0)yield return null;
+        }
+        Verify(orders==720&&premature==0&&missed==0,"Completion state machine: "+orders+" orders, premature="+premature+" missed="+missed+" (replay animation excluded)");
+        Dismiss();ClearRoutes();
+    }
+    static IEnumerator SaveCases()
+    {
+        foreach(var scene in new[]{"S3","T2","Tutorial_T3_VaseBreak","Tutorial_T4_BroochMissing","S#6"})
+        {
+            yield return Reset(scene,true);yield return Close();yield return Wait(()=>!SceneLoadManager.IsCutscene,"save ready");
+            Player.TeleportToWorld(new Vector2(1,-1));Player.SetFacingDirection(Vector2.left);
+            var cp=(GameCheckpoint)Call(M,"CaptureCheckpoint",Player);string dir=Path.GetFullPath(Root+"saves/"+scene);GameCheckpointStore.WriteManual(1,cp,dir);
+            GameCheckpoint loaded;string error;bool read=GameCheckpointStore.TryReadManual(1,out loaded,out error,dir);Verify(read,scene+" isolated save read");
+            if(!read)continue;
+            yield return (IEnumerator)Call(M,"ChangeSession",loaded.scene,loaded);
+            yield return Wait(()=>!SceneLoadManager.IsLoading&&!SceneLoadManager.IsRestoringSession,"save restored");yield return null;
+            Verify(Scene==scene&&Vector2.Distance(Player.transform.position,cp.position)<.01f&&Player.FacingDirection==cp.facing,scene+" restores correct content/position/facing (actual="+Scene+")");
+            Verify(GameStateManager.Instance.GameState==GameState.Gameplay&&!GameMenuController.IsBlockingGameplay&&Time.timeScale>0,scene+" restored controls unlocked");
+            var current=GameMenuController.Inventory.Capture();Verify(cp.inventory.Count==current.Count&&cp.inventory.All(i=>current.Any(j=>i.itemId==j.itemId&&i.quantity==j.quantity)),scene+" restored inventory matches");
+        }
+        var checkpoint=(GameCheckpoint)Call(M,"CaptureCheckpoint",Player);string root=Path.GetFullPath(Root+"save-edge-cases");Directory.CreateDirectory(root);
+        for(int i=1;i<=5;i++){checkpoint.playSeconds=i;GameCheckpointStore.Write(checkpoint,root);}
+        for(int i=1;i<=3;i++){GameCheckpoint data;string error;Verify(GameCheckpointStore.TryRead(i,out data,out error,root)&&data.playSeconds==6-i,"Autosave rotation slot "+i);}
+        for(int i=1;i<=3;i++){checkpoint.playSeconds=i+10;GameCheckpointStore.WriteManual(i,checkpoint,root);}
+        checkpoint.playSeconds=99;GameCheckpointStore.WriteManual(2,checkpoint,root);
+        for(int i=1;i<=3;i++){GameCheckpoint data;string error;Verify(GameCheckpointStore.TryReadManual(i,out data,out error,root)&&data.playSeconds==(i==2?99:i+10),"Manual slot isolation "+i);}
+        var cases=new Dictionary<string,string>{{"truncated","{\"version\":1,"},{"null","null"},{"empty","{}"},{"future",JsonUtility.ToJson(checkpoint).Replace("\"version\":1","\"version\":99")}};
+        foreach(var pair in cases){File.WriteAllText(GameCheckpointStore.ManualSlotPath(3,root),pair.Value);GameCheckpoint data;string error;Verify(!GameCheckpointStore.TryReadManual(3,out data,out error,root),"Invalid save rejected: "+pair.Key);}
+        GameCheckpointStore.WriteManual(1,checkpoint,root);File.WriteAllText(GameCheckpointStore.ManualSlotPath(1,root),"broken");GameCheckpoint fallback;string msg;
+        bool recovered=GameCheckpointStore.TryReadManual(1,out fallback,out msg,root);Note("OBSERVATION | corrupted main save with .bak exists: recovered="+recovered+" error="+msg);
+    }
+    static IEnumerator InventoryCases()
+    {
+        var inv=new InventoryModel(Catalog);inv.SetMemorySpace(true);int total=0;int fail=0;
+        foreach(var item in Catalog.Where(i=>i!=null))
+        {
+            inv.Restore(null);bool a=inv.Add(item.Id);total++;if(a==item.Retired)fail++;
+            inv.Restore(null);if(inv.Add(item.Id,0)||inv.Add(item.Id,-1)||inv.Add(item.Id,item.MaxStack+1))fail++;total+=3;
+            if(!item.Retired){inv.Add(item.Id,item.MaxStack);var before=inv.Capture();bool overflow=inv.Add(item.Id);if(overflow||inv.Count(item.Id)!=item.MaxStack)fail++;total++;}
+        }
+        Verify(fail==0,"Inventory catalog boundary checks="+total+" failures="+fail);
+        foreach(var item in Catalog.Where(i=>i!=null&&!i.Retired&&i.MemoryOnly))
+        {inv.Restore(null);inv.SetMemorySpace(true);inv.Add(item.Id);inv.SetMemorySpace(false);Verify(!inv.Has(item.Id)&&!inv.Add(item.Id),"Memory-only cleanup "+item.Id);}
+        yield return null;
+    }
+    static IEnumerator Run()
+    {
+        Phase="Reachability and directional interaction";yield return Guard(SurveyAll(),Phase);
+        Phase="All presentable inventory x A/B x T2/T3/T4";yield return Guard(EvidenceMatrix(),Phase);
+        Phase="720 completion orders";yield return Guard(CompletionOrders(),Phase);
+        Phase="Save restore and corrupt saves";yield return Guard(SaveCases(),Phase);
+        Phase="Inventory boundaries";yield return Guard(InventoryCases(),Phase);
+        Note("CHECKS="+checks);Phase="Finished";
+    }
+}

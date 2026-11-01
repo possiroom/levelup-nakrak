@@ -1,0 +1,73 @@
+﻿{
+    "version": 1,
+    "savedAt": "2026-11-01T20:17:01.4811714+09:00",
+    "scene": "PrototypeScene",
+    "additiveScenes": [
+        "T2"
+    ],
+    "position": {
+        "x": 1.0,
+        "y": -1.0,
+        "z": 0.0
+    },
+    "facing": {
+        "x": -1.0,
+        "y": 0.0
+    },
+    "floor": 1,
+    "health": 100,
+    "playSeconds": 0.0,
+    "inventory": [],
+    "conditions": [
+        {
+            "key": "npc1_meet",
+            "value": 0
+        },
+        {
+            "key": "MemoryVisitCount",
+            "value": 2
+        },
+        {
+            "key": "S3Seen",
+            "value": 1
+        },
+        {
+            "key": "MemoryReturnUnlocked",
+            "value": 1
+        },
+        {
+            "key": "T0Initialized",
+            "value": 0
+        },
+        {
+            "key": "T0BroochPacked",
+            "value": 0
+        },
+        {
+            "key": "T2AwaitingItem",
+            "value": 0
+        },
+        {
+            "key": "T2AppraisalSubmitted",
+            "value": 0
+        },
+        {
+            "key": "T3Occurred",
+            "value": 0
+        },
+        {
+            "key": "T4BoxReturned",
+            "value": 0
+        },
+        {
+            "key": "T4DialogueCompleted",
+            "value": 0
+        },
+        {
+            "key": "T0BroochCollected",
+            "value": 0
+        }
+    ],
+    "world": [],
+    "mansions": []
+}

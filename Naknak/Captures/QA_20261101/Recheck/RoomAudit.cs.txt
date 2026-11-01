@@ -1,0 +1,47 @@
+using System;using System.Collections;using System.Collections.Generic;using System.Linq;using System.Reflection;using System.IO;using UnityEngine;using UnityEditor;using UnityEngine.SceneManagement;using Naknak.Inventory;
+public static class NaknakRoomAudit
+{
+    public static bool Running;public static string Phase;
+    static BindingFlags P=BindingFlags.Instance|BindingFlags.NonPublic;
+    static List<string> Logs=new List<string>();static string Root="Captures/QA_20261101/Recheck/";
+    static GameMenuController M{get{return GameMenuController.Instance;}}
+    static DialogManager D{get{return DialogManager.Instance;}}
+    static PlayerMoveController3 Player{get{return UnityEngine.Object.FindFirstObjectByType<PlayerMoveController3>();}}
+    static object Get(object o,string n){return o.GetType().GetField(n,P).GetValue(o);}
+    static void Set(object o,string n,object v){o.GetType().GetField(n,P).SetValue(o,v);}
+    static object Call(object o,string n,params object[] args){return o.GetType().GetMethod(n,P).Invoke(o,args);}
+    static void Note(string s){Logs.Add(s);File.WriteAllLines(Root+"room-audit.txt",Logs.ToArray());}
+    static void Check(bool b,string s){Note((b?"PASS | ":"ISSUE | ")+s);}
+    public static void Begin(){M.enabled=false;Running=true;Application.runInBackground=true;M.StartCoroutine(Guard());}
+    static IEnumerator Guard(){var stack=new Stack<IEnumerator>();stack.Push(Run());while(stack.Count>0){object next=null;bool moved=false;try{moved=stack.Peek().MoveNext();if(moved)next=stack.Peek().Current;}catch(Exception e){Note("CASE ERROR | "+Phase+" | "+e);break;}if(!moved){stack.Pop();continue;}if(next is IEnumerator)stack.Push((IEnumerator)next);else yield return next;}Running=false;Phase="Finished";Note("FINISHED");}
+    static IEnumerator Wait(Func<bool> test,string label,float sec=30){float until=Time.realtimeSinceStartup+sec;while(!test()){if(Time.realtimeSinceStartup>until)throw new Exception(label);yield return null;}}
+    static IEnumerator Close(){float until=Time.realtimeSinceStartup+30;while(D!=null&&D.IsDialogOpen){if(Time.realtimeSinceStartup>until)throw new Exception("Close stuck "+D.CurrentStory.name);D.NextDialog();yield return null;}}
+    static Vector2[] Dirs={Vector2.up,Vector2.down,Vector2.left,Vector2.right};
+    static Transform Hit(Vector2 p,Vector2 dir){return Physics2D.RaycastAll(p+Vector2.down*.5f,dir,1,LayerMask.GetMask("Col 1F")).Where(h=>h.collider!=null&&h.collider.CompareTag("Interactable")).Select(h=>h.collider.transform).FirstOrDefault();}
+    static Dictionary<Vector2Int,Vector2Int> Reach(){var paths=new Dictionary<Vector2Int,Vector2Int>();var q=new Queue<Vector2Int>();var start=Vector2Int.RoundToInt(Player.transform.position);paths[start]=start;q.Enqueue(start);while(q.Count>0&&paths.Count<800){var p=q.Dequeue();foreach(var dir in Dirs){var next=p+Vector2Int.RoundToInt(dir);if(next.x< -15||next.x>15||next.y< -15||next.y>15||paths.ContainsKey(next))continue;if((bool)Call(Player,"checkCollider",new Vector3(p.x,p.y,0),new Vector3(dir.x,dir.y,0)))continue;paths[next]=p;q.Enqueue(next);}}return paths;}
+    static IEnumerator Walk(Dictionary<Vector2Int,Vector2Int> paths,Vector2Int target){var list=new List<Vector2Int>();var cell=target;while(paths[cell]!=cell){list.Add(cell);cell=paths[cell];}list.Reverse();foreach(var c in list){var dir=(Vector2)c-(Vector2)Player.transform.position;if(dir.x!=0){Set(Player,"_queuedDirectionX",new Vector2(Mathf.Sign(dir.x),0));Call(Player,"StartMoveX");}else{Set(Player,"_queuedDirectionY",new Vector2(0,Mathf.Sign(dir.y)));Call(Player,"StartMoveY");}yield return null;yield return Wait(()=>!Player.isMoving,"room walk",3);if(Vector2.Distance(Player.transform.position,c)>.01f)throw new Exception("Blocked at "+c);}}
+    static IEnumerator Touch(Transform target){var paths=Reach();bool found=false;Vector2Int pos=default(Vector2Int);Vector2 face=Vector2.up;foreach(var c in paths.Keys){foreach(var d in Dirs)if(Hit(c,d)==target){pos=c;face=d;found=true;break;}if(found)break;}Check(found,"Reachable by walking: "+target.name);if(!found)yield break;yield return Walk(paths,pos);Player.SetFacingDirection(face);Physics2D.SyncTransforms();Call(Player,"TryInteract");yield return null;Note("INTERACT | "+target.name+" dialog="+(D.CurrentStory==null?"none":D.CurrentStory.name)+" menu="+Get(M,"page"));}
+    static void SelectItem(string id){Call(M,"ChangeInventoryCategory",0);var items=(List<InventoryItem>)Get(M,"visibleItems");Call(M,"ActivateInventoryItem",items.FindIndex(i=>i.Id==id));}
+    static IEnumerator Capture(string name){yield return new WaitForSecondsRealtime(.2f);yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Root+name+".png");yield return null;}
+    static IEnumerator Run()
+    {
+        Phase="Fresh room approach";
+        if(!SceneManager.GetSceneByName("PrototypeScene").isLoaded)yield return SceneManager.LoadSceneAsync("PrototypeScene",LoadSceneMode.Additive);
+        Call(M,"Resume");ConditionManager.Instance.ResetForNewGame();GameMenuController.Inventory.Restore(null);GameStateManager.Instance.ChangeGameState(GameState.Gameplay);
+        yield return SceneLoadManager.Instance.LoadContent("T0");yield return Wait(()=>!SceneLoadManager.IsLoading&&!SceneLoadManager.IsPreparingMemory,"T0 entry");yield return Close();yield return null;
+        var points=UnityEngine.Object.FindObjectsByType<TutorialRoom0Point>(FindObjectsSortMode.None).Where(p=>p.gameObject.scene.path==SceneLoadManager.CurrentScenePath).ToArray();
+        foreach(var point in points)Note("POINT | "+point.name+" "+JsonUtility.ToJson(point));
+        var room=UnityEngine.Object.FindFirstObjectByType<TutorialRoom0>();var brooch=(GameObject)Get(room,"broochObject");var box=(GameObject)Get(room,"jewelryBox");var exit=(SceneTransitionPoint)Get(room,"exit");
+        Note("T0 TARGETS | brooch="+brooch.name+" box="+box.name+" exit="+exit.name);
+        var exitPoint=points.FirstOrDefault(p=>(TutorialRoom0Point.PointAction)Get(p,"action")==TutorialRoom0Point.PointAction.Exit);
+        if(exitPoint!=null){yield return Touch(exitPoint.transform);Check(D.IsDialogOpen,"T0 premature exit explains why blocked");yield return Close();}
+        var broochTarget=points.First(p=>(TutorialRoom0Point.PointAction)Get(p,"action")==TutorialRoom0Point.PointAction.Brooch).transform;
+        var boxTarget=points.First(p=>(TutorialRoom0Point.PointAction)Get(p,"action")==TutorialRoom0Point.PointAction.JewelryBox).transform;
+        yield return Touch(broochTarget);yield return Close();Check(GameMenuController.Inventory.Has("tutorial-brooch"),"Physical brooch interaction collects item");
+        yield return Touch(boxTarget);Check(Get(M,"itemSelected")!=null,"Physical box interaction opens packing selection");
+        Call(M,"ReturnFromItems");yield return null;yield return Touch(boxTarget);SelectItem("tutorial-brooch");yield return Close();Check(room.IsPacked,"Physical packing succeeds after cancel and retry");yield return Capture("T0-physical-packed");
+        Phase="S3 white object";yield return SceneLoadManager.Instance.LoadContent("S3");yield return Wait(()=>!SceneLoadManager.IsLoading,"S3 loaded");yield return Close();yield return null;
+        var circle=UnityEngine.Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None).FirstOrDefault(r=>r.gameObject.scene.path==SceneLoadManager.CurrentScenePath&&r.sprite!=null&&r.sprite.name=="Circle");
+        if(circle!=null){Note("WHITE CIRCLE | object="+circle.name+" position="+circle.transform.position);var npc=circle.GetComponent<NPC>();if(npc!=null){var container=(DialogContainer)Get(npc,"dialogContainer");Note("WHITE CIRCLE | dialogContainer="+(container==null?"none":AssetDatabase.GetAssetPath(container)));yield return Touch(circle.transform);yield return Capture("S3-circle-dialogue");yield return Close();}}
+    }
+}

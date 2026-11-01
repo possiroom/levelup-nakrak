@@ -1,0 +1,70 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.IO;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEditor.Animations;
+public static class WitnessAnimationCheck
+{
+    public static bool Running;
+    public static string Result="Running";
+    static AnimatorController controller;
+    static readonly Dictionary<Transform,Vector3> previous=new Dictionary<Transform,Vector3>();
+    static readonly HashSet<int> directions=new HashSet<int>();
+    static int samples;static int errors;static bool staged;
+    const BindingFlags Private=BindingFlags.Instance|BindingFlags.NonPublic;
+    public static void Begin()
+    {
+        controller=new AnimatorController();controller.name="QA witness animation parameters";
+        controller.AddParameter("direction",AnimatorControllerParameterType.Float);
+        controller.AddParameter("isMoving",AnimatorControllerParameterType.Bool);
+        controller.AddLayer("Base Layer");var sm=controller.layers[0].stateMachine;sm.defaultState=sm.AddState("Idle");
+        Running=true;SceneManager.sceneLoaded+=Bind;
+        TutorialRevisionPlaytest.Begin();GameMenuController.Instance.StartCoroutine(Watch());
+    }
+    static void Bind(Scene scene,LoadSceneMode mode)
+    {
+        foreach(var root in scene.GetRootGameObjects())foreach(var t in root.GetComponentsInChildren<Transform>(true))
+        {
+            if(t.name!="A"&&t.name!="B")continue;
+            Animator animator;
+            if(t.name=="B") {var child=new GameObject("QA Child Animator");child.transform.SetParent(t,false);animator=child.AddComponent<Animator>();}
+            else animator=t.GetComponent<Animator>()??t.gameObject.AddComponent<Animator>();
+            animator.runtimeAnimatorController=controller;animator.Rebind();
+            previous[t]=t.position;
+        }
+    }
+    static IEnumerator Watch()
+    {
+        while(TutorialRevisionPlaytest.Running)
+        {
+            yield return null;
+            foreach(var pair in previous.ToArray())
+            {
+                var actor=pair.Key;if(actor==null){previous.Remove(actor);continue;}
+                Vector2 delta=actor.position-pair.Value;previous[actor]=actor.position;
+                var animator=TutorialActorAnimation.Find(actor);
+                if(delta.sqrMagnitude<0.000001f||delta.sqrMagnitude>0.8f||animator==null||!animator.GetBool("isMoving"))continue;
+                int expected=Mathf.Abs(delta.x)>Mathf.Abs(delta.y)?(delta.x>0?1:3):(delta.y>0?0:2);
+                int actual=Mathf.RoundToInt(animator.GetFloat("direction"));samples++;directions.Add(actual);
+                if(expected!=actual)errors++;
+            }
+            var staging=UnityEngine.Object.FindFirstObjectByType<TutorialWitnessStaging>();
+            if(staging!=null&&staging.gameObject.scene.name=="T1"&&staging.AppraisalWalkComplete)
+            {
+                var actor=(Transform)typeof(TutorialWitnessStaging).GetField("witnessA",Private).GetValue(staging);
+                var a=TutorialActorAnimation.Find(actor);
+                if(a.GetBool("isMoving")||a.GetFloat("direction")!=3)errors++;
+                staged=true;
+            }
+        }
+        SceneManager.sceneLoaded-=Bind;
+        Result=TutorialRevisionPlaytest.Result+"\nANIMATION samples="+samples+" mismatches="+errors+" directions="+string.Join(",",directions.OrderBy(d=>d).Select(d=>d.ToString()).ToArray())+" T1-stop-facing-checked="+staged;
+        if(samples==0||errors!=0||!staged)Result="ANIMATION CHECK FAILED\n"+Result;
+        File.WriteAllText("Captures/AnimationDirectionQA/result.txt",Result);
+        Running=false;
+    }
+}

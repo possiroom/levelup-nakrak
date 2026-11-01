@@ -1,0 +1,9 @@
+POINT | T0 Room Exit {"room":{"instanceID":315848},"action":1}
+POINT | T0 Broach {"room":{"instanceID":315848},"action":2}
+POINT | T0 Jewelry Box {"room":{"instanceID":315848},"action":0}
+T0 TARGETS | brooch=T0 Broach box=T0 Jewelry Box exit=T0 Room Progress
+PASS | Reachable by walking: T0 Room Exit
+CASE ERROR | Fresh room approach | System.Exception: room walk
+  at NaknakRoomAudit+<Wait>c__Iterator1.MoveNext () [0x00048] in <cbd2ef13f27c4829aedce4264b3996ce>:0 
+  at NaknakRoomAudit+<Guard>c__Iterator0.MoveNext () [0x0005b] in <cbd2ef13f27c4829aedce4264b3996ce>:0 
+FINISHED

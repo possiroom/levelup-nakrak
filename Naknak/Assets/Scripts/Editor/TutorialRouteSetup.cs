@@ -42,13 +42,13 @@ public static class TutorialRouteSetup
         Vector2 vase = Find("Vase Toy") != null ? (Vector2)Find("Vase Toy").position : new Vector2(-5, -1);
         Vector2 toy = vase + new Vector2(1, -1);
         b.position = new Vector3(trash.x, trash.y, b.position.z);
-        if (scene.name != "T1" && scene.name != "T2") a.position = new Vector3(phone.x, phone.y, a.position.z);
+        if (scene.name != "T1") a.position = new Vector3(phone.x, phone.y, a.position.z);
         foreach (var staging in all.Select(t => t.GetComponent<TutorialWitnessStaging>()).Where(s => s != null))
         {
             var so = new SerializedObject(staging);
             so.FindProperty("phonePosition").vector2Value = phone;
             so.FindProperty("trashPosition").vector2Value = trash;
-            so.FindProperty("cabinetPosition").vector2Value = cabinet;
+            so.FindProperty("cabinetPosition").vector2Value = cabinet + Vector2.left;
             so.ApplyModifiedPropertiesWithoutUndo();
         }
         foreach (var actor in new[] { a, b })

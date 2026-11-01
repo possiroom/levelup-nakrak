@@ -60,6 +60,7 @@ public class TutorialT3T4SceneController : MonoBehaviour
     [SerializeField] private float waitAfterLightsOffBeforeBreak = 0.75f;
     [SerializeField] private float darkFadeOutTime = 0.45f;
     [SerializeField, Min(0f)] private float waitAfterDarkReaction = 2f;
+    [SerializeField, Min(0f)] private float extraBlackoutHold = 1f;
     [SerializeField] private bool restoreLightAfterBreak = true;
 
     [Header("T3 - Vase Break")]
@@ -219,7 +220,7 @@ public class TutorialT3T4SceneController : MonoBehaviour
         if (t3Occurred != null && ConditionManager.Instance != null) ConditionManager.Instance.Set(t3Occurred, 1);
         PlayVaseBreakSound();
 
-        yield return new WaitForSeconds(Mathf.Max(0, waitAfterDarkReaction - breakDelay));
+        yield return new WaitForSeconds(Mathf.Max(0, waitAfterDarkReaction - breakDelay) + extraBlackoutHold);
 
         if (restoreLightAfterBreak)
             yield return FadeDarkOverlay(0f, darkFadeOutTime);

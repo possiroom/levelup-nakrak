@@ -81,8 +81,8 @@ public sealed class EvidenceReconstruction : MonoBehaviour
         replaying = true;
         sourceScene = SceneLoadManager.CurrentScenePath;
         originalPosition = transform.position;
-        animator = GetComponent<Animator>();
-        if (animator != null) originalFacing = animator.GetFloat("direction");
+        animator = TutorialActorAnimation.Find(transform);
+        originalFacing = TutorialActorAnimation.ReadDirection(animator);
         colliders = GetComponentsInChildren<Collider2D>(true);
         colliderStates = colliders.Select(c => c.enabled).ToArray();
         visuals = clip.hideDuringReplay.Concat(clip.showDuringReplay).Where(o => o != null).Distinct().ToArray();
@@ -123,7 +123,7 @@ public sealed class EvidenceReconstruction : MonoBehaviour
         replaying = false;
         if (track != null) { track.enabled = false; Destroy(track.gameObject); track = null; }
         transform.position = originalPosition;
-        if (animator != null) { animator.SetBool("isMoving", false); animator.SetFloat("direction", originalFacing); }
+        TutorialActorAnimation.RestoreDirection(animator, originalFacing);
         if (colliders != null)
             for (int i = 0; i < colliders.Length; i++) if (colliders[i] != null) colliders[i].enabled = colliderStates[i];
         if (visuals != null)

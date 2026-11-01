@@ -1,0 +1,19 @@
+Story assets=106 choices=4 flow scenes=14 connections=27
+ITEM sample-note | 찢어진 쪽지 retired=False memory=False icon=NONE
+ITEM sample-key | 낡은 열쇠 retired=False memory=False icon=NONE
+ITEM tutorial-brooch | 브로치 retired=False memory=True icon=Assets/Resources/items/Garnet_lozenge_brooch.png
+ITEM tutorial-packed-jewelry-box | 브로치가 담긴 보석함 retired=False memory=True icon=Assets/Resources/items/wooden_jewelry_box.png
+ITEM tutorial-empty-jewelry-box | 빈 보석함 retired=False memory=True icon=Assets/Resources/items/wooden_jewelry_box.png
+ITEM evidence-winding-spring | 태엽 retired=False memory=False icon=Assets/Resources/items/wind-up_key_vintage.png
+ITEM evidence-flathead-screw | 일자 나사 retired=False memory=False icon=Assets/Resources/items/Flathead_Screw_tilted_to_the.png
+ITEM evidence-pocket-watch | 회중시계 retired=True memory=False icon=Assets/Resources/items/Pocket_Watch.png
+ITEM evidence-returned-letter | 반송된 편지 retired=False memory=False icon=Assets/Resources/items/Crumpled_Letter.png
+ITEM evidence-crumpled-letter | 구겨진 편지 retired=False memory=False icon=Assets/Resources/items/Crumpled_Letter.png
+ITEM evidence-expired-ticket | 기한이 지난 전당포증 retired=False memory=False icon=Assets/Resources/items/Expired_Pawn_Ticket.png
+ITEM evidence-watch-box | 시계 상자 retired=False memory=False icon=Assets/Resources/items/pocket_watch_box.png
+ITEM evidence-flathead-driver | 일자 드라이버 retired=False memory=False icon=Assets/Resources/items/Flathead_Screwdriver.png
+ITEM evidence-clockwork-toy | 태엽 장난감 retired=False memory=False icon=Assets/Resources/items/wind-up_key_vintage.png
+ITEM evidence-open-jewelry-box | 떨어진 보석함 retired=False memory=False icon=Assets/Resources/items/wooden_jewelry_box.png
+ITEM evidence-telephone-trace | 전화기 사용 흔적 retired=False memory=True icon=Assets/Resources/items/Telephone.png
+ITEM evidence-clockwork-parts | 태엽과 나사 retired=False memory=False icon=Assets/Resources/items/f7859e9b22a445c4.png
+ITEM evidence-cabinet-trace | 장식장 흔적 retired=False memory=False icon=Assets/Resources/items/showcase_crack.png

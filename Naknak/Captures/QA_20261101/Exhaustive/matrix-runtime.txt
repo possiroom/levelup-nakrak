@@ -1,0 +1,200 @@
+CLIP | T2 A A는 쓰레기통에 반송된 편지를 버렸다. evidence=evidence-returned-letter,evidence-crumpled-letter required= conditions=
+CLIP | T2 A A는 카운터에서 회중시계를 팔았다. evidence=evidence-pocket-watch,evidence-watch-box required= conditions=
+CLIP | T2 A A는 전화기로 향했다. 비스듬하게 놓인 전화기는 그때 사용한 흔적이다. evidence=evidence-telephone-trace required= conditions=
+PASS | T2 A <- sample-note expected=False progress=0
+PASS | T2 A restores actor/collision/control after sample-note
+PASS | T2 A <- sample-key expected=False progress=0
+PASS | T2 A restores actor/collision/control after sample-key
+PASS | T2 A <- tutorial-brooch expected=False progress=0
+PASS | T2 A restores actor/collision/control after tutorial-brooch
+PASS | T2 A <- tutorial-packed-jewelry-box expected=False progress=0
+PASS | T2 A restores actor/collision/control after tutorial-packed-jewelry-box
+PASS | T2 A <- tutorial-empty-jewelry-box expected=False progress=0
+PASS | T2 A restores actor/collision/control after tutorial-empty-jewelry-box
+PASS | T2 A <- evidence-returned-letter expected=True progress=1
+PASS | T2 A restores actor/collision/control after evidence-returned-letter
+PASS | T2 A <- evidence-crumpled-letter expected=True progress=1
+PASS | T2 A restores actor/collision/control after evidence-crumpled-letter
+PASS | T2 A <- evidence-expired-ticket expected=False progress=0
+PASS | T2 A restores actor/collision/control after evidence-expired-ticket
+PASS | T2 A <- evidence-watch-box expected=True progress=1
+PASS | T2 A restores actor/collision/control after evidence-watch-box
+PASS | T2 A <- evidence-flathead-driver expected=False progress=0
+PASS | T2 A restores actor/collision/control after evidence-flathead-driver
+PASS | T2 A <- evidence-clockwork-toy expected=False progress=0
+PASS | T2 A restores actor/collision/control after evidence-clockwork-toy
+PASS | T2 A <- evidence-open-jewelry-box expected=False progress=0
+PASS | T2 A restores actor/collision/control after evidence-open-jewelry-box
+PASS | T2 A <- evidence-telephone-trace expected=True progress=1
+PASS | T2 A restores actor/collision/control after evidence-telephone-trace
+PASS | T2 A <- evidence-clockwork-parts expected=False progress=0
+PASS | T2 A restores actor/collision/control after evidence-clockwork-parts
+PASS | T2 A <- evidence-cabinet-trace expected=False progress=0
+PASS | T2 A restores actor/collision/control after evidence-cabinet-trace
+CLIP | T2 B B는 쓰레기통에 기한이 지난 전당포증을 버렸다. evidence=evidence-expired-ticket required= conditions=
+CLIP | T2 B B는 꽃병 안에 태엽 장난감을 넣었다. evidence=evidence-clockwork-toy,evidence-winding-spring,evidence-flathead-screw required= conditions=
+CLIP | T2 B B는 일자 드라이버로 2번 진열장의 잠금장치를 비틀어 열려고 했다. evidence=evidence-flathead-driver required= conditions=T4CabinetInspected:Equal:1
+PASS | T2 B <- sample-note expected=False progress=0
+PASS | T2 B restores actor/collision/control after sample-note
+PASS | T2 B <- sample-key expected=False progress=0
+PASS | T2 B restores actor/collision/control after sample-key
+PASS | T2 B <- tutorial-brooch expected=False progress=0
+PASS | T2 B restores actor/collision/control after tutorial-brooch
+PASS | T2 B <- tutorial-packed-jewelry-box expected=False progress=0
+PASS | T2 B restores actor/collision/control after tutorial-packed-jewelry-box
+PASS | T2 B <- tutorial-empty-jewelry-box expected=False progress=0
+PASS | T2 B restores actor/collision/control after tutorial-empty-jewelry-box
+PASS | T2 B <- evidence-returned-letter expected=False progress=0
+PASS | T2 B restores actor/collision/control after evidence-returned-letter
+PASS | T2 B <- evidence-crumpled-letter expected=False progress=0
+PASS | T2 B restores actor/collision/control after evidence-crumpled-letter
+PASS | T2 B <- evidence-expired-ticket expected=True progress=1
+PASS | T2 B restores actor/collision/control after evidence-expired-ticket
+PASS | T2 B <- evidence-watch-box expected=False progress=0
+PASS | T2 B restores actor/collision/control after evidence-watch-box
+PASS | T2 B <- evidence-flathead-driver expected=False progress=0
+PASS | T2 B restores actor/collision/control after evidence-flathead-driver
+PASS | T2 B <- evidence-clockwork-toy expected=True progress=1
+PASS | T2 B restores actor/collision/control after evidence-clockwork-toy
+PASS | T2 B <- evidence-open-jewelry-box expected=False progress=0
+PASS | T2 B restores actor/collision/control after evidence-open-jewelry-box
+PASS | T2 B <- evidence-telephone-trace expected=False progress=0
+PASS | T2 B restores actor/collision/control after evidence-telephone-trace
+PASS | T2 B <- evidence-clockwork-parts expected=False progress=0
+PASS | T2 B restores actor/collision/control after evidence-clockwork-parts
+PASS | T2 B <- evidence-cabinet-trace expected=False progress=0
+PASS | T2 B restores actor/collision/control after evidence-cabinet-trace
+CLIP | Tutorial_T3_VaseBreak A A는 쓰레기통에 반송된 편지를 버렸다. evidence=evidence-returned-letter,evidence-crumpled-letter required= conditions=
+CLIP | Tutorial_T3_VaseBreak A A는 카운터에서 회중시계를 팔았다. evidence=evidence-watch-box required= conditions=
+CLIP | Tutorial_T3_VaseBreak A A는 전화기로 향했다. 비스듬하게 놓인 전화기는 그때 사용한 흔적이다. evidence=evidence-telephone-trace required= conditions=
+PASS | Tutorial_T3_VaseBreak A <- sample-note expected=False progress=0
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after sample-note
+PASS | Tutorial_T3_VaseBreak A <- sample-key expected=False progress=0
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after sample-key
+PASS | Tutorial_T3_VaseBreak A <- tutorial-brooch expected=False progress=0
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after tutorial-brooch
+PASS | Tutorial_T3_VaseBreak A <- tutorial-packed-jewelry-box expected=False progress=0
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after tutorial-packed-jewelry-box
+PASS | Tutorial_T3_VaseBreak A <- tutorial-empty-jewelry-box expected=False progress=0
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after tutorial-empty-jewelry-box
+PASS | Tutorial_T3_VaseBreak A <- evidence-returned-letter expected=True progress=1
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after evidence-returned-letter
+PASS | Tutorial_T3_VaseBreak A <- evidence-crumpled-letter expected=True progress=1
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after evidence-crumpled-letter
+PASS | Tutorial_T3_VaseBreak A <- evidence-expired-ticket expected=False progress=0
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after evidence-expired-ticket
+PASS | Tutorial_T3_VaseBreak A <- evidence-watch-box expected=True progress=1
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after evidence-watch-box
+PASS | Tutorial_T3_VaseBreak A <- evidence-flathead-driver expected=False progress=0
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after evidence-flathead-driver
+PASS | Tutorial_T3_VaseBreak A <- evidence-clockwork-toy expected=False progress=0
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after evidence-clockwork-toy
+PASS | Tutorial_T3_VaseBreak A <- evidence-open-jewelry-box expected=False progress=0
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after evidence-open-jewelry-box
+PASS | Tutorial_T3_VaseBreak A <- evidence-telephone-trace expected=True progress=1
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after evidence-telephone-trace
+PASS | Tutorial_T3_VaseBreak A <- evidence-clockwork-parts expected=False progress=0
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after evidence-clockwork-parts
+PASS | Tutorial_T3_VaseBreak A <- evidence-cabinet-trace expected=False progress=0
+PASS | Tutorial_T3_VaseBreak A restores actor/collision/control after evidence-cabinet-trace
+CLIP | Tutorial_T3_VaseBreak B B는 쓰레기통에 기한이 지난 전당포증을 버렸다. evidence=evidence-expired-ticket required= conditions=
+CLIP | Tutorial_T3_VaseBreak B B는 항아리까지 이동해 태엽 장난감을 넣었다. evidence=evidence-clockwork-toy,evidence-clockwork-parts required= conditions=
+CLIP | Tutorial_T3_VaseBreak B B는 일자 드라이버로 2번 진열장의 잠금장치를 비틀어 열려고 했다. evidence=evidence-flathead-driver,evidence-cabinet-trace required=evidence-flathead-driver,evidence-cabinet-trace conditions=
+PASS | Tutorial_T3_VaseBreak B <- sample-note expected=False progress=0
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after sample-note
+PASS | Tutorial_T3_VaseBreak B <- sample-key expected=False progress=0
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after sample-key
+PASS | Tutorial_T3_VaseBreak B <- tutorial-brooch expected=False progress=0
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after tutorial-brooch
+PASS | Tutorial_T3_VaseBreak B <- tutorial-packed-jewelry-box expected=False progress=0
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after tutorial-packed-jewelry-box
+PASS | Tutorial_T3_VaseBreak B <- tutorial-empty-jewelry-box expected=False progress=0
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after tutorial-empty-jewelry-box
+PASS | Tutorial_T3_VaseBreak B <- evidence-returned-letter expected=False progress=0
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after evidence-returned-letter
+PASS | Tutorial_T3_VaseBreak B <- evidence-crumpled-letter expected=False progress=0
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after evidence-crumpled-letter
+PASS | Tutorial_T3_VaseBreak B <- evidence-expired-ticket expected=True progress=1
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after evidence-expired-ticket
+PASS | Tutorial_T3_VaseBreak B <- evidence-watch-box expected=False progress=0
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after evidence-watch-box
+PASS | Tutorial_T3_VaseBreak B <- evidence-flathead-driver expected=True progress=1
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after evidence-flathead-driver
+PASS | Tutorial_T3_VaseBreak B <- evidence-clockwork-toy expected=True progress=1
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after evidence-clockwork-toy
+PASS | Tutorial_T3_VaseBreak B <- evidence-open-jewelry-box expected=False progress=0
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after evidence-open-jewelry-box
+PASS | Tutorial_T3_VaseBreak B <- evidence-telephone-trace expected=False progress=0
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after evidence-telephone-trace
+PASS | Tutorial_T3_VaseBreak B <- evidence-clockwork-parts expected=True progress=1
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after evidence-clockwork-parts
+PASS | Tutorial_T3_VaseBreak B <- evidence-cabinet-trace expected=True progress=1
+PASS | Tutorial_T3_VaseBreak B restores actor/collision/control after evidence-cabinet-trace
+CLIP | Tutorial_T4_BroochMissing A A는 쓰레기통에 반송된 편지를 버렸다. evidence=evidence-returned-letter,evidence-crumpled-letter required= conditions=
+CLIP | Tutorial_T4_BroochMissing A A는 카운터에서 회중시계를 팔았다. evidence=evidence-watch-box required= conditions=
+CLIP | Tutorial_T4_BroochMissing A A는 전화기로 향했다. 비스듬하게 놓인 전화기는 그때 사용한 흔적이다. evidence=evidence-telephone-trace required= conditions=
+PASS | Tutorial_T4_BroochMissing A <- sample-note expected=False progress=0
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after sample-note
+PASS | Tutorial_T4_BroochMissing A <- sample-key expected=False progress=0
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after sample-key
+PASS | Tutorial_T4_BroochMissing A <- tutorial-brooch expected=False progress=0
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after tutorial-brooch
+PASS | Tutorial_T4_BroochMissing A <- tutorial-packed-jewelry-box expected=False progress=0
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after tutorial-packed-jewelry-box
+PASS | Tutorial_T4_BroochMissing A <- tutorial-empty-jewelry-box expected=False progress=0
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after tutorial-empty-jewelry-box
+PASS | Tutorial_T4_BroochMissing A <- evidence-returned-letter expected=True progress=1
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after evidence-returned-letter
+PASS | Tutorial_T4_BroochMissing A <- evidence-crumpled-letter expected=True progress=1
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after evidence-crumpled-letter
+PASS | Tutorial_T4_BroochMissing A <- evidence-expired-ticket expected=False progress=0
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after evidence-expired-ticket
+PASS | Tutorial_T4_BroochMissing A <- evidence-watch-box expected=True progress=1
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after evidence-watch-box
+PASS | Tutorial_T4_BroochMissing A <- evidence-flathead-driver expected=False progress=0
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after evidence-flathead-driver
+PASS | Tutorial_T4_BroochMissing A <- evidence-clockwork-toy expected=False progress=0
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after evidence-clockwork-toy
+PASS | Tutorial_T4_BroochMissing A <- evidence-open-jewelry-box expected=False progress=0
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after evidence-open-jewelry-box
+PASS | Tutorial_T4_BroochMissing A <- evidence-telephone-trace expected=True progress=1
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after evidence-telephone-trace
+PASS | Tutorial_T4_BroochMissing A <- evidence-clockwork-parts expected=False progress=0
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after evidence-clockwork-parts
+PASS | Tutorial_T4_BroochMissing A <- evidence-cabinet-trace expected=False progress=0
+PASS | Tutorial_T4_BroochMissing A restores actor/collision/control after evidence-cabinet-trace
+CLIP | Tutorial_T4_BroochMissing B B는 쓰레기통에 기한이 지난 전당포증을 버렸다. evidence=evidence-expired-ticket required= conditions=
+CLIP | Tutorial_T4_BroochMissing B B는 항아리까지 이동해 태엽 장난감을 넣었다. evidence=evidence-clockwork-toy,evidence-clockwork-parts required= conditions=
+CLIP | Tutorial_T4_BroochMissing B B는 일자 드라이버로 2번 진열장의 잠금장치를 비틀어 열려고 했다. evidence=evidence-flathead-driver,evidence-cabinet-trace required=evidence-flathead-driver,evidence-cabinet-trace conditions=
+PASS | Tutorial_T4_BroochMissing B <- sample-note expected=False progress=0
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after sample-note
+PASS | Tutorial_T4_BroochMissing B <- sample-key expected=False progress=0
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after sample-key
+PASS | Tutorial_T4_BroochMissing B <- tutorial-brooch expected=False progress=0
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after tutorial-brooch
+PASS | Tutorial_T4_BroochMissing B <- tutorial-packed-jewelry-box expected=False progress=0
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after tutorial-packed-jewelry-box
+PASS | Tutorial_T4_BroochMissing B <- tutorial-empty-jewelry-box expected=False progress=0
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after tutorial-empty-jewelry-box
+PASS | Tutorial_T4_BroochMissing B <- evidence-returned-letter expected=False progress=0
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after evidence-returned-letter
+PASS | Tutorial_T4_BroochMissing B <- evidence-crumpled-letter expected=False progress=0
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after evidence-crumpled-letter
+PASS | Tutorial_T4_BroochMissing B <- evidence-expired-ticket expected=True progress=1
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after evidence-expired-ticket
+PASS | Tutorial_T4_BroochMissing B <- evidence-watch-box expected=False progress=0
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after evidence-watch-box
+PASS | Tutorial_T4_BroochMissing B <- evidence-flathead-driver expected=True progress=1
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after evidence-flathead-driver
+PASS | Tutorial_T4_BroochMissing B <- evidence-clockwork-toy expected=True progress=1
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after evidence-clockwork-toy
+PASS | Tutorial_T4_BroochMissing B <- evidence-open-jewelry-box expected=False progress=0
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after evidence-open-jewelry-box
+PASS | Tutorial_T4_BroochMissing B <- evidence-telephone-trace expected=False progress=0
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after evidence-telephone-trace
+PASS | Tutorial_T4_BroochMissing B <- evidence-clockwork-parts expected=True progress=1
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after evidence-clockwork-parts
+PASS | Tutorial_T4_BroochMissing B <- evidence-cabinet-trace expected=True progress=1
+PASS | Tutorial_T4_BroochMissing B restores actor/collision/control after evidence-cabinet-trace
+CHECKS=180
+FINISHED

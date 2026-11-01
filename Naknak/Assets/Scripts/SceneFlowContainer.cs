@@ -46,6 +46,8 @@ public sealed class SceneFlowContainer : ScriptableObject
         public SceneConnectionTrigger trigger;
         public bool fade;
         public StoryData transitionDialog;
+        [Tooltip("Play approaching footsteps and a shop door bell during the black transition.")]
+        public AudioClip entranceFootsteps;
         [Tooltip("DialogFinished: select the LAST dialogue asset in the conversation.")]
         public StoryData completedDialog;
         public List<DialogCondition> conditions = new List<DialogCondition>();

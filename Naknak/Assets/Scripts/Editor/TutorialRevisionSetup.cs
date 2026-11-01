@@ -26,10 +26,12 @@ public static class TutorialRevisionSetup
     {
         var owner = Find(scene, "Owner");
         if (owner == null) return;
-        owner.transform.position = new Vector3(-1, 4, 0);
+        var counter = Find(scene, "Depth - Counter");
+        owner.transform.position = counter != null ? counter.transform.position + Vector3.up : new Vector3(-3, 3, 0);
         // Keep the talk target at the counter front, where the player can reach it.
         var collider = owner.GetComponent<BoxCollider2D>();
-        if (collider != null) collider.offset = new Vector2(0, -2.5f);
+        if (collider != null) collider.offset = new Vector2(0, -1.5f);
+        owner.GetComponent<WorldDepthSort>()?.Refresh();
     }
     private static StoryData Line(string path, string speaker, string text, string portrait)
     {
@@ -121,8 +123,9 @@ public static class TutorialRevisionSetup
                 var staging = Get<TutorialWitnessStaging>(Find(scene, "Witness Staging") ?? New(scene, "Witness Staging"));
                 Ref(staging, "witnessA", Find(scene, "A").transform);
                 Ref(staging, "witnessB", Find(scene, "B").transform);
-                Bool(staging, "walkAfterAppraisal", scene == t2);
-                Ref(staging, "appraisalLastLine", Load<StoryData>("Assets/Scripts/New Folder/Text_T2/T2_Owner_09.asset"));
+                Bool(staging, "walkAfterAppraisal", scene == t1);
+                Bool(staging, "facePlayerUpOnEntry", scene == t1);
+                Ref(staging, "appraisalLastLine", Load<StoryData>("Assets/Scripts/New Folder/Text_T1/T1_10.asset"));
                 Find(scene, "B").transform.position = new Vector3(3, -4, 0);
                 if (scene == t3 || scene == t4) Find(scene, "A").transform.position = new Vector3(-4, 1, 0);
             }
@@ -215,6 +218,9 @@ public static class TutorialRevisionSetup
         EditorUtility.SetDirty(bSummary);
         flow.FindScene("T0").colorMemory = false;
         flow.FindScene("T1").playerPosition = new Vector2(1, -4);
+        flow.FindScene(T3).memoryReplayEntry = true;
+        flow.connections.First(c => c.from.Name == "Tutorial_Prologue" && c.to.Name == "S1").entranceFootsteps =
+            Load<AudioClip>("Assets/Sound/freesound_community-running-14658.mp3");
         foreach (var name in new[] { PA, PB })
         {
             var entry = flow.FindScene(name);

@@ -1,0 +1,5 @@
+PASS | Tutorial_T3_VaseBreak | B evidence menu opens
+PRESENTED | 장식장 흔적 | successful list=일자 드라이버
+PASS | T2 | Letter inspection converts the envelope exactly once
+PASS | T2 | Converted letter is accepted as evidence
+FINISHED

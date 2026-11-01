@@ -160,11 +160,12 @@ public sealed class SceneLoadManager : MonoBehaviour
         if (!Application.CanStreamedLevelBeLoaded(connection.to.Path))
         { Debug.LogError("[SceneLoadManager] Add the target scene to Build Settings: " + connection.to.Path); return false; }
         container = flow;
-        StartCoroutine(connection.fade || RequiresMemoryTransition(connection.to.Path) ? FadeTravel(connection.to.Path, connection.transitionDialog) : LoadContentCore(connection.to.Path));
+        StartCoroutine(connection.fade || connection.entranceFootsteps != null || RequiresMemoryTransition(connection.to.Path) ?
+            FadeTravel(connection.to.Path, connection.transitionDialog, connection.entranceFootsteps) : LoadContentCore(connection.to.Path));
         return true;
     }
 
-    private IEnumerator FadeTravel(string destination, StoryData transitionDialog = null)
+    private IEnumerator FadeTravel(string destination, StoryData transitionDialog = null, AudioClip entranceFootsteps = null)
     {
         if (IsLoading) yield break;
         bool memoryBoundary = CrossesMemoryBoundary(destination);
@@ -183,6 +184,7 @@ public sealed class SceneLoadManager : MonoBehaviour
         for (float elapsed = 0; elapsed < 0.25f; elapsed += Time.unscaledDeltaTime)
         { transitionOverlay.color = new Color(0, 0, 0, Mathf.Clamp01(elapsed / 0.25f)); yield return null; }
         transitionOverlay.color = Color.black;
+        if (entranceFootsteps != null) yield return TutorialEntranceAudio.Play(gameObject, entranceFootsteps);
         IsLoading = false;
         if (transitionDialog != null && DialogManager.Instance != null)
         {
@@ -272,6 +274,7 @@ public sealed class SceneLoadManager : MonoBehaviour
         var player = FindFirstObjectByType<PlayerMoveController3>(FindObjectsInactive.Include);
         if (player != null)
         {
+            WorldDepthSort.EnsureActor(player.transform);
             ApplyPlayerAppearance(player);
             player.enabled = !entry.hidePlayer && !PlayerInputLocked;
             foreach (var renderer in player.GetComponentsInChildren<SpriteRenderer>(true)) renderer.enabled = !entry.hidePlayer;

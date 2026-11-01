@@ -58,7 +58,7 @@ MonoBehaviour:
     entryDialogs: {fileID: 0}
     memorySpace: 1
     colorMemory: 0
-    memoryReplayEntry: 0
+    memoryReplayEntry: 1
     memoryEntryItem: {fileID: 0}
     hidePlayer: 0
     lockPlayerInput: 1
@@ -205,6 +205,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 3107a9d790c06984ca139a37762a2cc3, type: 2}
     conditions: []
   - id: verified-A-to-B
@@ -216,6 +217,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: d3c76cc0fbfb53b48b011961de005609, type: 2}
     conditions: []
   - id: evidence-complete-Tutorial_T4_BroochMissing
@@ -227,6 +229,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 77a8ea73d0a4d174ebe294d517140096, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 1141f5d3bb8e93e4280f32c076fa2467, type: 2}
@@ -256,6 +259,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 77a8ea73d0a4d174ebe294d517140096, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 1141f5d3bb8e93e4280f32c076fa2467, type: 2}
@@ -285,6 +289,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 77a8ea73d0a4d174ebe294d517140096, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 1141f5d3bb8e93e4280f32c076fa2467, type: 2}
@@ -315,6 +320,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
@@ -333,6 +339,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}
@@ -350,6 +357,7 @@ MonoBehaviour:
     trigger: 2
     fade: 0
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 0}
     conditions: []
   - id: 10b1d61f0b8b4f6f981b9bc115765713
@@ -361,6 +369,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 11400000, guid: 9b65ba0f89f21d346880e1995953b81c, type: 2}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 97d9b4fa07f0cc943bae4b2ff25bbbd9, type: 2}
     conditions: []
   - id: 02e95392f00b44cdb659eb642ea5ccba
@@ -372,6 +381,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 0741a2f63a685e24988170f6d1a8f74b, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: b5979cc705284f0591c599ab10242d17, type: 2}
@@ -386,6 +396,7 @@ MonoBehaviour:
     trigger: 2
     fade: 0
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 0}
     conditions: []
   - id: c061752ecde94cf7ac2d972610fd4b57
@@ -397,6 +408,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 96436b415a900544db115129845ebd8a, type: 2}
     conditions: []
   - id: bb49a1bdc20c47de99f4c0d950000000
@@ -408,6 +420,7 @@ MonoBehaviour:
     trigger: 0
     fade: 0
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 0}
     conditions:
     - id: {fileID: 11400000, guid: 3a624ba85a9547e08dda15fb92b5d433, type: 2}
@@ -422,6 +435,7 @@ MonoBehaviour:
     trigger: 1
     fade: 0
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 6e27b27fd8f88014bb96a8b6b1eb902d, type: 2}
     conditions: []
   - id: pdf-owner-dark-search
@@ -433,6 +447,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 1fe7e92f8fb64e34cb38110b4664f503, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 882219bd09e73cc48a447c6584c4c779, type: 2}
@@ -456,6 +471,7 @@ MonoBehaviour:
     trigger: 2
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 0}
     conditions:
     - id: {fileID: 11400000, guid: 85de5e4b901b4eb448aee2781b231ce4, type: 2}
@@ -470,6 +486,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 92c53b54a1e72574b88ef69460c03ad4, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 96837d996a442ce44a653ab0b6124a74, type: 2}
@@ -484,6 +501,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
@@ -501,6 +519,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
@@ -518,6 +537,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
@@ -535,6 +555,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
@@ -552,6 +573,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
@@ -569,6 +591,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
@@ -586,6 +609,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
@@ -603,6 +627,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 267a111a7fdb0c947a7f6f8af07dde78, type: 2}
@@ -621,6 +646,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 8300000, guid: 1a08d442f6a740f4fb7e517611455fbc, type: 3}
     completedDialog: {fileID: 11400000, guid: 79d9339bf49a93e4cae831637d6ede17, type: 2}
     conditions: []
   - id: pdf-verified-exit-Tutorial_T3_VaseBreak
@@ -633,6 +659,7 @@ MonoBehaviour:
     trigger: 1
     fade: 1
     transitionDialog: {fileID: 0}
+    entranceFootsteps: {fileID: 0}
     completedDialog: {fileID: 11400000, guid: 32208b3a43a687f4f9c8af0deb7fa40b, type: 2}
     conditions:
     - id: {fileID: 11400000, guid: 884e10c14808e2848a2add661bfbd338, type: 2}

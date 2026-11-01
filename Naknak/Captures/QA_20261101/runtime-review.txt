@@ -1,0 +1,58 @@
+ENDING START | S#6
+PASS | Tutorial_T35_BlackoutSearch | Dropped box can be approached by ordinary walking and interaction
+ENDING AFTER CONFESSION | scene=S#6 ownerConfessed=1
+ENDING INTERACTIONS | Owner,assist,A
+REACH | T2 | walkable=84
+REACHABLE | T2 | Cabinet Number 2 (5.00, 5.00, 0.00) | approaches=1 (5, 4) facing (0.00, 1.00)
+REACHABLE | T2 | Counter Watch (-2.00, 3.00, 0.00) | approaches=1 (-2, 2) facing (0.00, 1.00)
+REACHABLE | T2 | Trash Can (4.00, -4.00, 0.00) | approaches=1 (4, -3) facing (0.00, -1.00)
+REACHABLE | T2 | Vase Toy (-5.00, -1.00, 0.00) | approaches=1 (-4, -1) facing (-1.00, 0.00)
+REACHABLE | T2 | A (-4.00, 0.00, 0.00) | approaches=2 (-4, 0) facing (0.00, 1.00);(-3, 1) facing (-1.00, 0.00)
+REACHABLE | T2 | Unremembered Back Door (-5.00, 5.00, 0.00) | approaches=1 (-4, 5) facing (-1.00, 0.00)
+REACHABLE | T2 | Owner (-3.00, 3.00, 0.00) | approaches=2 (-3, 1) facing (0.00, 1.00);(-2, 2) facing (-1.00, 0.00)
+REACHABLE | T2 | B (4.00, 4.00, 0.00) | approaches=1 (4, 4) facing (0.00, 1.00)
+REACHABLE | T2 | phone (-5.00, 0.00, 0.00) | approaches=1 (-4, 0) facing (-1.00, 0.00)
+REACHABLE | T2 | Memory Exit (1.00, -5.00, 0.00) | approaches=1 (1, -4) facing (0.00, -1.00)
+ISSUE | T2 | Player can reach the exact same standing tile as witness A at (-4, 0) (false = body overlap possible)
+ISSUE | T2 | Player can reach the exact same standing tile as witness B at (4, 4) (false = body overlap possible)
+COUNTER FRONT | T2 | dialog=none watch=False
+REACH | Tutorial_T3_VaseBreak | walkable=84
+REACHABLE | Tutorial_T3_VaseBreak | Trash Can (4.00, -4.00, 0.00) | approaches=1 (4, -3) facing (0.00, -1.00)
+REACHABLE | Tutorial_T3_VaseBreak | A (-4.00, 0.00, 0.00) | approaches=2 (-3, 1) facing (-1.00, 0.00);(-4, 0) facing (0.00, 1.00)
+REACHABLE | Tutorial_T3_VaseBreak | Memory Exit (1.00, -5.00, 0.00) | approaches=1 (1, -4) facing (0.00, -1.00)
+REACHABLE | Tutorial_T3_VaseBreak | Owner (-3.00, 3.00, 0.00) | approaches=2 (-2, 2) facing (-1.00, 0.00);(-3, 1) facing (0.00, 1.00)
+REACHABLE | Tutorial_T3_VaseBreak | Cabinet Number 2 (5.00, 5.00, 0.00) | approaches=1 (5, 4) facing (0.00, 1.00)
+REACHABLE | Tutorial_T3_VaseBreak | phone (-5.00, 0.00, 0.00) | approaches=1 (-4, 0) facing (-1.00, 0.00)
+REACHABLE | Tutorial_T3_VaseBreak | Unremembered Back Door (-5.00, 5.00, 0.00) | approaches=1 (-4, 5) facing (-1.00, 0.00)
+REACHABLE | Tutorial_T3_VaseBreak | B (4.00, 4.00, 0.00) | approaches=1 (4, 4) facing (0.00, 1.00)
+ISSUE | Tutorial_T3_VaseBreak | Player can reach the exact same standing tile as witness A at (-4, 0) (false = body overlap possible)
+ISSUE | Tutorial_T3_VaseBreak | Player can reach the exact same standing tile as witness B at (4, 4) (false = body overlap possible)
+REACH | Tutorial_T4_BroochMissing | walkable=83
+REACHABLE | Tutorial_T4_BroochMissing | VaseBroken (-4.00, -2.50, 0.00) | approaches=3 (-4, -1) facing (0.00, -1.00);(-3, -2) facing (-1.00, 0.00);(-4, -3) facing (0.00, 1.00)
+REACHABLE | Tutorial_T4_BroochMissing | Owner (-3.00, 3.00, 0.00) | approaches=2 (-2, 2) facing (-1.00, 0.00);(-3, 1) facing (0.00, 1.00)
+REACHABLE | Tutorial_T4_BroochMissing | phone (-5.00, 0.00, 0.00) | approaches=1 (-4, 0) facing (-1.00, 0.00)
+REACHABLE | Tutorial_T4_BroochMissing | Unremembered Back Door (-5.00, 5.00, 0.00) | approaches=1 (-4, 5) facing (-1.00, 0.00)
+REACHABLE | Tutorial_T4_BroochMissing | Trash Can (4.00, -4.00, 0.00) | approaches=1 (4, -3) facing (0.00, -1.00)
+REACHABLE | Tutorial_T4_BroochMissing | Cabinet Number 2 (5.00, 5.00, 0.00) | approaches=1 (5, 4) facing (0.00, 1.00)
+REACHABLE | Tutorial_T4_BroochMissing | Memory Exit (1.00, -5.00, 0.00) | approaches=1 (1, -4) facing (0.00, -1.00)
+REACHABLE | Tutorial_T4_BroochMissing | B (4.00, 4.00, 0.00) | approaches=1 (4, 4) facing (0.00, 1.00)
+REACHABLE | Tutorial_T4_BroochMissing | A (-4.00, 0.00, 0.00) | approaches=2 (-3, 1) facing (-1.00, 0.00);(-4, 0) facing (0.00, 1.00)
+ISSUE | Tutorial_T4_BroochMissing | Player can reach the exact same standing tile as witness A at (-4, 0) (false = body overlap possible)
+ISSUE | Tutorial_T4_BroochMissing | Player can reach the exact same standing tile as witness B at (4, 4) (false = body overlap possible)
+PASS | T2 | Appraisal refusal stays in T2
+PASS | T2 | Appraisal item selection cancel unpauses
+PASS | Tutorial_T3_VaseBreak | Price option 1 leads to blackout without being stuck
+PASS | Tutorial_T3_VaseBreak | Price option 2 leads to blackout without being stuck
+PASS | Tutorial_T3_VaseBreak | Price option 3 leads to blackout without being stuck
+EXIT | first=True no dialog
+EXIT | first=True no dialog
+EXIT | revisit=True choice=2 -> T2 menu=Closed
+EXIT | revisit=True choice=1 -> S3 menu=Closed
+CATEGORY | evidence mode category=0 items=tutorial-packed-jewelry-box
+CATEGORY | evidence mode category=1 items=tutorial-packed-jewelry-box
+CATEGORY | evidence mode category=2 items=tutorial-packed-jewelry-box
+PASS | T2 | Isolated manual save round trip
+PASS | T2 | Memory checkpoint restores scene and investigation phase
+PASS | T2 | Memory checkpoint restores inventory entries 4 -> 4
+RESTORE | pos=(5.00, -1.00, 0.00) facing=(-1.00, 0.00) page=Closed
+FINISHED
