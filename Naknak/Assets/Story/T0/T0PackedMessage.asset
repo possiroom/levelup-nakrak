@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: T0PackedMessage
   m_EditorClassIdentifier:
-  charName:
-  text: 브로치를 보석함에 넣었다. 브로치가 담긴 보석함을 얻었다.
+  charName: "\uC870\uC218"
+  text: "\uBBF8\uC548\uD574\uC694. \uD314 \uC218\uBC16\uC5D0 \uC5C6\uC5B4\uC694."
+  portrait: {fileID: -5843781598869218212, guid: d9acf9e4dc242704db11fa02f98b7422, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: 0
   isSelect: 0
   isEnd: 1

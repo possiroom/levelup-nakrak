@@ -472,7 +472,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1, y: 0.90625}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -4532,7 +4532,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.8125, y: 1}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -4656,6 +4656,7 @@ MonoBehaviour:
   isman: 0
   manAnimater: {fileID: 9100000, guid: c65f73359c82c4247ae9d22124c3734d, type: 2}
   girlAnimater: {fileID: 9100000, guid: ce1d2da66c2deb04cba62981d3ad5aab, type: 2}
+  sprite: {fileID: 0}
 --- !u!4 &2106968319
 Transform:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   charName: 조수
   text: …….
+  portrait: {fileID: -7362208201486185302, guid: 01056c40ff62582469cb1e142c4907a6, type: 3}
   activatedImage: 0
   isSelect: 0
   isEnd: 0

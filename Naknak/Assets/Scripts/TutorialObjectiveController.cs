@@ -76,7 +76,7 @@ public sealed class TutorialObjectiveController : MonoBehaviour
                 text = objective.text; break;
             }
         if (gameplay && SceneLoadManager.IsMemoryRevisit && !string.IsNullOrEmpty(text))
-            text += "\nZ / Enter: 조사·대화    F: 증거 제시·동선 확인";
+            text += "\nZ / Enter: 조사·대화·증거 제시";
         label.text = text ?? ""; panel.SetActive(!string.IsNullOrEmpty(text));
         if (solved && gameplay && !completionShown && GameMenuController.Instance != null)
         { completionShown = true; GameMenuController.Instance.ShowTutorialComplete(); }

@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: PB_01
   m_EditorClassIdentifier: 
   charName: "\uC8FC\uC778\uACF5"
-  text: "B\uB294 \uAE30\uD55C\uC774 \uC9C0\uB09C \uC804\uB2F9\uD3EC\uC99D\uC744 \uC4F0\uB808\uAE30\uD1B5\uC5D0
-    \uBC84\uB838\uB2E4."
+  text: "\uC804\uB2F9\uD3EC\uC99D\uC744 \uBC84\uB9AC\uACE0, \uC7A5\uB09C\uAC10\uC73C\uB85C
+    \uC18C\uB780\uC744 \uB9CC\uB4E0 \uB4A4, 2\uBC88 \uC9C4\uC5F4\uC7A5\uC744 \uC5F4\uB824\uACE0
+    \uD588\uAD70\uC694."
+  portrait: {fileID: 2769707869747415501, guid: 8af32fde80ac7634eb9581e55f6440fd, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: 0
   isSelect: 0
   isEnd: 0
   selects: []
-  nextData: {fileID: 11400000, guid: 5fa785fb82ddcf84c80c5aff243a0edd, type: 2}
+  nextData: {fileID: 11400000, guid: bbc5f256997db694493aa0cf20301093, type: 2}
   nextSceneName: 
   endActions: []

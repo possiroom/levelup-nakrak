@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: Prologue_06
   m_EditorClassIdentifier: 
-  charName: "\uC8FC\uC778\uACF5"
-  text: .............................
-  activatedImage: -1
+  charName: "\uD0D0\uC815"
+  text: "\uADF8\uB7EC\uC2DC\uAD70\uC694."
+  portrait: {fileID: 2769707869747415501, guid: 8af32fde80ac7634eb9581e55f6440fd, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
+  activatedImage: 0
   isSelect: 0
   isEnd: 0
   selects: []

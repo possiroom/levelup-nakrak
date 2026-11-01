@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   charName: "\uC8FC\uC778\uACF5"
   text: "500\uB2EC\uB7EC \uC815\uB3C4\uB294 \uD558\uC9C0 \uC54A\uC744\uAE4C\uC694?"
+  portrait: {fileID: -2375540159661161618, guid: fd48403ee249c074fa453b38baa4c29a, type: 3}
   activatedImage: 0
   isSelect: 0
   isEnd: 0

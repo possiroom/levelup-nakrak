@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
+  m_Name: Prologue_18
+  m_EditorClassIdentifier: 
+  charName: "\uD0D0\uC815"
+  text: ".....\uADF8\uAC83\uC774\uB77C\uB3C4 \uD314\uC544\uC57C \uD558\uB098"
+  portrait: {fileID: 2769707869747415501, guid: 8af32fde80ac7634eb9581e55f6440fd, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
+  activatedImage: 0
+  isSelect: 0
+  isEnd: 1
+  selects: []
+  nextData: {fileID: 0}
+  nextSceneName: 
+  endActions: []

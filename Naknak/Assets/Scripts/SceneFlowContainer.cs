@@ -22,6 +22,7 @@ public sealed class SceneFlowContainer : ScriptableObject
         public StoryData entryDialog;
         public DialogContainer entryDialogs;
         public bool memorySpace;
+        public bool colorMemory;
         [Tooltip("Entering this scene from reality starts a replay, including older saves without a visit counter.")]
         public bool memoryReplayEntry;
         [Tooltip("Item held when entering this memory from reality. T0 grants its own brooch.")]
@@ -44,6 +45,7 @@ public sealed class SceneFlowContainer : ScriptableObject
         public SceneReference to = new SceneReference();
         public SceneConnectionTrigger trigger;
         public bool fade;
+        public StoryData transitionDialog;
         [Tooltip("DialogFinished: select the LAST dialogue asset in the conversation.")]
         public StoryData completedDialog;
         public List<DialogCondition> conditions = new List<DialogCondition>();

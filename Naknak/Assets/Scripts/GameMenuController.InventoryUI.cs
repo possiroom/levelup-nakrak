@@ -21,6 +21,21 @@ public sealed partial class GameMenuController
         Label(sidebar, presenting ? "증거 제시" : "메뉴", 34, new Vector2(.08f, .85f), new Vector2(.92f, .96f));
         Label(sidebar, presenting ? "제시할 아이템을 선택하세요." : "잠시 숨을 고릅니다.", 18,
             new Vector2(.08f, .75f), new Vector2(.92f, .85f));
+        float commandTop = .69f;
+        if (presenting && itemSelectionTotal > 0)
+        {
+            int count = itemSelectionCompleted?.Length ?? 0;
+            Label(sidebar, "(" + count + "/" + itemSelectionTotal + ")", 26,
+                new Vector2(.08f, .66f), new Vector2(.92f, .74f));
+            float top = .64f;
+            for (int i = 0; i < count; i++)
+            {
+                Label(sidebar, (i + 1) + ". " + itemSelectionCompleted[i], 17,
+                    new Vector2(.08f, top - .09f), new Vector2(.92f, top));
+                top -= .10f;
+            }
+            commandTop = top - .035f;
+        }
 
         var detail = Box(panel, "Selected Item", new Color(0, 0, 0, .24f),
             new Vector2(.28f, .70f), new Vector2(.975f, .97f), true);
@@ -87,7 +102,7 @@ public sealed partial class GameMenuController
                 () => StartCoroutine(ChangeSession(configuration.titleScene, null))) };
         for (int i = 0; i < entries.Length; i++)
         {
-            float top = .69f - i * .14f;
+            float top = commandTop - i * .14f;
             Command(entries[i], actions[i], new Vector2(.08f, top - .105f), new Vector2(.92f, top), sidebar);
         }
         Footer(presenting ? "방향키: 선택    Z / Enter: 제시    Esc / X: 취소" :

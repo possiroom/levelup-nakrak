@@ -15,6 +15,7 @@ MonoBehaviour:
   charName: "\uC8FC\uC778\uACF5"
   text: "\uC774\uBCF4\uC138\uC694! \uC774\uAC74 \uB2F9\uC2E0\uC774 \uBC94\uC778\uC774\uB77C\uACE0
     \uAD11\uACE0\uD558\uB294 \uAF34\uC774\uC57C!"
+  portrait: {fileID: 2769707869747415501, guid: 8af32fde80ac7634eb9581e55f6440fd, type: 3}
   activatedImage: 0
   isSelect: 0
   isEnd: 0

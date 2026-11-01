@@ -46,12 +46,12 @@ public sealed class TutorialScene1Cutscene : MonoBehaviour
         phase = CutscenePhase.WaitingForServices;
         if (cameraDriver != null) cameraDriver.enabled = false;
         SetFade(1f);
-        SetShot(openingCameraPoint, openingCameraSize);
         if (detective != null)
         {
             if (detectiveStartPoint != null) detective.position = detectiveStartPoint.position;
             detectiveAnimator = detective.GetComponentInChildren<Animator>(true);
-            detective.gameObject.SetActive(false);
+            detective.gameObject.SetActive(true);
+            FocusDetective();
         }
     }
 
@@ -82,8 +82,6 @@ public sealed class TutorialScene1Cutscene : MonoBehaviour
         phase = CutscenePhase.Entrance;
         detective.gameObject.SetActive(true);
         SetWalking(false, Vector2.up);
-        yield return MoveCamera(entranceCameraPoint, groupCameraSize);
-        yield return PlayStory(entrance);
 
         phase = CutscenePhase.Walking;
         // Dialogue is closed during forced movement; input cannot move the real player.
@@ -92,7 +90,8 @@ public sealed class TutorialScene1Cutscene : MonoBehaviour
                 if (point != null) yield return WalkTo(point.position);
         yield return WalkTo(detectiveCenterPoint.position);
         SetWalking(false, detectiveFinalFacing);
-        yield return MoveCamera(groupCameraPoint, groupCameraSize);
+        FocusDetective();
+        yield return PlayStory(entrance);
 
         phase = CutscenePhase.Investigation;
         yield return PlayStory(investigation);
@@ -132,6 +131,16 @@ public sealed class TutorialScene1Cutscene : MonoBehaviour
         if (!waitingForDialog || SceneLoadManager.HasManagedScene || GameMenuController.IsBlockingGameplay) return;
         if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) ||
             Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) DialogManager.Instance?.AdvanceFromInput();
+    }
+
+    private void LateUpdate() => FocusDetective();
+
+    private void FocusDetective()
+    {
+        if (cutsceneCamera == null || detective == null) return;
+        cutsceneCamera.transform.position = new Vector3(detective.position.x, detective.position.y + 1f,
+            cutsceneCamera.transform.position.z);
+        cutsceneCamera.orthographicSize = groupCameraSize;
     }
 
     private IEnumerator WalkTo(Vector3 target)

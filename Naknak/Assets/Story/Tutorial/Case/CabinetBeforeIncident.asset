@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: CabinetBeforeIncident
   m_EditorClassIdentifier:
   charName:
-  text: "2\uBC88 \uC9C4\uC5F4\uC7A5\uC774\uB2E4. \uC7A0\uAE08\uC7A5\uCE58\uC5D0\uB294
-    \uD2B9\uBCC4\uD55C \uD754\uC801\uC774 \uBCF4\uC774\uC9C0 \uC54A\uB294\uB2E4."
-  activatedImage: 0
+  text: "\uC9C4\uC5F4\uC7A5\uC774\uB2E4."
+  portrait: {fileID: 0}
+  doorSlam: 0
+  autoAdvanceAfter: 0
+  activatedImage: -1
   isSelect: 0
   isEnd: 1
   selects: []

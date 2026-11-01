@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   charName: 조수
   text: 분명 여기 넣어뒀잖아요.
+  portrait: {fileID: -7135239514645827687, guid: 51dbd030cd81f394998871121907571d, type: 3}
   activatedImage: 0
   isSelect: 0
   isEnd: 0

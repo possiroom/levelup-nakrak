@@ -60,6 +60,28 @@ public sealed class InvestigationPoint : MonoBehaviour, IInteractable
             memoryOnly && !SceneLoadManager.IsMemorySpace ||
             GameStateManager.Instance != null && GameStateManager.Instance.GameState != GameState.Gameplay) return;
         var inventory = GameMenuController.Inventory;
+        var reconstruction = GetComponent<EvidenceReconstruction>();
+        if (reconstruction != null && SceneLoadManager.IsMemoryRevisit)
+        {
+            var presentation = rules.FirstOrDefault(r => r != null && r.presentEvidence && SceneFlowContainer.Passes(r.conditions));
+            if (presentation != null)
+            {
+                if (reconstruction.ReadyForConclusion)
+                { Explain(reconstruction.CompletionDialog); return; }
+                // Inspecting the witness still collects their physical evidence before opening selection.
+                foreach (var rule in rules)
+                {
+                    if (rule == null || rule.presentEvidence || rule.rewards.Length == 0 ||
+                        !SceneFlowContainer.Passes(rule.conditions) || !HasRequiredEvidence(rule, inventory)) continue;
+                    var rewards = rule.rewards.Where(item => item != null && !item.Retired && !inventory.Has(item.Id))
+                        .Select(item => new InventoryEntry(item.Id, 1)).ToArray();
+                    if (inventory.TryAddAll(rewards)) ConditionManager.Instance.ExecuteActions(rule.actions);
+                    break;
+                }
+                BeginEvidencePresentation(presentation);
+                return;
+            }
+        }
         // Full conclusions are sequenced only after BOTH witnesses' evidence is resolved.
         foreach (var rule in rules)
         {
@@ -84,7 +106,8 @@ public sealed class InvestigationPoint : MonoBehaviour, IInteractable
     {
         busy = true;
         if (!GameMenuController.Instance.SelectInventoryItem(rule.evidencePrompt,
-                item => SubmitEvidence(rule, item), () => busy = false)) busy = false;
+                item => SubmitEvidence(rule, item), () => busy = false,
+                evidence: GetComponent<EvidenceReconstruction>())) busy = false;
     }
 
     private void SubmitEvidence(Rule rule, InventoryItem item)

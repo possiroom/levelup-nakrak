@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: AHint
   m_EditorClassIdentifier: 
-  charName: "\uC8FC\uC778\uACF5"
-  text: "F\uB85C \uD3B8\uC9C0\xB7\uC2DC\uACC4 \uC0C1\uC790\xB7\uC804\uD654\uAE30
-    \uC0AC\uC6A9 \uD754\uC801\uC744 \uC81C\uC2DC\uD574 A\uC758 \uB3D9\uC120\uC744
-    \uD655\uC778\uD558\uC790."
+  charName: "\uD0D0\uC815"
+  text: "A\uC640 \uC0C1\uD638\uC791\uC6A9\uD574 \uD3B8\uC9C0\xB7\uC2DC\uACC4 \uC0C1\uC790\xB7\uC804\uD654\uAE30
+    \uC0AC\uC6A9 \uD754\uC801\uC744 \uC81C\uC2DC\uD558\uC790."
+  portrait: {fileID: 2769707869747415501, guid: 8af32fde80ac7634eb9581e55f6440fd, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: 0
   isSelect: 0
   isEnd: 1

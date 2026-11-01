@@ -9,6 +9,11 @@ public class StoryData : ScriptableObject
     
     [TextArea(3, 10)]
     public string text;
+
+    [Tooltip("Portrait for this line. Leave empty to use the speaker's default portrait.")]
+    public Sprite portrait;
+    public bool doorSlam;
+    [Min(0)] public float autoAdvanceAfter;
     
     public int activatedImage;    // 이미지 번호
     public bool isSelect;         // 선택지 여부

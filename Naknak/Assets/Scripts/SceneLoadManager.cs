@@ -11,6 +11,7 @@ public sealed class SceneLoadManager : MonoBehaviour
     public static bool HasManagedScene => Instance != null && Instance.current != null;
     public static string CurrentScenePath => HasManagedScene ? Instance.contentScene.path : "";
     public static bool IsMemorySpace => HasManagedScene && Instance.current.memorySpace;
+    public static bool IsColorMemory => HasManagedScene && Instance.current.colorMemory;
     public static bool IsPreparingMemory => Instance != null && Instance.memoryPending;
     public static bool IsMemoryRevisit => IsMemorySpace && Instance.container != null &&
         ConditionManager.Instance != null && ConditionManager.Instance.Get(Instance.container.memoryVisitCount) > 1;
@@ -112,7 +113,7 @@ public sealed class SceneLoadManager : MonoBehaviour
             var entryStory = current.entryDialogs != null ? current.entryDialogs.GetMatchingDialog() : current.entryDialog;
             if (entryStory != null) { DialogManager.Instance.ShowDialog(entryStory, true); return; }
         }
-        if (IsMemoryRevisit && DialogManager.Instance != null && DialogManager.Instance.CanFastForward && InteractionInput.CanConfirm &&
+        if (DialogManager.Instance != null && DialogManager.Instance.CanFastForward && InteractionInput.CanConfirm &&
             (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
         { DialogManager.Instance.SkipUntilChoice(); return; }
         if (DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen &&
@@ -121,7 +122,27 @@ public sealed class SceneLoadManager : MonoBehaviour
     }
 
     public void SetContainer(SceneFlowContainer value) { container = value; }
-    public bool NotifyDialogFinished(StoryData dialog) => Follow(SceneConnectionTrigger.DialogFinished, dialog);
+    public bool NotifyDialogFinished(StoryData dialog)
+    {
+        if (current == null || container == null || IsLoading) return false;
+        var connection = container.FindConnection(contentScene.path, SceneConnectionTrigger.DialogFinished, dialog);
+        if (connection == null) return false;
+        foreach (var root in contentScene.GetRootGameObjects())
+        {
+            var staging = root.GetComponentInChildren<TutorialWitnessStaging>();
+            if (staging == null || !staging.WaitBeforeTransition(dialog)) continue;
+            SetPlayerInputLocked(true);
+            StartCoroutine(WaitForWitness(staging, connection));
+            return true;
+        }
+        return Travel(container, connection);
+    }
+
+    private IEnumerator WaitForWitness(TutorialWitnessStaging staging, SceneFlowContainer.Connection connection)
+    {
+        while (staging != null && !staging.AppraisalWalkComplete) yield return null;
+        if (staging != null) Travel(container, connection);
+    }
     public void CompleteScene() { Follow(SceneConnectionTrigger.SceneCompleted); }
     public bool TryCompleteScene() => Follow(SceneConnectionTrigger.SceneCompleted);
 
@@ -139,11 +160,11 @@ public sealed class SceneLoadManager : MonoBehaviour
         if (!Application.CanStreamedLevelBeLoaded(connection.to.Path))
         { Debug.LogError("[SceneLoadManager] Add the target scene to Build Settings: " + connection.to.Path); return false; }
         container = flow;
-        StartCoroutine(connection.fade || RequiresMemoryTransition(connection.to.Path) ? FadeTravel(connection.to.Path) : LoadContentCore(connection.to.Path));
+        StartCoroutine(connection.fade || RequiresMemoryTransition(connection.to.Path) ? FadeTravel(connection.to.Path, connection.transitionDialog) : LoadContentCore(connection.to.Path));
         return true;
     }
 
-    private IEnumerator FadeTravel(string destination)
+    private IEnumerator FadeTravel(string destination, StoryData transitionDialog = null)
     {
         if (IsLoading) yield break;
         bool memoryBoundary = CrossesMemoryBoundary(destination);
@@ -163,6 +184,17 @@ public sealed class SceneLoadManager : MonoBehaviour
         { transitionOverlay.color = new Color(0, 0, 0, Mathf.Clamp01(elapsed / 0.25f)); yield return null; }
         transitionOverlay.color = Color.black;
         IsLoading = false;
+        if (transitionDialog != null && DialogManager.Instance != null)
+        {
+            var canvas = DialogManager.Instance.DialogueCanvas;
+            int order = canvas != null ? canvas.sortingOrder : 0;
+            if (canvas != null) canvas.sortingOrder = 30001;
+            SetPlayerInputLocked(true);
+            DialogManager.Instance.ShowDialog(transitionDialog, true);
+            yield return null;
+            while (DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen) yield return null;
+            if (canvas != null) canvas.sortingOrder = order;
+        }
         yield return LoadContentCore(destination, true);
         IsLoading = true;
         if (memoryBoundary) yield return new WaitForSecondsRealtime(2f);

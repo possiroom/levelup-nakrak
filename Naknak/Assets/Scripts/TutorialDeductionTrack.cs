@@ -86,13 +86,14 @@ public sealed class TutorialDeductionTrack : MonoBehaviour
                 {
                     activeBeat = beat.dialogue;
                     path.Clear();
+                    Vector2 from = actor.position;
                     if (beat.waypoints != null)
                         foreach (var waypoint in beat.waypoints)
-                            if (waypoint != null) path.Enqueue(new Vector3(waypoint.position.x, waypoint.position.y, actor.position.z));
+                            if (waypoint != null) QueueWalk(ref from, waypoint.position);
                     Vector2 target = beat.point != null ? (Vector2)beat.point.position : beat.position;
-                    path.Enqueue(new Vector3(target.x, target.y, actor.position.z));
+                    QueueWalk(ref from, target);
                     standingFacing = beat.facing;
-                    destination = path.Dequeue();
+                    destination = path.Count > 0 ? path.Dequeue() : actor.position;
                 }
                 break;
             }
@@ -108,6 +109,17 @@ public sealed class TutorialDeductionTrack : MonoBehaviour
                 (standingFacing.x > 0 ? Direction.Right : Direction.Left) : (standingFacing.y > 0 ? Direction.Up : Direction.Down)));
         }
         actor.position = Vector3.MoveTowards(actor.position, destination, walkingSpeed * Time.deltaTime);
+    }
+
+    private void QueueWalk(ref Vector2 from, Vector2 target)
+    {
+        if (!TutorialWalkingRoute.TryBuild(actor, from, target, out var route))
+        {
+            Debug.LogWarning($"[Tutorial route] No safe route for {actor.name}: {from} -> {target}", this);
+            return;
+        }
+        foreach (var step in route) path.Enqueue(step);
+        if (route.Length > 0) from = route[route.Length - 1];
     }
     private void OnDisable()
     {

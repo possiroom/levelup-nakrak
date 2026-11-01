@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: BHint
   m_EditorClassIdentifier: 
-  charName: "\uC8FC\uC778\uACF5"
-  text: "F\uB85C \uC804\uB2F9\uD3EC\uC99D\xB7\uD0DC\uC5FD\uACFC \uB098\uC0AC\uB97C
-    \uC81C\uC2DC\uD574 B\uC758 \uB3D9\uC120\uC744 \uD655\uC778\uD558\uC790. \uC7A5\uC2DD\uC7A5
-    \uB3D9\uC120\uC5D0\uB294 \uC77C\uC790\uB4DC\uB77C\uC774\uBC84\uC640 \uC7A5\uC2DD\uC7A5
-    \uD754\uC801\uC774 \uBAA8\uB450 \uD544\uC694\uD558\uB2E4."
+  charName: "\uD0D0\uC815"
+  text: "B\uC640 \uC0C1\uD638\uC791\uC6A9\uD574 \uC804\uB2F9\uD3EC\uC99D\xB7\uC7A5\uB09C\uAC10
+    \uBD80\uD488\xB7\uB4DC\uB77C\uC774\uBC84\uC640 \uC9C4\uC5F4\uC7A5 \uD754\uC801\uC744
+    \uC81C\uC2DC\uD558\uC790."
+  portrait: {fileID: 2769707869747415501, guid: 8af32fde80ac7634eb9581e55f6440fd, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: 0
   isSelect: 0
   isEnd: 1

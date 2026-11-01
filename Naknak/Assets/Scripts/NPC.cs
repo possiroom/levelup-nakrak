@@ -19,6 +19,11 @@ public class NPC : MonoBehaviour, IInteractable
 
         if (storyData != null)
         {
+            if (SceneLoadManager.HasManagedScene && DialogManager.Instance != null)
+            {
+                DialogManager.Instance.ShowDialog(storyData, true);
+                return;
+            }
             Debug.Log("[NPC] 상호작용 storyID: " + storyData.name);
             GameEventBase evt = GameEventFactory.CreateDialogEvent(storyData);
             GameEventManager.Instance.Submit(evt);

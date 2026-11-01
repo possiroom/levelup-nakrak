@@ -12,11 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: Ait_2
   m_EditorClassIdentifier: 
-  charName: 
+  charName: "\uC870\uC218"
   text: "\uC800\uC694?"
+  portrait: {fileID: -7362208201486185302, guid: 01056c40ff62582469cb1e142c4907a6, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: 0
   isSelect: 0
   isEnd: 0
   selects: []
   nextData: {fileID: 11400000, guid: 884dc8862ed09ac41b738874bea8c966, type: 2}
+  nextSceneName:
   endActions: []

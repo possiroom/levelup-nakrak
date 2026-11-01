@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: EvidenceBComplete
   m_EditorClassIdentifier:
-  charName: "\uC8FC\uC778\uACF5"
-  text: "B\uC758 \uB3D9\uC120\uC744 \uC804\uBD80 \uD30C\uC545\uD588\uB2E4"
+  charName: "\uD0D0\uC815"
+  text: "B\uC758 \uB3D9\uC120\uC744 \uC804\uBD80 \uD30C\uC545\uD588\uB2E4."
+  portrait: {fileID: 2769707869747415501, guid: 8af32fde80ac7634eb9581e55f6440fd, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: 0
   isSelect: 0
   isEnd: 1
@@ -22,5 +25,5 @@ MonoBehaviour:
   nextSceneName:
   endActions:
   - type: 0
-    id: {fileID: 11400000, guid: 985fc1ec7c45d5148ad052f9fc2b2ce8, type: 2}
+    id: {fileID: 11400000, guid: e6330fd6857005b4c96fde66ad20ae26, type: 2}
     value: 1

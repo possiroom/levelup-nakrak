@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   charName: "탐정"
   text: "한 사람씩 이야기해보죠. 브로치가 사라지기 전에 무슨 일이 있었습니까?"
+  portrait: {fileID: 2769707869747415501, guid: 8af32fde80ac7634eb9581e55f6440fd, type: 3}
   activatedImage: 0
   isSelect: 0
   isEnd: 1

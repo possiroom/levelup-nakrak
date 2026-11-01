@@ -27,6 +27,14 @@ public sealed class EvidenceReconstruction : MonoBehaviour
     }
 
     [SerializeField] private Clip[] clips = Array.Empty<Clip>();
+    [SerializeField] private StoryData completionDialog;
+    public StoryData CompletionDialog => completionDialog;
+    public int TotalEvidence => clips.Length;
+    public string[] CompletedEvidence => clips.Where(c => c.observed != null && ConditionManager.Instance != null &&
+        ConditionManager.Instance.Get(c.observed) != 0).Select(c =>
+            c.evidence.FirstOrDefault(e => e != null && !e.Retired && GameMenuController.Instance != null &&
+                GameMenuController.Inventory.Has(e.Id))?.DisplayName ??
+            c.evidence.FirstOrDefault(e => e != null && !e.Retired)?.DisplayName ?? c.label).ToArray();
     private TutorialDeductionTrack track;
     private bool replaying;
     private Vector3 originalPosition;

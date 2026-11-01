@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   charName: "B"
   text: "당신은 또 누구죠?"
+  portrait: {fileID: 7425438597007568885, guid: a06ede7d89d4a234f97c8d131008462f, type: 3}
   activatedImage: 0
   isSelect: 0
   isEnd: 1

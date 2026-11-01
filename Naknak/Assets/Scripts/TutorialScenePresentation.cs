@@ -19,6 +19,7 @@ public sealed class TutorialScenePresentation : MonoBehaviour
     public void ApplyMemoryStyle()
     {
         if (!SceneLoadManager.IsMemorySpace || SceneLoadManager.CurrentScenePath != gameObject.scene.path) return;
+        if (SceneLoadManager.IsColorMemory) return;
         var controller = FindFirstObjectByType<PlayerMoveController3>(FindObjectsInactive.Include);
         var target = controller != null ? controller.transform : null;
         if (styleApplied && player == target) return;

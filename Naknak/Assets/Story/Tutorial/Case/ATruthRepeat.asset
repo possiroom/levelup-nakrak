@@ -16,6 +16,7 @@ MonoBehaviour:
   text: "\uAC00\uC871 \uC774\uC57C\uAE30\uB294 \uAC70\uC9D3\uC774\uC5C8\uC9C0\uB9CC,
     \uADF8\uAC83\uB9CC\uC73C\uB85C \uBE0C\uB85C\uCE58\uB97C \uD6D4\uCCE4\uB2E4\uACE0
     \uD560 \uC218\uB294 \uC5C6\uB2E4."
+  portrait: {fileID: -5810939324574478747, guid: 0e9611afd12aad44896d91df11afc5c8, type: 3}
   activatedImage: 0
   isSelect: 0
   isEnd: 1

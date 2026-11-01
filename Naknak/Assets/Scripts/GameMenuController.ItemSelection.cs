@@ -6,17 +6,21 @@ public sealed partial class GameMenuController
     private Action<InventoryItem> itemSelected;
     private Action itemSelectionCancelled;
     private string itemSelectionPrompt;
+    private string[] itemSelectionCompleted;
+    private int itemSelectionTotal;
     private bool completionSavePending;
 
     // Reuse the inventory window; ordinary inventory browsing keeps its existing behavior.
     public bool SelectInventoryItem(string prompt, Action<InventoryItem> onSelected, Action onCancelled = null,
-        bool importantItems = true)
+        bool importantItems = true, EvidenceReconstruction evidence = null)
     {
         if (onSelected == null || IsBlockingGameplay || page != Page.Closed) return false;
         if (GameStateManager.Instance != null && GameStateManager.Instance.GameState != GameState.Gameplay) return false;
         itemSelected = onSelected;
         itemSelectionCancelled = onCancelled;
         itemSelectionPrompt = prompt;
+        itemSelectionCompleted = evidence != null ? evidence.CompletedEvidence : null;
+        itemSelectionTotal = evidence != null ? evidence.TotalEvidence : 0;
         inventoryCategory = importantItems ? 2 : 0;
         selected = 0;
         Pause();
@@ -58,6 +62,8 @@ public sealed partial class GameMenuController
         itemSelected = null;
         itemSelectionCancelled = null;
         itemSelectionPrompt = null;
+        itemSelectionCompleted = null;
+        itemSelectionTotal = 0;
     }
 
     public void ShowTutorialComplete()

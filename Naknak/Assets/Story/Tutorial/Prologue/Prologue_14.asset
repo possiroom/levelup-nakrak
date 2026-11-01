@@ -12,12 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: Prologue_14
   m_EditorClassIdentifier: 
-  charName: "\uC8FC\uC778\uACF5"
-  text: ".....\uADF8\uAC83\uB3C4 \uD314\uC544\uC57C \uD558\uB098"
+  charName: "\uC758\uB8B0\uC778"
+  text: "\uBB34\uC2A8 \uD5DB\uC18C\uB9AC\uB97C \uD558\uB294\uAC81\uB2C8\uAE4C"
+  portrait: {fileID: 0}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: -1
   isSelect: 0
-  isEnd: 1
+  isEnd: 0
   selects: []
-  nextData: {fileID: 0}
+  nextData: {fileID: 11400000, guid: 681034e4ec5089248bf5d71fe0a67cf9, type: 2}
   nextSceneName: 
   endActions: []

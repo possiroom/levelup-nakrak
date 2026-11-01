@@ -160,8 +160,6 @@ public class PlayerMoveController3 : MonoBehaviour
             InteractionInput.ConsumeConfirm();
             TryInteract();
         }
-        if (gameState == GameState.Gameplay && !isMoving && Input.GetKeyDown(KeyCode.F))
-            TryPresentEvidence();
     }
 
     void TryInteract()
@@ -192,7 +190,8 @@ public class PlayerMoveController3 : MonoBehaviour
                         (point != null || hit.collider.GetComponent<MemoryInvestigationPoint>() != null)) return;
                     var npc = hit.collider.GetComponent<NPC>();
                     if (SceneLoadManager.IsFirstMemoryVisit && npc != null && !npc.AllowDuringFirstMemory) return;
-                    hit.collider.GetComponent<IInteractable>()?.Interact();
+                    if (point != null) point.Interact();
+                    else hit.collider.GetComponent<IInteractable>()?.Interact();
                     break;
                 }
             }

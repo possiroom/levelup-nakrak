@@ -157,6 +157,7 @@ public class TutorialS6EventController : MonoBehaviour
             story.charName = lines[i].speaker;
             story.text = lines[i].text;
             story.activatedImage = lines[i].activatedImage;
+            story.portrait = null; // Use this speaker's portrait rather than the template's face.
 
             story.isSelect = false;
             story.isEnd = false;

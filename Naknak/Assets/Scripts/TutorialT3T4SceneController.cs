@@ -10,12 +10,14 @@ public class TutorialT3T4SceneController : MonoBehaviour
         public string speaker;
         public string text;
         public int activatedImage;
+        public string portraitResource;
 
-        public CutsceneLine(string speaker, string text, int activatedImage = 0)
+        public CutsceneLine(string speaker, string text, int activatedImage = 0, string portraitResource = null)
         {
             this.speaker = speaker;
             this.text = text;
             this.activatedImage = activatedImage;
+            this.portraitResource = portraitResource;
         }
     }
 
@@ -99,6 +101,19 @@ public class TutorialT3T4SceneController : MonoBehaviour
                    DialogManager.Instance == null || !DialogManager.Instance.CanShowDialog || DialogManager.Instance.IsDialogOpen)
                 yield return null;
             DialogManager.Instance.BindSceneViews(gameObject.scene);
+            if (SceneLoadManager.IsMemoryRevisit)
+            {
+                SetupT3StartState();
+                if (vaseNormal != null) vaseNormal.SetActive(false);
+                if (vaseBroken != null) vaseBroken.SetActive(true);
+                if (t3Occurred != null) ConditionManager.Instance.Set(t3Occurred, 1);
+                SetDarkOverlayAlpha(0.68f);
+                if (darkOverlayImage != null) darkOverlayImage.raycastTarget = false;
+                if (t3InvestigationObjects != null) t3InvestigationObjects.SetActive(true);
+                Phase = T3Phase.Finished;
+                SceneLoadManager.Instance?.SetPlayerInputLocked(false);
+                yield break;
+            }
         }
 
         yield return RunScene();
@@ -247,12 +262,12 @@ public class TutorialT3T4SceneController : MonoBehaviour
                 new CutsceneLine("조수", "잠깐만요. 제 브로치부터 돌려주세요."),
                 new CutsceneLine("주인", "아, 그래. 여기 있소."),
                 new CutsceneLine("", "[브로치가 없는 보석함 아이템을 획득한다.]"),
-                new CutsceneLine("조수", "……."),
-                new CutsceneLine("조수", "브로치가 없는데요."),
+                new CutsceneLine("조수", "…….", portraitResource: "조수 당황"),
+                new CutsceneLine("조수", "브로치가 없는데요.", portraitResource: "조수 당황"),
                 new CutsceneLine("주인", "뭐?"),
-                new CutsceneLine("조수", "분명 여기 넣어뒀잖아요."),
+                new CutsceneLine("조수", "분명 여기 넣어뒀잖아요.", portraitResource: "조수 화남"),
                 new CutsceneLine("주인", "난 그대로 돌려줬소."),
-                new CutsceneLine("조수", "지금 장난하세요?"),
+                new CutsceneLine("조수", "지금 장난하세요?", portraitResource: "조수 화남"),
                 new CutsceneLine("주인", "나한테 따져봐야 소용없소!")
             }
         );
@@ -388,6 +403,11 @@ public class TutorialT3T4SceneController : MonoBehaviour
             story.charName = lines[i].speaker;
             story.text = lines[i].text;
             story.activatedImage = lines[i].activatedImage;
+            if (!string.IsNullOrEmpty(lines[i].portraitResource))
+            {
+                var sprites = Resources.LoadAll<Sprite>("Portraits/" + lines[i].portraitResource);
+                if (sprites.Length > 0) story.portrait = sprites[0];
+            }
 
             story.isSelect = false;
             story.isEnd = false;

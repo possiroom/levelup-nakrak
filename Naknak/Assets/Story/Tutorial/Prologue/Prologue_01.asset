@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: Prologue_01
   m_EditorClassIdentifier: 
   charName: "\uC758\uB8B0\uC778"
-  text: "\uC800\uAE30\uC694- \uB4E3\uACE0 \uC788\uB098\uC694?"
+  text: "\uC800\uAE30\uC694?"
+  portrait: {fileID: 0}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: -1
   isSelect: 0
   isEnd: 0

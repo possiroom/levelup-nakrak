@@ -19,6 +19,9 @@ public class DialogManager : MonoBehaviour
     private bool inputReady;
     private float elapedTime;
     private string showingText;
+    private float autoAdvanceTime;
+    private AudioSource storyAudio;
+    private AudioClip doorSlamClip;
 
     // Singleton
     private void Awake() {
@@ -43,23 +46,25 @@ public class DialogManager : MonoBehaviour
 
     private StoryData currentStory = null;
     public StoryData CurrentStory => currentStory;
+    public event System.Action<StoryData> DialogueFinished;
     private DialogViewer fallbackView;
     private DialogSelectViewer fallbackSelectView;
     public bool IsDialogOpen => currentStory != null && view != null && view.gameObject.activeSelf;
     public bool CanShowDialog => view != null && GameEventManager.Instance != null;
     public bool CanFastForward => IsDialogOpen && allowFastForward;
+    public Canvas DialogueCanvas => view != null ? view.GetComponentInParent<Canvas>() : null;
 
-    // Replays may fast-forward linear lines. Choices and end actions still use NextDialog.
+    // Holding Ctrl follows the selected choice (the first choice by default), including its actions.
     public void SkipUntilChoice()
     {
-        if (!SceneLoadManager.IsMemoryRevisit || GameMenuController.IsBlockingGameplay || !CanFastForward) return;
+        if (GameMenuController.IsBlockingGameplay || !CanFastForward) return;
         var visited = new HashSet<StoryData>();
-        while (currentStory != null && !isSelectActivate && visited.Add(currentStory))
+        while (currentStory != null && !SceneLoadManager.IsLoading)
         {
+            if (TutorialDeductionTrack.IsMoving) return;
+            if (!isSelectActivate && !visited.Add(currentStory)) return;
             if (isPlaying) TextSkip();
-            bool choice = currentStory.isSelect;
             NextDialog();
-            if (choice) break;
         }
     }
 
@@ -86,6 +91,7 @@ public class DialogManager : MonoBehaviour
         if (Instance != this) return;
         SceneManager.sceneLoaded -= RebindSceneViews;
         Instance = null;
+        if (doorSlamClip != null) Destroy(doorSlamClip);
     }
 
     private void RebindSceneViews(Scene scene, LoadSceneMode mode)
@@ -100,8 +106,10 @@ public class DialogManager : MonoBehaviour
         isPlaying = true;
         elapedTime = 0f;
         showingText = "";
+        autoAdvanceTime = 0;
+        if (currentStory.doorSlam) PlayDoorSlam();
         view.ChangeName(currentStory.charName);
-        view.ChangeActivateImage(currentStory.activatedImage);
+        view.ChangePortrait(currentStory);
         view.ActivateEndMark(false);
         Debug.Log("[DialogManager] Show Dialog: " + currentStory.name);
     }
@@ -216,6 +224,16 @@ public class DialogManager : MonoBehaviour
     private void Update()
     {
         if (GameMenuController.IsBlockingGameplay) return;
+        if (currentStory != null && currentStory.autoAdvanceAfter > 0)
+        {
+            autoAdvanceTime += Time.deltaTime;
+            if (autoAdvanceTime >= currentStory.autoAdvanceAfter)
+            {
+                if (isPlaying) TextSkip();
+                NextDialog();
+                return;
+            }
+        }
         if (IsDialogOpen && InteractionInput.CanConfirm &&
             !Input.GetKey(KeyCode.Z) && !Input.GetKey(KeyCode.Return) &&
             !Input.GetKey(KeyCode.KeypadEnter) && !Input.GetKey(KeyCode.Space) &&
@@ -256,6 +274,33 @@ public class DialogManager : MonoBehaviour
         }
     }
 
+    private void PlayDoorSlam()
+    {
+        if (storyAudio == null)
+        {
+            storyAudio = gameObject.AddComponent<AudioSource>();
+            storyAudio.playOnAwake = false;
+            storyAudio.spatialBlend = 0;
+        }
+        if (doorSlamClip == null)
+        {
+            const int rate = 44100;
+            var samples = new float[rate / 2];
+            var random = new System.Random(41);
+            float low = 0;
+            for (int i = 0; i < samples.Length; i++)
+            {
+                float time = i / (float)rate;
+                low = Mathf.Lerp(low, (float)random.NextDouble() * 2 - 1, 0.16f);
+                float body = Mathf.Sin(2 * Mathf.PI * 76 * time) * Mathf.Exp(-time * 19);
+                samples[i] = Mathf.Clamp((low * 1.8f + body * 0.65f) * Mathf.Exp(-time * 12), -1, 1);
+            }
+            doorSlamClip = AudioClip.Create("Door slam", samples.Length, 1, rate, false);
+            doorSlamClip.SetData(samples, 0);
+        }
+        storyAudio.PlayOneShot(doorSlamClip, 0.7f);
+    }
+
     private void TextSkip()
     {
         showingText = currentStory.text;
@@ -284,6 +329,7 @@ public class DialogManager : MonoBehaviour
         GameEventManager.Instance.Submit(evt);
 
         currentStory = null;
+        DialogueFinished?.Invoke(completed);
         if (SceneLoadManager.Instance != null && SceneLoadManager.Instance.NotifyDialogFinished(completed)) return;
         // Keep old data working, but route legacy transitions through the same loader.
         if (completed != null && !string.IsNullOrWhiteSpace(completed.nextSceneName) && SceneLoadManager.Instance != null)

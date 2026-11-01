@@ -27,10 +27,9 @@ public sealed class TutorialEvidenceConclusion : MonoBehaviour
             GameStateManager.Instance == null || GameStateManager.Instance.GameState != GameState.Gameplay) return;
         foreach (var witness in witnesses)
         {
-            if (witness == null || !witness.Ready || witness.completed == null || witness.completionDialog == null ||
+            if (witness == null || !witness.Ready || witness.completed == null ||
                 ConditionManager.Instance.Get(witness.completed) != 0) continue;
-            DialogManager.Instance.ShowDialog(witness.completionDialog);
-            return;
+            ConditionManager.Instance.Set(witness.completed, 1);
         }
         if (bothCompleted != null && bothCompletedDialog != null && ConditionManager.Instance.Get(bothCompleted) == 0 &&
             witnesses.All(witness => witness != null && witness.Ready && witness.completed != null &&
