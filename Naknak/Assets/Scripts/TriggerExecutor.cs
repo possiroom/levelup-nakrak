@@ -126,7 +126,9 @@ public sealed class TriggerExecutor : MonoBehaviour
     {
         if (conditionToEvent == null)
         {
-            Debug.LogWarning("[TriggerExecutor] ConditionToEvent가 없습니다. 대사 후 이벤트를 건너뜁니다.");
+            // Managed tutorial scenes advance through SceneLoadManager, without legacy condition events.
+            if (!SceneLoadManager.HasManagedScene)
+                Debug.LogWarning("[TriggerExecutor] ConditionToEvent가 없습니다. 대사 후 이벤트를 건너뜁니다.");
             return;
         }
 

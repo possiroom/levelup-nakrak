@@ -2769,6 +2769,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 0}
   collected: {fileID: 0}
+  firstMemoryDialog: {fileID: 0}
 --- !u!61 &456713070
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3112,6 +3113,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 0}
   collected: {fileID: 0}
+  firstMemoryDialog: {fileID: 0}
 --- !u!1 &617729648
 GameObject:
   m_ObjectHideFlags: 0
@@ -3407,7 +3409,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.5}
+  m_Offset: {x: 0, y: -0.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -3417,7 +3419,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.7, y: 0.7}
   m_EdgeRadius: 0
 --- !u!212 &647010184
 SpriteRenderer:
@@ -10061,6 +10063,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 0}
   collected: {fileID: 0}
+  firstMemoryDialog: {fileID: 0}
 --- !u!1 &1987371922
 GameObject:
   m_ObjectHideFlags: 0

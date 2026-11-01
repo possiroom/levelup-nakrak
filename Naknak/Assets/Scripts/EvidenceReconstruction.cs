@@ -32,6 +32,8 @@ public sealed class EvidenceReconstruction : MonoBehaviour
     public int TotalEvidence => clips.Length;
     public string[] CompletedEvidence => clips.Where(c => c.observed != null && ConditionManager.Instance != null &&
         ConditionManager.Instance.Get(c.observed) != 0).Select(c =>
+            (GameMenuController.Instance != null ? GameMenuController.Inventory.Find(
+                ConditionManager.Instance.GetPresentedEvidence(c.observed))?.DisplayName : null) ??
             c.evidence.FirstOrDefault(e => e != null && !e.Retired && GameMenuController.Instance != null &&
                 GameMenuController.Inventory.Has(e.Id))?.DisplayName ??
             c.evidence.FirstOrDefault(e => e != null && !e.Retired)?.DisplayName ?? c.label).ToArray();
@@ -72,11 +74,11 @@ public sealed class EvidenceReconstruction : MonoBehaviour
         }
         if (clip.observed == null || clip.beats.Length == 0 || clip.beats.Any(b => b.dialogue == null))
         { Debug.LogError("[Evidence] 아이템별 재현 대사와 완료 조건을 연결해주세요.", this); return true; }
-        StartCoroutine(Replay(clip));
+        StartCoroutine(Replay(clip, item.Id));
         return true;
     }
 
-    private IEnumerator Replay(Clip clip)
+    private IEnumerator Replay(Clip clip, string presentedItemId)
     {
         replaying = true;
         sourceScene = SceneLoadManager.CurrentScenePath;
@@ -110,7 +112,10 @@ public sealed class EvidenceReconstruction : MonoBehaviour
             yield return null;
             while (replaying && DialogManager.Instance != null && DialogManager.Instance.IsDialogOpen) yield return null;
             if (replaying && SceneLoadManager.CurrentScenePath == sourceScene && ConditionManager.Instance != null)
+            {
+                ConditionManager.Instance.RecordPresentedEvidence(clip.observed, presentedItemId);
                 ConditionManager.Instance.Set(clip.observed, 1);
+            }
         }
         finally { Restore(); }
     }

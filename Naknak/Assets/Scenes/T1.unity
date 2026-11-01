@@ -1506,6 +1506,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 0}
   collected: {fileID: 0}
+  firstMemoryDialog: {fileID: 0}
 --- !u!1 &377095769
 GameObject:
   m_ObjectHideFlags: 0
@@ -1690,6 +1691,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 811173035}
   collected: {fileID: 11400000, guid: 554c65f38fd5a0e478eedd4d2df8a509, type: 2}
+  firstMemoryDialog: {fileID: 0}
 --- !u!61 &500452925
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1964,6 +1966,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 1111382021}
   collected: {fileID: 0}
+  firstMemoryDialog: {fileID: 0}
 --- !u!61 &586866155
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3083,6 +3086,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 1891006497}
   collected: {fileID: 11400000, guid: b6fc8c9357fa4722a8586d1b60f61c9e, type: 2}
+  firstMemoryDialog: {fileID: 0}
 --- !u!61 &927157367
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5571,6 +5575,9 @@ MonoBehaviour:
   phonePosition: {x: -4, y: 0}
   trashPosition: {x: 4, y: -3}
   cabinetPosition: {x: 4, y: 4}
+  phoneFacing: {x: -1, y: 0}
+  trashFacing: {x: 0, y: -1}
+  cabinetFacing: {x: 0, y: 1}
 --- !u!4 &1559503876
 Transform:
   m_ObjectHideFlags: 0
@@ -6030,6 +6037,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 0}
   collected: {fileID: 0}
+  firstMemoryDialog: {fileID: 0}
 --- !u!61 &1695141393
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6440,6 +6448,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 1185056665}
   collected: {fileID: 0}
+  firstMemoryDialog: {fileID: 11400000, guid: d92f74f7e526b21428aec373fa6e6a7c, type: 2}
 --- !u!61 &1781903592
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7918,6 +7927,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 126739681}
   collected: {fileID: 11400000, guid: 28198d4eccdfaf44b8b6e5c27f81d8dd, type: 2}
+  firstMemoryDialog: {fileID: 0}
 --- !u!61 &1936489566
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -8067,6 +8077,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 0}
   collected: {fileID: 0}
+  firstMemoryDialog: {fileID: 0}
 --- !u!61 &1972890182
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using Naknak.Inventory;
@@ -21,6 +22,31 @@ public sealed class GameCheckpoint
     public List<ConditionValue> conditions = new List<ConditionValue>();
     public List<WorldObjectState> world = new List<WorldObjectState>();
     public List<MansionCheckpoint> mansions = new List<MansionCheckpoint>();
+
+    public string LocationName
+    {
+        get
+        {
+            var flow = Resources.Load<SceneFlowContainer>("TutorialSceneFlow");
+            string location = scene;
+            if (flow != null && additiveScenes != null)
+                location = additiveScenes.LastOrDefault(name => flow.FindScene(name) != null) ?? scene;
+            switch (location)
+            {
+                case "Tutorial_Prologue": return "탐정 사무소";
+                case "T0": return "조수의 방 · 기억";
+                case "T1": case "T2": return "전당포 · 기억";
+                case "Tutorial_T3_VaseBreak": return "전당포 · 암전된 기억";
+                case "Tutorial_T4_BroochMissing": return "전당포 · 사건 직후의 기억";
+                case "Tutorial_T35_BlackoutSearch": return "전당포 · 암전 수색";
+                case "Tutorial_S6_OwnerConfession": return "전당포 · 주인의 기억";
+                case "Tutorial_PA_Alibi": return "전당포 · A의 동선";
+                case "Tutorial_PB_Alibi": return "전당포 · B의 동선";
+                case "S1": case "S2": case "S3": case "S#6": case "PrototypeScene": return "전당포";
+                default: return location;
+            }
+        }
+    }
 }
 
 [Serializable]
@@ -28,6 +54,7 @@ public sealed class ConditionValue
 {
     public string key;
     public int value;
+    public string presentedItemId;
 }
 
 [Serializable]
@@ -74,6 +101,16 @@ public static class GameCheckpointStore
 
     private static bool TryReadFile(string path, out GameCheckpoint data, out string error)
     {
+        if (TryReadSingleFile(path, out data, out error)) return true;
+        string primaryError = error;
+        if (TryReadSingleFile(path + ".bak", out data, out var backupError))
+        { error = null; return true; }
+        error = primaryError ?? backupError;
+        return false;
+    }
+
+    private static bool TryReadSingleFile(string path, out GameCheckpoint data, out string error)
+    {
         data = null;
         error = null;
         try
@@ -101,6 +138,15 @@ public static class GameCheckpointStore
             data.inventory == null || data.conditions == null || data.world == null ||
             data.mansions == null || data.additiveScenes == null)
             throw new ArgumentException("지원하지 않거나 손상된 저장 파일입니다.");
+        if (data.inventory.Any(item => item == null || string.IsNullOrWhiteSpace(item.itemId) || item.quantity <= 0) ||
+            data.inventory.Select(item => item.itemId).Distinct(StringComparer.Ordinal).Count() != data.inventory.Count ||
+            data.conditions.Any(value => value == null || string.IsNullOrWhiteSpace(value.key)) ||
+            data.world.Any(value => value == null || string.IsNullOrWhiteSpace(value.path)) ||
+            data.mansions.Any(value => value == null || string.IsNullOrWhiteSpace(value.path)) ||
+            data.additiveScenes.Any(string.IsNullOrWhiteSpace))
+            throw new ArgumentException("저장 파일의 아이템 또는 장소 정보가 손상되었습니다.");
+        var configuration = Resources.Load<GameMenuConfiguration>("NaknakMenu");
+        if (configuration != null) new InventoryModel(configuration.items).Restore(data.inventory);
     }
 
     private static bool Finite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);

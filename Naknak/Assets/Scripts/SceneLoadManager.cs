@@ -268,9 +268,11 @@ public sealed class SceneLoadManager : MonoBehaviour
         if (core.isLoaded)
             foreach (var root in core.GetRootGameObjects())
             {
-                foreach (var camera in root.GetComponentsInChildren<Camera>(true)) camera.enabled = contentCamera == null;
+                foreach (var camera in root.GetComponentsInChildren<Camera>(true))
+                    camera.enabled = contentCamera == null && camera.GetComponent<Unity.Cinemachine.CinemachineCamera>() == null;
                 foreach (var listener in root.GetComponentsInChildren<AudioListener>(true)) listener.enabled = contentCamera == null;
             }
+        TutorialCameraFraming.Configure(scene, entry.useSharedCamera);
         var player = FindFirstObjectByType<PlayerMoveController3>(FindObjectsInactive.Include);
         if (player != null)
         {

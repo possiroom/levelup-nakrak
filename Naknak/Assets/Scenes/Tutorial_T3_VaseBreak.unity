@@ -996,9 +996,11 @@ GameObject:
   - component: {fileID: 173764633}
   - component: {fileID: 173764634}
   - component: {fileID: 173764635}
-  m_Layer: 0
+  - component: {fileID: 173764637}
+  - component: {fileID: 173764636}
+  m_Layer: 6
   m_Name: VaseBroken
-  m_TagString: Untagged
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1086,6 +1088,71 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useSpriteBottom: 1
+--- !u!61 &173764636
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 173764632}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1.4, y: 1.4}
+  m_EdgeRadius: 0
+--- !u!114 &173764637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 173764632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7c823595f1e4dc880314d2bd4c63f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  available: {fileID: 11400000, guid: 07b34bf495dc4c2888c7a2b4e4ce7f57, type: 2}
+  inspected: {fileID: 11400000, guid: 25ace061f8d548e4b1a763b56b721b76, type: 2}
+  rewards:
+  - {fileID: 11400000, guid: 4f3381a53ad2d78468212fcf772d50ab, type: 2}
+  firstDialog: {fileID: 11400000, guid: ed5598951ac9433e8a32fad2999082c7, type: 2}
+  repeatDialog: {fileID: 11400000, guid: c0d1e68e596f427e998540203bd3bebe, type: 2}
+  sparkle: {fileID: 0}
 --- !u!1 &175740876
 GameObject:
   m_ObjectHideFlags: 0
@@ -1982,6 +2049,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 0}
   collected: {fileID: 0}
+  firstMemoryDialog: {fileID: 0}
 --- !u!1 &345688002
 GameObject:
   m_ObjectHideFlags: 0
@@ -2050,6 +2118,9 @@ MonoBehaviour:
   phonePosition: {x: -4, y: 0}
   trashPosition: {x: 4, y: -3}
   cabinetPosition: {x: 4, y: 4}
+  phoneFacing: {x: -1, y: 0}
+  trashFacing: {x: 0, y: -1}
+  cabinetFacing: {x: 0, y: 1}
 --- !u!4 &354087032
 Transform:
   m_ObjectHideFlags: 0
@@ -2271,6 +2342,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 1829195564}
   collected: {fileID: 0}
+  firstMemoryDialog: {fileID: 11400000, guid: d92f74f7e526b21428aec373fa6e6a7c, type: 2}
 --- !u!61 &516673945
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -9035,6 +9107,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 0}
   collected: {fileID: 0}
+  firstMemoryDialog: {fileID: 0}
 --- !u!61 &1199624907
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -9069,7 +9142,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.5}
+  m_Offset: {x: 0, y: -0.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -9079,7 +9152,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.7, y: 0.7}
   m_EdgeRadius: 0
 --- !u!212 &1199624908
 SpriteRenderer:
@@ -9510,6 +9583,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 0}
   collected: {fileID: 0}
+  firstMemoryDialog: {fileID: 0}
 --- !u!61 &1290369493
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -9544,7 +9618,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.5}
+  m_Offset: {x: 0, y: -0.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -9554,7 +9628,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.7, y: 0.7}
   m_EdgeRadius: 0
 --- !u!212 &1290369494
 SpriteRenderer:
@@ -12686,6 +12760,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 1618332649}
   collected: {fileID: 0}
+  firstMemoryDialog: {fileID: 0}
 --- !u!61 &1780864051
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -13641,6 +13716,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 871325604}
   collected: {fileID: 11400000, guid: 28198d4eccdfaf44b8b6e5c27f81d8dd, type: 2}
+  firstMemoryDialog: {fileID: 0}
 --- !u!61 &2007992766
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -13864,6 +13940,7 @@ MonoBehaviour:
     connectionId: 
   sparkle: {fileID: 1032628291}
   collected: {fileID: 11400000, guid: b6fc8c9357fa4722a8586d1b60f61c9e, type: 2}
+  firstMemoryDialog: {fileID: 0}
 --- !u!61 &2106296586
 BoxCollider2D:
   m_ObjectHideFlags: 0

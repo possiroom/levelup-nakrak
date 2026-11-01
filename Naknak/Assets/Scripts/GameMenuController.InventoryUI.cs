@@ -82,7 +82,10 @@ public sealed partial class GameMenuController
                     new Vector2(.19f, .29f), new Vector2(.81f, .93f)).GetComponent<Image>();
                 icon.sprite = item.Icon; icon.preserveAspect = true; icon.raycastTarget = false;
                 if (item.Icon == null && !item.HideIconPlaceholder) Label(slot, "◇", 32, new Vector2(.2f, .3f), new Vector2(.8f, .9f), TextAlignmentOptions.Center);
-                Label(slot, item.DisplayName, 18, new Vector2(.04f, .03f), new Vector2(.96f, .27f), TextAlignmentOptions.Center);
+                var nameLabel = Label(slot, item.DisplayName, 18, new Vector2(.04f, .01f), new Vector2(.96f, .28f), TextAlignmentOptions.Center);
+                nameLabel.enableAutoSizing = true;
+                nameLabel.fontSizeMin = 8;
+                nameLabel.fontSizeMax = 18;
                 Label(slot, "×" + inventory.Count(item.Id), 17, new Vector2(.65f, .74f), new Vector2(.94f, .96f), TextAlignmentOptions.TopRight);
             }
             else slot = Box(content, "Empty Slot", new Color(0, 0, 0, .12f), Vector2.zero, Vector2.one, true);

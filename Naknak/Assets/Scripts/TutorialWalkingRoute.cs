@@ -19,7 +19,8 @@ public static class TutorialWalkingRoute
         var maps = nodes.Select(t => t.GetComponent<Tilemap>()).Where(m => m != null && m.gameObject.activeInHierarchy).ToArray();
         var walls = maps.Where(m => m.GetComponent<Collider2D>() != null).ToArray();
         var floor = maps.FirstOrDefault(m => m.name == "Tilemap" && m.GetComponent<Collider2D>() == null);
-        var people = nodes.Where(t => t.GetComponent<NPC>() != null || t.GetComponent<EvidenceReconstruction>() != null).ToList();
+        var people = nodes.Where(t => t.GetComponent<NPC>() != null && t.GetComponent<NPC>().enabled ||
+            t.GetComponent<EvidenceReconstruction>() != null).ToList();
         people.AddRange(Object.FindObjectsByType<PlayerMoveController3>(FindObjectsSortMode.None).Select(p => p.transform));
         people = people.Where(p => p != actor && !p.IsChildOf(actor) &&
             (includeInactivePeople || p.gameObject.activeInHierarchy)).Distinct().ToList();

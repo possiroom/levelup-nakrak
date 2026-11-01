@@ -13,9 +13,13 @@ MonoBehaviour:
   m_Name: WatchFound
   m_EditorClassIdentifier: 
   charName: 
-  text: "\uCE74\uC6B4\uD130 \uB4A4\uC5D0\uC11C \uC624\uB798\uB41C \uD68C\uC911\uC2DC\uACC4\uB97C
-    \uBC1C\uACAC\uD588\uB2E4."
-  activatedImage: 0
+  text: "\uCE74\uC6B4\uD130 \uB4A4\uC5D0 \uC624\uB798\uB41C \uD68C\uC911\uC2DC\uACC4\uAC00
+    \uB193\uC5EC \uC788\uB2E4. \uD310\uB9E4 \uACBD\uC704\uB294 A\uC5D0\uAC8C \uD655\uC778\uD574
+    \uBCF4\uC790."
+  portrait: {fileID: 0}
+  doorSlam: 0
+  autoAdvanceAfter: 0
+  activatedImage: -1
   isSelect: 0
   isEnd: 1
   selects: []

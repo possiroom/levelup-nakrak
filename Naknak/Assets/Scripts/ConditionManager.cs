@@ -46,6 +46,7 @@ public class ConditionManager : MonoBehaviour
     public static ConditionManager Instance;
 
     private Dictionary<string, int> variables = new Dictionary<string, int>();
+    private readonly Dictionary<string, string> presentedEvidence = new Dictionary<string, string>();
     private string SavePath => Path.Combine(Application.persistentDataPath, "Naknak", "StoryVariables.csv");
 
     // Singleton
@@ -63,6 +64,7 @@ public class ConditionManager : MonoBehaviour
     {
         if (id == null) return;
         variables[id.name] = value;
+        if (value == 0) presentedEvidence.Remove(id.name);
         Debug.Log("[ConditionManager] Set: " + id.name + " = " + value);
     }
 
@@ -84,6 +86,15 @@ public class ConditionManager : MonoBehaviour
     {
         if (id != null && variables.ContainsKey(id.name)) return variables[id.name];
         return 0; 
+    }
+
+    public string GetPresentedEvidence(ConditionID observed) => observed != null &&
+        presentedEvidence.TryGetValue(observed.name, out var itemId) ? itemId : null;
+
+    public void RecordPresentedEvidence(ConditionID observed, string itemId)
+    {
+        if (observed != null && !string.IsNullOrEmpty(itemId) && Get(observed) == 0)
+            presentedEvidence[observed.name] = itemId;
     }
 
     // Condition 커맨드 실행
@@ -153,21 +164,29 @@ public class ConditionManager : MonoBehaviour
     public List<ConditionValue> CaptureValues()
     {
         var result = new List<ConditionValue>();
-        foreach (var pair in variables) result.Add(new ConditionValue { key = pair.Key, value = pair.Value });
+        foreach (var pair in variables) result.Add(new ConditionValue { key = pair.Key, value = pair.Value,
+            presentedItemId = presentedEvidence.TryGetValue(pair.Key, out var item) ? item : null });
         return result;
     }
 
     public void RestoreValues(List<ConditionValue> values)
     {
         variables.Clear();
+        presentedEvidence.Clear();
         if (values == null) return;
         foreach (var value in values)
-            if (value != null && !string.IsNullOrWhiteSpace(value.key)) variables[value.key] = value.value;
+            if (value != null && !string.IsNullOrWhiteSpace(value.key))
+            {
+                variables[value.key] = value.value;
+                if (value.value != 0 && !string.IsNullOrEmpty(value.presentedItemId))
+                    presentedEvidence[value.key] = value.presentedItemId;
+            }
     }
 
     public void ResetForNewGame()
     {
         variables.Clear();
+        presentedEvidence.Clear();
         var defaults = Resources.Load<TextAsset>("DefaultStoryVariables");
         if (defaults == null) return;
         foreach (string line in defaults.text.Split('\n'))
@@ -180,6 +199,7 @@ public class ConditionManager : MonoBehaviour
     public void LoadFromCSV()
     {
         variables.Clear();
+        presentedEvidence.Clear();
         if (!File.Exists(SavePath)) { ResetForNewGame(); return; }
 
         string[] lines = File.ReadAllLines(SavePath);

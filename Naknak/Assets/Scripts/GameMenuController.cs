@@ -276,6 +276,22 @@ public sealed partial class GameMenuController : MonoBehaviour
     private IEnumerator ChangeSession(string sceneName, GameCheckpoint checkpoint)
     {
         if (!Application.CanStreamedLevelBeLoaded(sceneName)) { Notice("시작할 씬을 찾을 수 없습니다."); yield break; }
+        string validationError = null;
+        if (checkpoint != null)
+        {
+            try
+            {
+                GameCheckpointStore.Validate(checkpoint);
+                new InventoryModel(configuration.items).Restore(checkpoint.inventory);
+                foreach (string extra in checkpoint.additiveScenes)
+                    if (!Application.CanStreamedLevelBeLoaded(extra))
+                        throw new ArgumentException("저장된 맵을 찾을 수 없습니다.");
+            }
+            catch (Exception exception) when (exception is ArgumentException || exception is InvalidOperationException)
+            { validationError = "저장 파일을 불러올 수 없습니다. 아이템 또는 장소 정보가 올바르지 않습니다."; }
+        }
+        // Validate before unloading the current session or taking its input lock.
+        if (validationError != null) { Notice(validationError); yield break; }
         completionSavePending = false;
         SceneLoadManager.IsRestoringSession = checkpoint != null;
         loading = true;

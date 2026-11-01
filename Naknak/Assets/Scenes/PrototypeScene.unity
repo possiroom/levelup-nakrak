@@ -860,7 +860,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 487623906}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
@@ -3566,6 +3566,8 @@ MonoBehaviour:
   endmark: {fileID: 567082118}
   darker: 0.5
   blinkSpeed: 0.5
+  portraitScreenHeight: 0.56
+  portraitScreenWidth: 0.28
 --- !u!1 &1773338473
 GameObject:
   m_ObjectHideFlags: 0

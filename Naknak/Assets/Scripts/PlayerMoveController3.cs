@@ -187,7 +187,7 @@ public class PlayerMoveController3 : MonoBehaviour
                     Debug.Log("[PlayerMoveController3] Interact : " + hit.collider.name);
                     var point = hit.collider.GetComponent<InvestigationPoint>();
                     if (SceneLoadManager.IsFirstMemoryVisit &&
-                        (point != null || hit.collider.GetComponent<MemoryInvestigationPoint>() != null)) return;
+                        (point != null && !point.HasFirstMemoryFeedback || hit.collider.GetComponent<MemoryInvestigationPoint>() != null)) return;
                     var npc = hit.collider.GetComponent<NPC>();
                     if (SceneLoadManager.IsFirstMemoryVisit && npc != null && !npc.AllowDuringFirstMemory) return;
                     if (point != null) point.Interact();

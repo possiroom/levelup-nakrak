@@ -2,8 +2,12 @@ Shader "Custom/VisionDesaturateWorld"
 {
     Properties
     {
-        _MainTex ("Sprite Texture", 2D) = "white" {}
+        [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1, 1, 1, 1)
+        [HideInInspector] _RendererColor ("Renderer Color", Color) = (1, 1, 1, 1)
+        [HideInInspector] _Flip ("Flip", Vector) = (1, 1, 1, 1)
+        [PerRendererData] _AlphaTex ("External Alpha", 2D) = "white" {}
+        [PerRendererData] _EnableExternalAlpha ("Enable External Alpha", Float) = 0
         _VisionCenter ("Vision Center", Vector) = (0, 0, 0, 0)
         _Radius ("Radius", Float) = 2.1
         _Softness ("Softness", Float) = 0.8
@@ -34,10 +38,10 @@ Shader "Custom/VisionDesaturateWorld"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "UnityCG.cginc"
+            #pragma multi_compile_instancing
+            #pragma multi_compile _ ETC1_EXTERNAL_ALPHA
+            #include "UnitySprites.cginc"
 
-            sampler2D _MainTex;
-            fixed4 _Color;
             float4 _VisionCenter;
             float _Radius;
             float _Softness;
@@ -47,19 +51,13 @@ Shader "Custom/VisionDesaturateWorld"
             float _NoiseScale;
             float _TimeValue;
 
-            struct appdata
-            {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-                fixed4 color : COLOR;
-            };
-
-            struct v2f
+            struct vision_v2f
             {
                 float4 vertex : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 fixed4 color : COLOR;
                 float3 worldPos : TEXCOORD1;
+                UNITY_VERTEX_OUTPUT_STEREO
             };
 
             float hash21(float2 p)
@@ -69,19 +67,22 @@ Shader "Custom/VisionDesaturateWorld"
                 return frac(p.x * p.y);
             }
 
-            v2f vert(appdata v)
+            vision_v2f vert(appdata_t v)
             {
-                v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;
-                o.color = v.color * _Color;
-                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                vision_v2f o;
+                UNITY_SETUP_INSTANCE_ID(v);
+                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+                float4 position = UnityFlipSprite(v.vertex, _Flip);
+                o.vertex = UnityObjectToClipPos(position);
+                o.uv = v.texcoord;
+                o.color = v.color * _Color * _RendererColor;
+                o.worldPos = mul(unity_ObjectToWorld, position).xyz;
                 return o;
             }
 
-            fixed4 frag(v2f i) : SV_Target
+            fixed4 frag(vision_v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv) * i.color;
+                fixed4 col = SampleSpriteTexture(i.uv) * i.color;
 
                 float dist = distance(i.worldPos.xy, _VisionCenter.xy);
                 float noise = (hash21(i.worldPos.xy * _NoiseScale + _TimeValue) * 2.0 - 1.0) * _NoisePower;

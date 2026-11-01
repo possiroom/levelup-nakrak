@@ -194,7 +194,7 @@ public sealed partial class GameMenuController
             if (valid)
             {
                 DateTimeOffset.TryParse(data.savedAt, out var date);
-                text += date.ToLocalTime().ToString("yyyy.MM.dd  HH:mm") + "\n" + data.scene + "    " + TimeSpan.FromSeconds(data.playSeconds).ToString(@"hh\:mm\:ss");
+                text += date.ToLocalTime().ToString("yyyy.MM.dd  HH:mm") + "\n" + data.LocationName + "    " + TimeSpan.FromSeconds(data.playSeconds).ToString(@"hh\:mm\:ss");
             }
             else text += error == null ? "비어 있음" : "읽을 수 없는 기록";
             float top = (saving ? 0.71f : 0.65f) - (slot - 1) * 0.155f;

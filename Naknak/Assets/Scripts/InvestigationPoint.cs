@@ -32,7 +32,10 @@ public sealed class InvestigationPoint : MonoBehaviour, IInteractable
     [SerializeField] private Rule[] rules = Array.Empty<Rule>();
     [SerializeField] private SpriteRenderer sparkle;
     [SerializeField] private ConditionID collected;
+    [Tooltip("Optional feedback when investigation is still locked on the first memory visit.")]
+    [SerializeField] private StoryData firstMemoryDialog;
     private bool busy;
+    public bool HasFirstMemoryFeedback => firstMemoryDialog != null;
 
     private void Update()
     {
@@ -56,9 +59,14 @@ public sealed class InvestigationPoint : MonoBehaviour, IInteractable
         if (busy || GameMenuController.Instance == null || ConditionManager.Instance == null ||
             DialogManager.Instance == null || !DialogManager.Instance.CanShowDialog ||
             GameMenuController.IsBlockingGameplay || SceneLoadManager.IsPreparingMemory || SceneLoadManager.IsRestoringSession ||
-            SceneLoadManager.IsCutscene || SceneLoadManager.IsFirstMemoryVisit || DialogManager.Instance.IsDialogOpen ||
+            SceneLoadManager.IsCutscene || DialogManager.Instance.IsDialogOpen ||
             memoryOnly && !SceneLoadManager.IsMemorySpace ||
             GameStateManager.Instance != null && GameStateManager.Instance.GameState != GameState.Gameplay) return;
+        if (SceneLoadManager.IsFirstMemoryVisit)
+        {
+            if (!evidence && firstMemoryDialog != null) Explain(firstMemoryDialog);
+            return;
+        }
         var inventory = GameMenuController.Inventory;
         var reconstruction = GetComponent<EvidenceReconstruction>();
         if (reconstruction != null && SceneLoadManager.IsMemoryRevisit)
@@ -154,6 +162,7 @@ public sealed class InvestigationPoint : MonoBehaviour, IInteractable
         foreach (var item in rule.rewards)
         {
             if (item == null) { Debug.LogError("[Investigation] Missing reward asset: " + name, this); return; }
+            if (item.Retired) continue;
             if (!inventory.Has(item.Id)) rewards.Add(new InventoryEntry(item.Id, 1));
         }
         if (!inventory.TryAddAll(rewards)) return;
