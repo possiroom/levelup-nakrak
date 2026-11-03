@@ -71,10 +71,35 @@ public sealed class InvestigationPoint : MonoBehaviour, IInteractable
         var reconstruction = GetComponent<EvidenceReconstruction>();
         if (reconstruction != null && SceneLoadManager.IsMemoryRevisit)
         {
+            var memoryFlow = flow != null ? flow : Resources.Load<SceneFlowContainer>("TutorialSceneFlow");
+            int visit = ConditionManager.Instance.Get(memoryFlow != null ? memoryFlow.memoryVisitCount : null);
+            bool firstInvestigation = !ConditionManager.Instance.HasInvestigatedWitness(name, visit);
             var presentation = rules.FirstOrDefault(r => r != null && r.presentEvidence && SceneFlowContainer.Passes(r.conditions));
-            if (presentation != null)
+            if (presentation != null || firstInvestigation)
             {
-                if (reconstruction.ReadyForConclusion)
+                if (firstInvestigation)
+                {
+                    // Even an explicit presentation input must not skip the first
+                    // investigation and its reward/tutorial dialogue this loop.
+                    var investigation = rules.FirstOrDefault(r => r != null && !r.presentEvidence && r.rewards.Length > 0 &&
+                        SceneFlowContainer.Passes(r.conditions) && HasRequiredEvidence(r, inventory));
+                    // Collection flags may survive an earlier loop. Reuse the
+                    // configured reward dialogue without granting duplicate items.
+                    if (investigation == null)
+                        investigation = rules.FirstOrDefault(r => r != null && !r.presentEvidence && r.rewards.Length > 0 &&
+                            HasRequiredEvidence(r, inventory));
+                    if (investigation != null)
+                    {
+                        var items = investigation.rewards.Where(item => item != null && !item.Retired).ToArray();
+                        var rewards = items.Where(item => !inventory.Has(item.Id)).Select(item => new InventoryEntry(item.Id, 1)).ToArray();
+                        if (!inventory.TryAddAll(rewards)) return;
+                        ConditionManager.Instance.ExecuteActions(investigation.actions);
+                        ConditionManager.Instance.MarkWitnessInvestigated(name, visit);
+                        StartCoroutine(WitnessIntroduction(investigation, items));
+                        return;
+                    }
+                }
+                if (presentation != null && reconstruction.ReadyForConclusion)
                 { Explain(reconstruction.CompletionDialog); return; }
                 // Inspecting the witness still collects their physical evidence before opening selection.
                 foreach (var rule in rules)
@@ -86,8 +111,11 @@ public sealed class InvestigationPoint : MonoBehaviour, IInteractable
                     if (inventory.TryAddAll(rewards)) ConditionManager.Instance.ExecuteActions(rule.actions);
                     break;
                 }
-                BeginEvidencePresentation(presentation);
-                return;
+                if (presentation != null)
+                {
+                    BeginEvidencePresentation(presentation);
+                    return;
+                }
             }
         }
         // Full conclusions are sequenced only after BOTH witnesses' evidence is resolved.
@@ -109,6 +137,25 @@ public sealed class InvestigationPoint : MonoBehaviour, IInteractable
     private static bool HasRequiredEvidence(Rule rule, InventoryModel inventory) =>
         rule.requiredItems.All(item => item != null && inventory.Has(item.Id)) &&
         (rule.anyItems.Length == 0 || rule.anyItems.Any(item => item != null && inventory.Has(item.Id)));
+
+    private IEnumerator WitnessIntroduction(Rule investigation, InventoryItem[] items)
+    {
+        var found = ScriptableObject.CreateInstance<StoryData>();
+        var hint = ScriptableObject.CreateInstance<StoryData>();
+        found.name = name + "_FirstInvestigation";
+        string itemNames = string.Join(", ", items.Select(item => item.DisplayName));
+        char last = itemNames.Length > 0 ? itemNames[itemNames.Length - 1] : '\0';
+        bool finalConsonant = last >= '가' && last <= '힣' && (last - '가') % 28 != 0;
+        found.text = name + "를 조사했다. " + itemNames + (finalConsonant ? "을" : "를") + " 획득했다.";
+        if (investigation.dialogue != null)
+            found.endActions = new List<DialogAction>(investigation.dialogue.endActions);
+        found.nextData = hint;
+        hint.name = name + "_EvidenceIntroduction";
+        hint.text = "증거를 제시해 " + name + "의 동선을 파악해보자.";
+        hint.isEnd = true;
+        try { yield return Talk(new Rule { dialogue = found }); }
+        finally { Destroy(found); Destroy(hint); }
+    }
 
     private void BeginEvidencePresentation(Rule rule)
     {

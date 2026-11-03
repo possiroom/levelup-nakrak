@@ -62882,18 +62882,13 @@ MonoBehaviour:
     leftDoor: 7
     rightDoor: 3
   teleportDelay: 0.05
-  roomFadePanel: {fileID: 0}
-  roomFadeTime: 0.5
   showOnlyCurrentRoom: 1
+  roomTransitionTestEffects: {fileID: 0}
   debugPhaseHotkeys: 1
   fireRoomOrder: 010000000200000003000000040000000500000006000000
   fireVisualPrefab: {fileID: 2402737115054501866, guid: 4a1901c5c62361d4d800964d1572dd08, type: 3}
   deletedVisualPrefab: {fileID: 3221004443427073107, guid: a1e95abfdc517cf4b8ea697d48541097, type: 3}
   visualRoot: {fileID: 0}
-  upDoorTrigger: {fileID: 0}
-  downDoorTrigger: {fileID: 0}
-  leftDoorTrigger: {fileID: 0}
-  rightDoorTrigger: {fileID: 0}
 --- !u!1 &7265364020867156635
 GameObject:
   m_ObjectHideFlags: 0
@@ -159606,6 +159601,7 @@ MonoBehaviour:
   playerRoomID: 2
   enemyRoomID: 5
   debuff: 0
+  isEnemyEvent: 0
 --- !u!1 &9185353086916133591
 GameObject:
   m_ObjectHideFlags: 0

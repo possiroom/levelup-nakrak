@@ -1,0 +1,11 @@
+Stable T2 reachability; grid cells=83
+REACHABLE Trash Can approaches=1
+REACHABLE A approaches=2
+REACHABLE Counter Watch approaches=1
+REACHABLE Owner approaches=2
+REACHABLE Vase Toy approaches=1
+REACHABLE phone approaches=1
+REACHABLE Unremembered Back Door approaches=1
+REACHABLE B approaches=3
+REACHABLE Memory Exit approaches=1
+REACHABLE Cabinet Number 2 approaches=1

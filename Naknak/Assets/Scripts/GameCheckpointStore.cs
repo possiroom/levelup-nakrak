@@ -151,6 +151,18 @@ public static class GameCheckpointStore
 
     private static bool Finite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
 
+    // Virus scanners and cloud sync can briefly hold a save during replacement.
+    // Retry the individual operation so history is never rotated more than once.
+    private static void RetryFileOperation(Action operation)
+    {
+        for (int attempt = 0; ; attempt++)
+        {
+            try { operation(); return; }
+            catch (IOException) when (attempt < 4)
+            { System.Threading.Thread.Sleep(20 << attempt); }
+        }
+    }
+
     public static void WriteManual(int slot, GameCheckpoint data, string saveDirectory = null)
     {
         string path = ManualSlotPath(slot, saveDirectory);
@@ -159,13 +171,14 @@ public static class GameCheckpointStore
         string pending = path + ".tmp";
         try
         {
-            File.WriteAllText(pending, JsonUtility.ToJson(data, true), Encoding.UTF8);
-            if (File.Exists(path)) File.Replace(pending, path, path + ".bak");
-            else File.Move(pending, path);
+            string json = JsonUtility.ToJson(data, true);
+            RetryFileOperation(() => File.WriteAllText(pending, json, Encoding.UTF8));
+            if (File.Exists(path)) RetryFileOperation(() => File.Replace(pending, path, path + ".bak"));
+            else RetryFileOperation(() => File.Move(pending, path));
         }
         finally
         {
-            if (File.Exists(pending)) File.Delete(pending);
+            if (File.Exists(pending)) RetryFileOperation(() => File.Delete(pending));
         }
     }
 
@@ -175,15 +188,17 @@ public static class GameCheckpointStore
         Directory.CreateDirectory(saveDirectory ?? DirectoryPath);
         // Write and flush a complete new checkpoint before replacing the current slot.
         string pending = SlotPath(1, saveDirectory) + ".tmp";
-        File.WriteAllText(pending, JsonUtility.ToJson(data, true), Encoding.UTF8);
+        string json = JsonUtility.ToJson(data, true);
+        RetryFileOperation(() => File.WriteAllText(pending, json, Encoding.UTF8));
         string first = SlotPath(1, saveDirectory);
         // History changes only after the new file is complete. Never delete a user's saves on new game.
-        if (File.Exists(SlotPath(2, saveDirectory))) File.Copy(SlotPath(2, saveDirectory), SlotPath(3, saveDirectory), true);
+        if (File.Exists(SlotPath(2, saveDirectory)))
+            RetryFileOperation(() => File.Copy(SlotPath(2, saveDirectory), SlotPath(3, saveDirectory), true));
         if (File.Exists(first))
         {
-            File.Copy(first, SlotPath(2, saveDirectory), true);
-            File.Replace(pending, first, null);
+            RetryFileOperation(() => File.Copy(first, SlotPath(2, saveDirectory), true));
+            RetryFileOperation(() => File.Replace(pending, first, null));
         }
-        else File.Move(pending, first);
+        else RetryFileOperation(() => File.Move(pending, first));
     }
 }

@@ -102,7 +102,7 @@ public sealed partial class GameMenuController : MonoBehaviour
         if (page == Page.Closed)
         {
             playSeconds += Time.deltaTime;
-            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.I))
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.I))
             {
                 var player = FindFirstObjectByType<PlayerMoveController3>();
                 if (GameStateManager.Instance != null && GameStateManager.Instance.GameState != GameState.Gameplay) return;

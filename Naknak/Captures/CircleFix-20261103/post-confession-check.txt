@@ -1,0 +1,2 @@
+Owner: PASS, first rule requires OwnerConfessed=1; correct final dialogue; rule count=3
+B: PASS, first rule requires OwnerConfessed=1; correct final dialogue; rule count=1

@@ -1,0 +1,1 @@
+PASS: T0 pointer click opens Options; exactly one active EventSystem; resume works.

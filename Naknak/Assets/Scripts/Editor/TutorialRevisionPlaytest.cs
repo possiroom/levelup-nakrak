@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>Explicit Play-mode regression checks. Disables autosave while exercising tutorial transitions.</summary>
-public static class TutorialRevisionPlaytest
+public static partial class TutorialRevisionPlaytest
 {
     public static bool Running { get; private set; }
     public static string Result { get; private set; }
@@ -46,6 +46,126 @@ public static class TutorialRevisionPlaytest
         SceneLoadManager.Instance.StartCoroutine(Guarded(RunDepth(), false));
     }
 
+    public static void BeginSystems()
+    {
+        if (!EditorApplication.isPlaying || Running) throw new InvalidOperationException("Enter Play mode first.");
+        Passed.Clear(); Result = "Running"; Running = true;
+        Menu.enabled = false;
+        SceneLoadManager.Instance.StartCoroutine(Guarded(RunSystems(), false));
+    }
+
+    private static void ShowMenuPage(string page)
+    {
+        var pageType = typeof(GameMenuController).GetField("page", Private).FieldType;
+        typeof(GameMenuController).GetMethod("ShowPage", Private).Invoke(Menu, new[] { Enum.Parse(pageType, page) });
+    }
+
+    private static IEnumerator RunSystems()
+    {
+        if (!SceneManager.GetSceneByName("PrototypeScene").isLoaded)
+            yield return SceneManager.LoadSceneAsync("PrototypeScene", LoadSceneMode.Additive);
+        typeof(GameMenuController).GetMethod("Resume", Private).Invoke(Menu, null);
+        yield return CloseDialog();
+        ConditionManager.Instance.ResetForNewGame();
+        foreach (var name in new[] { "T0", "T1", "T2", "S3" })
+        {
+            yield return SceneLoadManager.Instance.LoadContent(name);
+            yield return Wait(() => !SceneLoadManager.IsLoading, name + " camera ready");
+            yield return CloseDialog();
+            var player = UnityEngine.Object.FindFirstObjectByType<PlayerMoveController3>();
+            var camera = SceneManager.GetSceneByName("PrototypeScene").GetRootGameObjects()
+                .SelectMany(r => r.GetComponentsInChildren<Unity.Cinemachine.CinemachineCamera>(true)).First();
+            Check(camera.Follow == player.transform, name + " camera follows controlled player");
+            Check(!UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsSortMode.None).Any(t => t.name == "Room Camera Bounds"),
+                name + " has no generated room bounds");
+            float size = camera.Lens.OrthographicSize;
+            Check(size > 0 && !float.IsNaN(size), name + " has a finite positive camera size");
+            if (name == "T0")
+            {
+                var flow = Resources.Load<SceneFlowContainer>("TutorialSceneFlow");
+                Check(player.GetComponent<Animator>().runtimeAnimatorController == flow.assistantPlayerController,
+                    "First-memory controlled actor uses assistant animation");
+                var original = player.transform.position;
+                player.TeleportToWorld((Vector2)original + Vector2.right * 2);
+                float deadline = Time.realtimeSinceStartup + 2;
+                while (Time.realtimeSinceStartup < deadline) yield return null;
+                var output = Camera.main;
+                var viewport = output.WorldToViewportPoint(player.transform.position);
+                Check(viewport.z > 0 && viewport.x > .15f && viewport.x < .85f && viewport.y > .15f && viewport.y < .85f,
+                    "Camera keeps moving assistant on screen");
+                Check(Mathf.Approximately(size, camera.Lens.OrthographicSize), "Walking does not change gameplay zoom");
+                SceneLoadManager.Instance.SetPlayerInputLocked(true);
+                var focus = new GameObject("Camera regression cutscene focus");
+                camera.Follow = focus.transform;
+                SceneLoadManager.Instance.SetPlayerInputLocked(false);
+                Check(camera.Follow == player.transform, "Releasing cutscene restores player camera follow");
+                UnityEngine.Object.Destroy(focus);
+                player.TeleportToWorld(original);
+            }
+        }
+        typeof(GameMenuController).GetMethod("Pause", Private).Invoke(Menu, null);
+        foreach (string page in new[] { "Title", "Options", "Title", "Load", "Title", "Menu", "Items", "Save", "Menu", "Options", "Title" })
+        {
+            ShowMenuPage(page);
+            yield return null; yield return null;
+            var panel = (RectTransform)typeof(GameMenuController).GetField("panel", Private).GetValue(Menu);
+            Check(panel.Find("Border") != null, page + " page preserves persistent window border");
+            if (page == "Title")
+            {
+                var art = panel.GetComponentInChildren<UnityEngine.UI.RawImage>();
+                Check(art != null && art.texture != null, "Title loads requested artwork");
+                var buttons = (List<UnityEngine.UI.Button>)typeof(GameMenuController).GetField("buttons", Private).GetValue(Menu);
+                Check(buttons.Count == 4 && ((RectTransform)buttons[0].transform).anchorMin.x < ((RectTransform)buttons[3].transform).anchorMin.x,
+                    "Title has four horizontally arranged commands");
+            }
+        }
+        typeof(GameMenuController).GetMethod("Resume", Private).Invoke(Menu, null);
+        Check(Time.timeScale > 0 && !GameMenuController.IsBlockingGameplay, "Closing menu restores gameplay and time");
+        var actor = UnityEngine.Object.FindFirstObjectByType<PlayerMoveController3>();
+        var checkpoint = (GameCheckpoint)typeof(GameMenuController).GetMethod("CaptureCheckpoint", Private).Invoke(Menu, new object[] { actor });
+        string directory = System.IO.Path.GetFullPath("Captures/Regression-20261102/saves-" + Guid.NewGuid().ToString("N"));
+        var retry = typeof(GameCheckpointStore).GetMethod("RetryFileOperation", BindingFlags.Static | BindingFlags.NonPublic);
+        int attempts = 0;
+        Action temporaryLock = () => { attempts++; if (attempts < 3) throw new System.IO.IOException("Test transient lock"); };
+        retry.Invoke(null, new object[] { temporaryLock });
+        Check(attempts == 3, "Temporary file failure is retried until success");
+        attempts = 0;
+        Action permanentLock = () => { attempts++; throw new System.IO.IOException("Test persistent lock"); };
+        bool bounded = false;
+        try { retry.Invoke(null, new object[] { permanentLock }); }
+        catch (TargetInvocationException exception) when (exception.InnerException is System.IO.IOException) { bounded = true; }
+        Check(bounded && attempts == 5, "Persistent file failure stops after bounded retries");
+        for (int slot = 1; slot <= GameCheckpointStore.SlotCount; slot++)
+        {
+            GameCheckpointStore.WriteManual(slot, checkpoint, directory);
+            Check(GameCheckpointStore.TryReadManual(slot, out var saved, out _, directory) && saved.position == checkpoint.position,
+                "Manual save roundtrip slot " + slot);
+        }
+        var lockedFile = new System.IO.FileStream(GameCheckpointStore.ManualSlotPath(1, directory),
+            System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.None);
+        var release = System.Threading.Tasks.Task.Run(() => { System.Threading.Thread.Sleep(80); lockedFile.Dispose(); });
+        checkpoint.playSeconds = 99;
+        try { GameCheckpointStore.WriteManual(1, checkpoint, directory); }
+        finally { release.Wait(); }
+        Check(GameCheckpointStore.TryReadManual(1, out var unlocked, out _, directory) && unlocked.playSeconds == 99,
+            "Manual save succeeds after a real exclusive file lock is released");
+        for (int i = 0; i < 4; i++) { checkpoint.playSeconds = i; GameCheckpointStore.Write(checkpoint, directory); }
+        for (int slot = 1; slot <= 3; slot++)
+            Check(GameCheckpointStore.TryRead(slot, out var saved, out _, directory) && saved.playSeconds == 4 - slot,
+                "Autosave rotation slot " + slot);
+        GameCheckpointStore.WriteManual(1, checkpoint, directory);
+        System.IO.File.WriteAllText(GameCheckpointStore.ManualSlotPath(1, directory), "{broken json");
+        Check(GameCheckpointStore.TryReadManual(1, out _, out _, directory), "Corrupted primary recovers manual backup");
+        System.IO.File.WriteAllText(GameCheckpointStore.SlotPath(3, directory), "{broken json");
+        Check(!GameCheckpointStore.TryRead(3, out _, out var error, directory) && error != null, "Corrupted save is rejected without crashing");
+        var expectedPosition = checkpoint.position;
+        yield return (IEnumerator)typeof(GameMenuController).GetMethod("ChangeSession", Private).Invoke(Menu, new object[] { checkpoint.scene, checkpoint });
+        yield return Wait(() => !SceneLoadManager.IsLoading && !SceneLoadManager.IsRestoringSession, "Session restore ready");
+        actor = UnityEngine.Object.FindFirstObjectByType<PlayerMoveController3>();
+        Check(actor != null && Vector3.Distance(actor.transform.position, expectedPosition) < .01f, "Session load restores player position");
+        Check(Scene == "S3", "Session load restores additive story scene");
+    }
+
     private static IEnumerator RunDepth()
     {
         if (!SceneManager.GetSceneByName("PrototypeScene").isLoaded)
@@ -56,6 +176,8 @@ public static class TutorialRevisionPlaytest
         GameStateManager.Instance.ChangeGameState(GameState.Gameplay);
         yield return SceneLoadManager.Instance.LoadContent("T2");
         yield return Wait(() => Scene == "T2" && !SceneLoadManager.IsLoading, "Depth preview shop");
+        yield return null; yield return null;
+        Physics2D.SyncTransforms();
         SceneLoadManager.Instance.SetPlayerInputLocked(true);
         var player = UnityEngine.Object.FindFirstObjectByType<PlayerMoveController3>();
         var sprite = player.GetComponent<SpriteRenderer>();
@@ -124,6 +246,8 @@ public static class TutorialRevisionPlaytest
         }
         finally
         {
+            while (stack.Count > 0)
+                if (stack.Pop() is IDisposable cleanup) cleanup.Dispose();
             Application.runInBackground = background;
             Running = false;
             SessionState.SetString("Naknak.TutorialRevisionTest", Result);
@@ -144,6 +268,7 @@ public static class TutorialRevisionPlaytest
             .Concat(UnityEngine.Object.FindObjectsByType<PlayerMoveController3>(FindObjectsSortMode.None).Select(p => p.transform)).ToArray();
         foreach (var track in UnityEngine.Object.FindObjectsByType<TutorialDeductionTrack>(FindObjectsSortMode.None))
         {
+            if (!track.isActiveAndEnabled) continue;
             var actor = (Transform)typeof(TutorialDeductionTrack).GetField("actor", Private).GetValue(track);
             if (actor == null) continue;
             foreach (var person in people.Where(p => p != actor && p.gameObject.activeInHierarchy))
@@ -216,7 +341,7 @@ public static class TutorialRevisionPlaytest
         yield return null;
     }
 
-    private static IEnumerator Run()
+    private static IEnumerator Run(bool repeatedVisits = false)
     {
         if (!SceneManager.GetSceneByName("PrototypeScene").isLoaded)
             yield return SceneManager.LoadSceneAsync("PrototypeScene", LoadSceneMode.Additive);
@@ -322,10 +447,73 @@ public static class TutorialRevisionPlaytest
         }
         Check(extendedBlackout, "Blackout remains held longer after the vase breaks");
         Check(true, "First memory returns through T4 without enabling investigation");
-        yield return RunEvidence(true);
+        if (repeatedVisits) yield return RepeatMemoryVisits();
+        yield return RunEvidence(true, repeatedVisits);
+        yield return RunEnding();
     }
 
-    private static IEnumerator RunEvidence(bool alreadyInReality = false)
+    private static IEnumerator InspectWatchBox()
+    {
+        typeof(GameMenuController).GetMethod("Pause", Private).Invoke(Menu, null);
+        ShowMenuPage("Items");
+        typeof(GameMenuController).GetMethod("ChangeInventoryCategory", Private).Invoke(Menu, new object[] { 0 });
+        Select("evidence-watch-box");
+        yield return CloseDialog();
+    }
+
+    private static IEnumerator RunEnding()
+    {
+        yield return CloseDialog();
+        float searchDeadline = Time.realtimeSinceStartup + 40;
+        while (Scene != "Tutorial_T35_BlackoutSearch" || SceneLoadManager.IsLoading)
+        {
+            if (Time.realtimeSinceStartup > searchDeadline) throw new TimeoutException("Owner blackout search: " + Scene);
+            if (Dialog.IsDialogOpen) Dialog.NextDialog();
+            yield return null;
+        }
+        var search = UnityEngine.Object.FindFirstObjectByType<TutorialT35EventController>();
+        var box = (Transform)new SerializedObject(search).FindProperty("droppedOpenBoxInteract").objectReferenceValue;
+        var player = UnityEngine.Object.FindFirstObjectByType<PlayerMoveController3>();
+        // Interaction rays originate half a unit below the player's transform.
+        player.TeleportToWorld((Vector2)box.position + Vector2.down * .5f);
+        player.SetFacingDirection(Vector2.up);
+        Physics2D.SyncTransforms();
+        typeof(PlayerMoveController3).GetMethod("TryInteract", Private).Invoke(player, null);
+        yield return null; yield return CloseDialog();
+        yield return Wait(() => Scene == "S#6" && !SceneLoadManager.IsLoading && Dialog.IsDialogOpen, "Owner confession");
+        yield return CloseDialog();
+        Check(ConditionManager.Instance.Get(Load<ConditionID>("Assets/Story/Tutorial/Case/OwnerConfessed.asset")) == 1,
+            "Ordinary dropped-box interaction reaches owner confession");
+        Find<InvestigationPoint>("A").Interact(); yield return CloseDialog();
+        Find<InvestigationPoint>("assist").Interact();
+        float deadline = Time.realtimeSinceStartup + 40;
+        while (Scene != "T2" || SceneLoadManager.IsLoading)
+        {
+            if (Time.realtimeSinceStartup > deadline) throw new TimeoutException("Late memory entry: " + Scene);
+            if (Dialog.IsDialogOpen) Dialog.NextDialog();
+            yield return null;
+        }
+        Check(GameMenuController.Inventory.Has("evidence-watch-box"), "Late memory retains collected watch box");
+        yield return InspectWatchBox();
+        Check(ConditionManager.Instance.Get(Load<ConditionID>("Assets/Story/Tutorial/Case/WatchBoxSeenEmpty.asset")) == 1,
+            "Inspecting pre-blackout watch box records empty state");
+        Find<NPC>("Owner").Interact();
+        yield return CloseDialog();
+        yield return Wait(() => Selecting, "Late appraisal selection");
+        Select("tutorial-packed-jewelry-box"); yield return CloseDialog();
+        yield return Wait(() => Scene == "Tutorial_T3_VaseBreak" && !SceneLoadManager.IsLoading && !SceneLoadManager.IsCutscene, "Late blackout exploration");
+        yield return InspectWatchBox();
+        Check(ConditionManager.Instance.Get(Load<ConditionID>("Assets/Story/Tutorial/Case/FinalBoxEvidence.asset")) == 1,
+            "Natural before/after comparison grants final evidence");
+        Find<InvestigationPoint>("Memory Exit").Interact(); yield return CloseDialog();
+        yield return Wait(() => Scene == "S#6" && !SceneLoadManager.IsLoading, "Final reality return");
+        Find<InvestigationPoint>("A").Interact(); yield return CloseDialog();
+        yield return null;
+        Check(ConditionManager.Instance.Get(Load<ConditionID>("Assets/Story/Tutorial/Case/CaseSolved.asset")) == 1,
+            "Natural ending solves case without injecting evidence");
+    }
+
+    private static IEnumerator RunEvidence(bool alreadyInReality = false, bool realityDialogConsumed = false)
     {
         // Enter a second memory without touching persistent saves.
         yield return Wait(() => !SceneLoadManager.IsLoading, "First blackout ready");
@@ -335,14 +523,18 @@ public static class TutorialRevisionPlaytest
             yield return SceneLoadManager.Instance.LoadContent("S3");
         }
         yield return Wait(() => !SceneLoadManager.IsLoading, "Reality ready");
-        yield return Wait(() => Dialog.IsDialogOpen, "S3 conversation");
-        yield return CloseDialog();
+        if (!realityDialogConsumed)
+        {
+            yield return Wait(() => Dialog.IsDialogOpen, "S3 conversation");
+            yield return CloseDialog();
+        }
         yield return SceneLoadManager.Instance.LoadContent("T1");
         yield return Wait(() => !SceneLoadManager.IsLoading && Dialog.IsDialogOpen, "Replay entry");
         yield return CloseDialog();
         if (Scene == "T1") yield return SceneLoadManager.Instance.LoadContent("T2");
         yield return Wait(() => Scene == "T2" && !SceneLoadManager.IsLoading, "Replay T2");
         Check(SceneLoadManager.IsMemoryRevisit, "Second memory enables investigation");
+        int priorAProgress = Find<EvidenceReconstruction>("A").CompletedEvidence.Length;
         Find<InvestigationPoint>("Cabinet Number 2").Interact();
         Check(Dialog.CurrentStory.text == "진열장이다.", "Pre-blackout cabinet is ordinary");
         yield return CloseDialog();
@@ -355,17 +547,19 @@ public static class TutorialRevisionPlaytest
         Find<InvestigationPoint>("A").Interact(); Select("evidence-expired-ticket");
         Check(!Selecting && Dialog.CurrentStory.name == "WrongEvidence", "Unrelated evidence shows the rejection line");
         yield return CloseDialog();
-        Check(Find<EvidenceReconstruction>("A").CompletedEvidence.Length == 0, "Rejected evidence does not increase progress");
-        yield return Replay("A", "evidence-returned-letter", 1);
-        yield return Replay("A", "evidence-returned-letter", 1);
-        Check(Find<EvidenceReconstruction>("A").CompletedEvidence.Length == 1, "Repeated evidence counts once");
+        Check(Find<EvidenceReconstruction>("A").CompletedEvidence.Length == priorAProgress, "Rejected evidence does not increase progress");
+        yield return Replay("A", "evidence-returned-letter", priorAProgress + 1);
+        yield return Replay("A", "evidence-returned-letter", priorAProgress + 1);
+        Check(Find<EvidenceReconstruction>("A").CompletedEvidence.Length == priorAProgress + 1, "Repeated evidence counts once");
         Find<InvestigationPoint>("A").Interact();
-        Check(((string[])typeof(GameMenuController).GetField("itemSelectionCompleted", Private).GetValue(Menu)).Length == 1,
-            "Evidence menu shows one successful item");
+        Check(((string[])typeof(GameMenuController).GetField("itemSelectionCompleted", Private).GetValue(Menu)).Length == priorAProgress + 1,
+            "Evidence menu shows successful items including prior visits");
         yield return Capture("evidence-1-of-3");
         typeof(GameMenuController).GetMethod("ReturnFromItems", Private).Invoke(Menu, null);
-        yield return Replay("A", "evidence-watch-box", 2);
-        yield return Replay("A", "evidence-telephone-trace", 3);
+        yield return Replay("A", "evidence-watch-box", Mathf.Min(3, priorAProgress + 2));
+        if (priorAProgress == 0) yield return Replay("A", "evidence-telephone-trace", 3);
+        else Check(Find<EvidenceReconstruction>("A").CompletedEvidence.Length == 3,
+            "Previously explained telephone route contributes to complete evidence set");
         Find<InvestigationPoint>("A").Interact();
         Check(!Selecting && Dialog.CurrentStory.text == "A의 동선을 전부 파악했다.", "A complete interaction shows the completion line");
         yield return CloseDialog();
@@ -380,7 +574,7 @@ public static class TutorialRevisionPlaytest
         yield return Wait(() => !SceneLoadManager.IsLoading && !SceneLoadManager.IsCutscene, "Dark T3 replay exploration");
         var controller = UnityEngine.Object.FindFirstObjectByType<TutorialT3T4SceneController>();
         var overlay = new SerializedObject(controller).FindProperty("darkOverlayImage").objectReferenceValue as UnityEngine.UI.Image;
-        Check(overlay != null && overlay.color.a > .6f && overlay.color.a < 1, "T3 revisit remains dark and playable");
+        Check(overlay != null && Mathf.Approximately(overlay.color.a, 0f), "T3 revisit restores normal brightness before investigation");
         var player = UnityEngine.Object.FindFirstObjectByType<PlayerMoveController3>();
         player.TeleportToWorld(new Vector2(5, 4));
         player.SetFacingDirection(Vector2.up);

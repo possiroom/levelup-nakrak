@@ -1,0 +1,413 @@
+PASS
+Session 1 title shows four menu choices
+Session 1 options opens by button click
+Session 1 new game resets memory visit count
+S0 has 18 ordered dialogue/sound beats
+S0 sleeping portrait
+S0/S1 footsteps and door bell finish before S1
+S1 detective walks before entrance dialogue
+S2 assistant attention marker
+Memory narration appears over the black transition
+T0 memory uses grayscale
+T0 packing opens inventory
+T0 packing assistant line
+T1 assistant starts at the entrance
+T1 assistant faces away from the camera
+A starts walking after the A/owner conversation in T1
+A is already at the telephone on T2 entry
+Owner stands behind the center of the counter
+Owner is reachable from the counter front through normal interaction
+Ctrl skip follows the first price choice and closes appraisal
+Assistant appraisal does not start another A walk
+Blackout remains held longer after the vase breaks
+First memory returns through T4 without enabling investigation
+S3 assist reachable from player without teleport
+Revisit 1 counts entry exactly once
+Revisit 1 does not replay first-visit restrictions
+Revisit 1 uses detective instead of first-memory assistant
+Revisit 1 camera follows controlled actor
+T2 phone reachable from player without teleport
+Walk step toward phone at (4, -1)
+Walk step toward phone at (3, -1)
+Walk step toward phone at (2, -1)
+Walk step toward phone at (1, -1)
+Walk step toward phone at (0, -1)
+Walk step toward phone at (-1, -1)
+Walk step toward phone at (-2, -1)
+Walk step toward phone at (-3, -1)
+Walk step toward phone at (-4, -1)
+Walk step toward phone at (-4, 0)
+T2 phone reachable from player without teleport
+Revisit 1 repeated clue interaction does not duplicate evidence
+T2 A reachable from player without teleport
+Revisit 1 witness opens evidence menu
+Revisit 1 cancel evidence restores movement
+T2 Memory Exit reachable from player without teleport
+Walk step toward Memory Exit at (-3, 0)
+Walk step toward Memory Exit at (-2, 0)
+Walk step toward Memory Exit at (-1, 0)
+Walk step toward Memory Exit at (-1, -1)
+Walk step toward Memory Exit at (0, -1)
+Walk step toward Memory Exit at (1, -1)
+Walk step toward Memory Exit at (1, -2)
+Walk step toward Memory Exit at (1, -3)
+Walk step toward Memory Exit at (1, -4)
+Revisit 1 cancel exit stays in memory
+T2 Memory Exit reachable from player without teleport
+Revisit 1 restores reality inventory mode
+Revisit 1 removes memory-only items on return
+Revisit 1 leaves no stuck reconstruction
+S3 assist reachable from player without teleport
+Revisit 2 counts entry exactly once
+Revisit 2 does not replay first-visit restrictions
+Revisit 2 uses detective instead of first-memory assistant
+Revisit 2 camera follows controlled actor
+T2 phone reachable from player without teleport
+Walk step toward phone at (4, -1)
+Walk step toward phone at (3, -1)
+Walk step toward phone at (2, -1)
+Walk step toward phone at (1, -1)
+Walk step toward phone at (0, -1)
+Walk step toward phone at (-1, -1)
+Walk step toward phone at (-2, -1)
+Walk step toward phone at (-3, -1)
+Walk step toward phone at (-4, -1)
+Walk step toward phone at (-4, 0)
+T2 phone reachable from player without teleport
+Revisit 2 repeated clue interaction does not duplicate evidence
+T2 A reachable from player without teleport
+Revisit 2 witness opens evidence menu
+Revisit 2 cancel evidence restores movement
+T2 A reachable from player without teleport
+Partial evidence replay before leaving memory
+T2 Memory Exit reachable from player without teleport
+Walk step toward Memory Exit at (-3, 0)
+Walk step toward Memory Exit at (-2, 0)
+Walk step toward Memory Exit at (-1, 0)
+Walk step toward Memory Exit at (-1, -1)
+Walk step toward Memory Exit at (0, -1)
+Walk step toward Memory Exit at (1, -1)
+Walk step toward Memory Exit at (1, -2)
+Walk step toward Memory Exit at (1, -3)
+Walk step toward Memory Exit at (1, -4)
+Revisit 2 cancel exit stays in memory
+T2 Memory Exit reachable from player without teleport
+Revisit 2 restores reality inventory mode
+Revisit 2 removes memory-only items on return
+Revisit 2 leaves no stuck reconstruction
+S3 assist reachable from player without teleport
+Revisit 3 counts entry exactly once
+Revisit 3 does not replay first-visit restrictions
+Revisit 3 uses detective instead of first-memory assistant
+Revisit 3 camera follows controlled actor
+Revisit 3 preserves previously explained action
+T2 phone reachable from player without teleport
+Walk step toward phone at (4, -1)
+Walk step toward phone at (3, -1)
+Walk step toward phone at (2, -1)
+Walk step toward phone at (1, -1)
+Walk step toward phone at (0, -1)
+Walk step toward phone at (-1, -1)
+Walk step toward phone at (-2, -1)
+Walk step toward phone at (-3, -1)
+Walk step toward phone at (-4, -1)
+Walk step toward phone at (-4, 0)
+T2 phone reachable from player without teleport
+Revisit 3 repeated clue interaction does not duplicate evidence
+T2 A reachable from player without teleport
+Revisit 3 witness opens evidence menu
+Revisit 3 cancel evidence restores movement
+Loading a memory save does not count another visit
+Loading memory preserves collected items without duplicates
+T2 Memory Exit reachable from player without teleport
+Walk step toward Memory Exit at (-3, 0)
+Walk step toward Memory Exit at (-2, 0)
+Walk step toward Memory Exit at (-1, 0)
+Walk step toward Memory Exit at (-1, -1)
+Walk step toward Memory Exit at (0, -1)
+Walk step toward Memory Exit at (1, -1)
+Walk step toward Memory Exit at (1, -2)
+Walk step toward Memory Exit at (1, -3)
+Walk step toward Memory Exit at (1, -4)
+Revisit 3 cancel exit stays in memory
+T2 Memory Exit reachable from player without teleport
+Revisit 3 restores reality inventory mode
+Revisit 3 removes memory-only items on return
+Revisit 3 leaves no stuck reconstruction
+S3 assist reachable from player without teleport
+Revisit 4 counts entry exactly once
+Revisit 4 does not replay first-visit restrictions
+Revisit 4 uses detective instead of first-memory assistant
+Revisit 4 camera follows controlled actor
+Revisit 4 preserves previously explained action
+T2 phone reachable from player without teleport
+Walk step toward phone at (4, -1)
+Walk step toward phone at (3, -1)
+Walk step toward phone at (2, -1)
+Walk step toward phone at (1, -1)
+Walk step toward phone at (0, -1)
+Walk step toward phone at (-1, -1)
+Walk step toward phone at (-2, -1)
+Walk step toward phone at (-3, -1)
+Walk step toward phone at (-4, -1)
+Walk step toward phone at (-4, 0)
+T2 phone reachable from player without teleport
+Revisit 4 repeated clue interaction does not duplicate evidence
+T2 A reachable from player without teleport
+Revisit 4 witness opens evidence menu
+Revisit 4 cancel evidence restores movement
+T2 Memory Exit reachable from player without teleport
+Walk step toward Memory Exit at (-3, 0)
+Walk step toward Memory Exit at (-2, 0)
+Walk step toward Memory Exit at (-1, 0)
+Walk step toward Memory Exit at (-1, -1)
+Walk step toward Memory Exit at (0, -1)
+Walk step toward Memory Exit at (1, -1)
+Walk step toward Memory Exit at (1, -2)
+Walk step toward Memory Exit at (1, -3)
+Walk step toward Memory Exit at (1, -4)
+Revisit 4 cancel exit stays in memory
+T2 Memory Exit reachable from player without teleport
+Revisit 4 restores reality inventory mode
+Revisit 4 removes memory-only items on return
+Revisit 4 leaves no stuck reconstruction
+Second memory enables investigation
+Pre-blackout cabinet is ordinary
+A interaction opens evidence immediately
+Cancel restores gameplay without evidence credit
+Unrelated evidence shows the rejection line
+Rejected evidence does not increase progress
+A opens evidence menu by interaction (2)
+A distinct route count 2
+A opens evidence menu by interaction (2)
+A distinct route count 2
+Repeated evidence counts once
+Evidence menu shows successful items including prior visits
+A opens evidence menu by interaction (3)
+A distinct route count 3
+Previously explained telephone route contributes to complete evidence set
+A complete interaction shows the completion line
+B opens evidence menu by interaction (1)
+B distinct route count 1
+B opens evidence menu by interaction (2)
+B distinct route count 2
+Driver without cabinet investigation does not complete the third route
+T3 revisit remains dark and playable
+Dark T3 cabinet investigation works through normal interaction without B blocking it
+All six actions trigger combined completion
+PA is a stationary reality conversation
+PB is a reality conversation
+Both truth confirmations remain complete after memory exit
+Ordinary dropped-box interaction reaches owner confession
+Late memory retains collected watch box
+Inspecting pre-blackout watch box records empty state
+Natural before/after comparison grants final evidence
+Natural ending solves case without injecting evidence
+Session 1 finishes after repeated memory exits and entries
+Session 2 title shows four menu choices
+Session 2 options opens by button click
+Session 2 new game resets memory visit count
+S0 has 18 ordered dialogue/sound beats
+S0 sleeping portrait
+S0/S1 footsteps and door bell finish before S1
+S1 detective walks before entrance dialogue
+S2 assistant attention marker
+Memory narration appears over the black transition
+T0 memory uses grayscale
+T0 packing opens inventory
+T0 packing assistant line
+T1 assistant starts at the entrance
+T1 assistant faces away from the camera
+A starts walking after the A/owner conversation in T1
+A is already at the telephone on T2 entry
+Owner stands behind the center of the counter
+Owner is reachable from the counter front through normal interaction
+Ctrl skip follows the first price choice and closes appraisal
+Assistant appraisal does not start another A walk
+Blackout remains held longer after the vase breaks
+First memory returns through T4 without enabling investigation
+S3 assist reachable from player without teleport
+Revisit 1 counts entry exactly once
+Revisit 1 does not replay first-visit restrictions
+Revisit 1 uses detective instead of first-memory assistant
+Revisit 1 camera follows controlled actor
+T2 phone reachable from player without teleport
+Walk step toward phone at (4, -1)
+Walk step toward phone at (3, -1)
+Walk step toward phone at (2, -1)
+Walk step toward phone at (1, -1)
+Walk step toward phone at (0, -1)
+Walk step toward phone at (-1, -1)
+Walk step toward phone at (-2, -1)
+Walk step toward phone at (-3, -1)
+Walk step toward phone at (-4, -1)
+Walk step toward phone at (-4, 0)
+T2 phone reachable from player without teleport
+Revisit 1 repeated clue interaction does not duplicate evidence
+T2 A reachable from player without teleport
+Revisit 1 witness opens evidence menu
+Revisit 1 cancel evidence restores movement
+T2 Memory Exit reachable from player without teleport
+Walk step toward Memory Exit at (-3, 0)
+Walk step toward Memory Exit at (-2, 0)
+Walk step toward Memory Exit at (-1, 0)
+Walk step toward Memory Exit at (-1, -1)
+Walk step toward Memory Exit at (0, -1)
+Walk step toward Memory Exit at (1, -1)
+Walk step toward Memory Exit at (1, -2)
+Walk step toward Memory Exit at (1, -3)
+Walk step toward Memory Exit at (1, -4)
+Revisit 1 cancel exit stays in memory
+T2 Memory Exit reachable from player without teleport
+Revisit 1 restores reality inventory mode
+Revisit 1 removes memory-only items on return
+Revisit 1 leaves no stuck reconstruction
+S3 assist reachable from player without teleport
+Revisit 2 counts entry exactly once
+Revisit 2 does not replay first-visit restrictions
+Revisit 2 uses detective instead of first-memory assistant
+Revisit 2 camera follows controlled actor
+T2 phone reachable from player without teleport
+Walk step toward phone at (4, -1)
+Walk step toward phone at (3, -1)
+Walk step toward phone at (2, -1)
+Walk step toward phone at (1, -1)
+Walk step toward phone at (0, -1)
+Walk step toward phone at (-1, -1)
+Walk step toward phone at (-2, -1)
+Walk step toward phone at (-3, -1)
+Walk step toward phone at (-4, -1)
+Walk step toward phone at (-4, 0)
+T2 phone reachable from player without teleport
+Revisit 2 repeated clue interaction does not duplicate evidence
+T2 A reachable from player without teleport
+Revisit 2 witness opens evidence menu
+Revisit 2 cancel evidence restores movement
+T2 A reachable from player without teleport
+Partial evidence replay before leaving memory
+T2 Memory Exit reachable from player without teleport
+Walk step toward Memory Exit at (-3, 0)
+Walk step toward Memory Exit at (-2, 0)
+Walk step toward Memory Exit at (-1, 0)
+Walk step toward Memory Exit at (-1, -1)
+Walk step toward Memory Exit at (0, -1)
+Walk step toward Memory Exit at (1, -1)
+Walk step toward Memory Exit at (1, -2)
+Walk step toward Memory Exit at (1, -3)
+Walk step toward Memory Exit at (1, -4)
+Revisit 2 cancel exit stays in memory
+T2 Memory Exit reachable from player without teleport
+Revisit 2 restores reality inventory mode
+Revisit 2 removes memory-only items on return
+Revisit 2 leaves no stuck reconstruction
+S3 assist reachable from player without teleport
+Revisit 3 counts entry exactly once
+Revisit 3 does not replay first-visit restrictions
+Revisit 3 uses detective instead of first-memory assistant
+Revisit 3 camera follows controlled actor
+Revisit 3 preserves previously explained action
+T2 phone reachable from player without teleport
+Walk step toward phone at (4, -1)
+Walk step toward phone at (3, -1)
+Walk step toward phone at (2, -1)
+Walk step toward phone at (1, -1)
+Walk step toward phone at (0, -1)
+Walk step toward phone at (-1, -1)
+Walk step toward phone at (-2, -1)
+Walk step toward phone at (-3, -1)
+Walk step toward phone at (-4, -1)
+Walk step toward phone at (-4, 0)
+T2 phone reachable from player without teleport
+Revisit 3 repeated clue interaction does not duplicate evidence
+T2 A reachable from player without teleport
+Revisit 3 witness opens evidence menu
+Revisit 3 cancel evidence restores movement
+Loading a memory save does not count another visit
+Loading memory preserves collected items without duplicates
+T2 Memory Exit reachable from player without teleport
+Walk step toward Memory Exit at (-3, 0)
+Walk step toward Memory Exit at (-2, 0)
+Walk step toward Memory Exit at (-1, 0)
+Walk step toward Memory Exit at (-1, -1)
+Walk step toward Memory Exit at (0, -1)
+Walk step toward Memory Exit at (1, -1)
+Walk step toward Memory Exit at (1, -2)
+Walk step toward Memory Exit at (1, -3)
+Walk step toward Memory Exit at (1, -4)
+Revisit 3 cancel exit stays in memory
+T2 Memory Exit reachable from player without teleport
+Revisit 3 restores reality inventory mode
+Revisit 3 removes memory-only items on return
+Revisit 3 leaves no stuck reconstruction
+S3 assist reachable from player without teleport
+Revisit 4 counts entry exactly once
+Revisit 4 does not replay first-visit restrictions
+Revisit 4 uses detective instead of first-memory assistant
+Revisit 4 camera follows controlled actor
+Revisit 4 preserves previously explained action
+T2 phone reachable from player without teleport
+Walk step toward phone at (4, -1)
+Walk step toward phone at (3, -1)
+Walk step toward phone at (2, -1)
+Walk step toward phone at (1, -1)
+Walk step toward phone at (0, -1)
+Walk step toward phone at (-1, -1)
+Walk step toward phone at (-2, -1)
+Walk step toward phone at (-3, -1)
+Walk step toward phone at (-4, -1)
+Walk step toward phone at (-4, 0)
+T2 phone reachable from player without teleport
+Revisit 4 repeated clue interaction does not duplicate evidence
+T2 A reachable from player without teleport
+Revisit 4 witness opens evidence menu
+Revisit 4 cancel evidence restores movement
+T2 Memory Exit reachable from player without teleport
+Walk step toward Memory Exit at (-3, 0)
+Walk step toward Memory Exit at (-2, 0)
+Walk step toward Memory Exit at (-1, 0)
+Walk step toward Memory Exit at (-1, -1)
+Walk step toward Memory Exit at (0, -1)
+Walk step toward Memory Exit at (1, -1)
+Walk step toward Memory Exit at (1, -2)
+Walk step toward Memory Exit at (1, -3)
+Walk step toward Memory Exit at (1, -4)
+Revisit 4 cancel exit stays in memory
+T2 Memory Exit reachable from player without teleport
+Revisit 4 restores reality inventory mode
+Revisit 4 removes memory-only items on return
+Revisit 4 leaves no stuck reconstruction
+Second memory enables investigation
+Pre-blackout cabinet is ordinary
+A interaction opens evidence immediately
+Cancel restores gameplay without evidence credit
+Unrelated evidence shows the rejection line
+Rejected evidence does not increase progress
+A opens evidence menu by interaction (2)
+A distinct route count 2
+A opens evidence menu by interaction (2)
+A distinct route count 2
+Repeated evidence counts once
+Evidence menu shows successful items including prior visits
+A opens evidence menu by interaction (3)
+A distinct route count 3
+Previously explained telephone route contributes to complete evidence set
+A complete interaction shows the completion line
+B opens evidence menu by interaction (1)
+B distinct route count 1
+B opens evidence menu by interaction (2)
+B distinct route count 2
+Driver without cabinet investigation does not complete the third route
+T3 revisit remains dark and playable
+Dark T3 cabinet investigation works through normal interaction without B blocking it
+All six actions trigger combined completion
+PA is a stationary reality conversation
+PB is a reality conversation
+Both truth confirmations remain complete after memory exit
+Ordinary dropped-box interaction reaches owner confession
+Late memory retains collected watch box
+Inspecting pre-blackout watch box records empty state
+Natural before/after comparison grants final evidence
+Natural ending solves case without injecting evidence
+Session 2 finishes after repeated memory exits and entries
+Interactions approached by ordinary movement (152 tiles)
+Reconstruction walking avoids people and walls (1314 samples)

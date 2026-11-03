@@ -1,0 +1,11 @@
+Unsupported save version rejected
+Missing scene rejected
+Invalid save timestamp rejected
+Invalid floor rejected
+NaN position rejected
+Infinite facing rejected
+Negative play time rejected
+Null inventory rejected
+Null world list rejected
+Invalid slot 0 rejected
+Invalid slot 4 rejected

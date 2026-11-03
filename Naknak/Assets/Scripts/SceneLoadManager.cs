@@ -272,7 +272,6 @@ public sealed class SceneLoadManager : MonoBehaviour
                     camera.enabled = contentCamera == null && camera.GetComponent<Unity.Cinemachine.CinemachineCamera>() == null;
                 foreach (var listener in root.GetComponentsInChildren<AudioListener>(true)) listener.enabled = contentCamera == null;
             }
-        TutorialCameraFraming.Configure(scene, entry.useSharedCamera);
         var player = FindFirstObjectByType<PlayerMoveController3>(FindObjectsInactive.Include);
         if (player != null)
         {
@@ -282,6 +281,8 @@ public sealed class SceneLoadManager : MonoBehaviour
             foreach (var renderer in player.GetComponentsInChildren<SpriteRenderer>(true)) renderer.enabled = !entry.hidePlayer;
             if (entry.placePlayer && !IsRestoringSession) player.TeleportToWorld(entry.playerPosition);
         }
+        // A scene without its own output camera also uses the shared camera (e.g. S2).
+        TutorialCameraFraming.Configure(scene, contentCamera == null, player != null ? player.transform : null);
         if (TriggerExecutor.Instance != null)
         {
             TriggerExecutor.Instance.ChangeMap(grid, grid != null ? grid.gameObject : null);
@@ -298,6 +299,17 @@ public sealed class SceneLoadManager : MonoBehaviour
         inputLockOverride = locked;
         var player = FindFirstObjectByType<PlayerMoveController3>(FindObjectsInactive.Include);
         if (player != null) player.enabled = !current.hidePlayer && !locked;
+        if (!locked && player != null)
+        {
+            var core = SceneManager.GetSceneByName("PrototypeScene");
+            if (core.isLoaded)
+                foreach (var root in core.GetRootGameObjects())
+                    foreach (var camera in root.GetComponentsInChildren<Unity.Cinemachine.CinemachineCamera>(true))
+                    {
+                        camera.Follow = player.transform;
+                        camera.PreviousStateIsValid = false;
+                    }
+        }
     }
 
     private void PrepareMemory(bool restoring)

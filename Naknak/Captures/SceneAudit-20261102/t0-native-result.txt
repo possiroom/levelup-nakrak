@@ -1,0 +1,32 @@
+PASS
+T0 T0 Broach reachable from player without teleport
+Walk step toward T0 Broach at (-3, -2)
+Walk step toward T0 Broach at (-2, -2)
+T0 normal walking and interaction collect brooch
+T0 T0 Jewelry Box reachable from player without teleport
+Walk step toward T0 Jewelry Box at (-3, -2)
+Walk step toward T0 Jewelry Box at (-4, -2)
+Walk step toward T0 Jewelry Box at (-4, -3)
+Walk step toward T0 Jewelry Box at (-4, -4)
+Walk step toward T0 Jewelry Box at (-4, -5)
+T0 normal jewelry-box interaction opens item selection
+T0 T0 Jewelry Box reachable from player without teleport
+T0 normal item selection packs brooch
+T0 packed Menu menu renders
+T0 packed Menu text visible
+T0 packed Items menu renders
+T0 packed Items text visible
+T0 packed Options menu renders
+T0 packed Options text visible
+T0 packed Save menu renders
+T0 packed Save text visible
+T0 packed Load menu renders
+T0 packed Load text visible
+T0 packed Menu menu renders
+T0 packed Menu text visible
+T0 packed menu closes and restores time
+T0 menu leaves player position unchanged
+T0 T0 Room Exit reachable from player without teleport
+Walk step toward T0 Room Exit at (-3, -5)
+Walk step toward T0 Room Exit at (-2, -5)
+T0 native pickup, packing, menu and exit reach T1

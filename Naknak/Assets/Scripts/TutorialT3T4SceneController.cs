@@ -104,14 +104,11 @@ public class TutorialT3T4SceneController : MonoBehaviour
             DialogManager.Instance.BindSceneViews(gameObject.scene);
             if (SceneLoadManager.IsMemoryRevisit)
             {
-                SetupT3StartState();
-                if (vaseNormal != null) vaseNormal.SetActive(false);
-                if (vaseBroken != null) vaseBroken.SetActive(true);
-                if (t3Occurred != null) ConditionManager.Instance.Set(t3Occurred, 1);
-                SetDarkOverlayAlpha(0.68f);
+                // Revisit appraisal still plays the blackout and audible break.
+                // Stay in T3 for investigation instead of advancing to first-visit T4.
+                SceneLoadManager.Instance?.SetPlayerInputLocked(true);
+                yield return RunT3();
                 if (darkOverlayImage != null) darkOverlayImage.raycastTarget = false;
-                if (t3InvestigationObjects != null) t3InvestigationObjects.SetActive(true);
-                Phase = T3Phase.Finished;
                 SceneLoadManager.Instance?.SetPlayerInputLocked(false);
                 yield break;
             }
@@ -222,7 +219,7 @@ public class TutorialT3T4SceneController : MonoBehaviour
 
         yield return new WaitForSeconds(Mathf.Max(0, waitAfterDarkReaction - breakDelay) + extraBlackoutHold);
 
-        if (restoreLightAfterBreak)
+        if (restoreLightAfterBreak || SceneLoadManager.IsMemoryRevisit)
             yield return FadeDarkOverlay(0f, darkFadeOutTime);
 
         StoryData t3Story = t3ReactionDialog != null ? t3ReactionDialog.GetMatchingDialog() : CreateStoryChain(

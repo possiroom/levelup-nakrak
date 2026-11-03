@@ -47,6 +47,9 @@ public sealed partial class GameMenuController
         scaler.matchWidthOrHeight = 0.5f;
         screen = Box(canvasObject.transform, "Menu Overlay", new Color(0, 0, 0, 0.76f), Vector2.zero, Vector2.one);
         panel = Box(screen, "Window", WindowColor, new Vector2(0.035f, 0.045f), new Vector2(0.965f, 0.955f), true);
+        // Retire scene input owners before registering the persistent one.
+        foreach (var existing in FindObjectsByType<EventSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            existing.enabled = false;
         var eventObject = new GameObject("Menu Event System", typeof(EventSystem), typeof(StandaloneInputModule));
         eventObject.transform.SetParent(transform, false);
         ownEventSystem = eventObject.GetComponent<EventSystem>();
@@ -62,7 +65,12 @@ public sealed partial class GameMenuController
     private void ClearPage()
     {
         rebuilding = true;
-        foreach (Transform child in panel) { child.gameObject.SetActive(false); Destroy(child.gameObject); }
+        foreach (Transform child in panel)
+        {
+            if (child.name == "Border") continue;
+            child.gameObject.SetActive(false);
+            Destroy(child.gameObject);
+        }
         buttons.Clear(); adjustments.Clear(); visibleItems.Clear();
         description = null; footer = null; itemScroll = null;
         screen.gameObject.SetActive(true);
@@ -80,6 +88,7 @@ public sealed partial class GameMenuController
             return;
         }
         ClearPage();
+        ConfigureTitleLayout(next == Page.Title);
         switch (next)
         {
             case Page.Title: DrawTitle(); break;
@@ -96,8 +105,13 @@ public sealed partial class GameMenuController
 
     private void DrawTitle()
     {
-        Label(panel, "NAKNAK  /  MYSTERY ADVENTURE", 17, new Vector2(0.1f, 0.79f), new Vector2(0.9f, 0.85f), TextAlignmentOptions.Center).color = new Color(0.6f, 0.64f, 0.7f);
-        Label(panel, configuration.gameTitle, 76, new Vector2(0.1f, 0.57f), new Vector2(0.9f, 0.78f), TextAlignmentOptions.Center);
+        var artwork = new GameObject("Title Artwork", typeof(RectTransform), typeof(RawImage)).GetComponent<RawImage>();
+        artwork.transform.SetParent(panel, false);
+        var artworkRect = (RectTransform)artwork.transform;
+        artworkRect.anchorMin = Vector2.zero; artworkRect.anchorMax = Vector2.one;
+        artworkRect.offsetMin = artworkRect.offsetMax = Vector2.zero;
+        artwork.texture = Resources.Load<Texture2D>("기억은 거짓말을 하지 않는다 300, 크기변경");
+        artwork.raycastTarget = false;
         string[] entries = { "새 게임", "이어하기", "옵션", "종료" };
         Action[] actions = { BeginNewGame, () => OpenLoad(Page.Title),
             () => { optionsOrigin = Page.Title; ShowPage(Page.Options); }, () => Confirm("게임을 종료할까요?", Quit) };
@@ -106,11 +120,28 @@ public sealed partial class GameMenuController
             if (GameCheckpointStore.TryRead(slot, out _, out _) || GameCheckpointStore.TryReadManual(slot, out _, out _)) anySave = true;
         for (int i = 0; i < entries.Length; i++)
         {
-            float top = 0.51f - i * 0.09f;
-            var button = Command(entries[i], actions[i], new Vector2(0.33f, top - 0.072f), new Vector2(0.67f, top));
+            float left = 0.06f + i * 0.22f;
+            var button = Command(entries[i], actions[i], new Vector2(left, 0.055f), new Vector2(left + 0.18f, 0.155f));
             if (i == 1 && !anySave) { button.interactable = false; button.GetComponentInChildren<TextMeshProUGUI>().color = Color.gray; }
         }
-        Footer("↑↓ 선택    Z / Enter 확인");
+    }
+
+    private void ConfigureTitleLayout(bool title)
+    {
+        screen.GetComponent<Image>().color = title ? Color.black : new Color(0, 0, 0, 0.76f);
+        var fit = panel.GetComponent<AspectRatioFitter>();
+        if (title && fit == null) fit = panel.gameObject.AddComponent<AspectRatioFitter>();
+        if (fit != null) fit.enabled = title;
+        panel.anchorMin = title ? Vector2.zero : new Vector2(0.035f, 0.045f);
+        panel.anchorMax = title ? Vector2.one : new Vector2(0.965f, 0.955f);
+        panel.offsetMin = panel.offsetMax = Vector2.zero;
+        panel.GetComponent<Image>().color = title ? Color.clear : WindowColor;
+        panel.Find("Border").gameObject.SetActive(!title);
+        if (title)
+        {
+            fit.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+            fit.aspectRatio = 16f / 9f;
+        }
     }
 
     private void DrawMenu() => DrawInventoryMenu();
@@ -264,7 +295,7 @@ public sealed partial class GameMenuController
         if (horizontal != 0)
         {
             if (selected < adjustments.Count && adjustments[selected] != null) { adjustments[selected](horizontal); return; }
-            if (page == Page.Items || page == Page.Confirm) step = horizontal;
+            if (page == Page.Title || page == Page.Items || page == Page.Confirm) step = horizontal;
         }
         if (step != 0) MoveFocus(step);
         if (InteractionInput.ConfirmPressed)
@@ -293,7 +324,9 @@ public sealed partial class GameMenuController
         for (int i = 0; i < buttons.Count; i++)
         {
             var image = buttons[i].GetComponent<Image>();
-            image.color = i == selected ? SelectedColor : new Color(0, 0, 0, 0.08f);
+            image.color = page == Page.Title
+                ? (i == selected ? new Color(.22f, .13f, .14f, .95f) : new Color(.025f, .02f, .025f, .82f))
+                : (i == selected ? SelectedColor : new Color(0, 0, 0, 0.08f));
             var border = buttons[i].transform.Find("Border");
             if (border != null)
                 foreach (var edge in border.GetComponentsInChildren<Image>())

@@ -9,8 +9,8 @@ public sealed class TutorialWitnessStaging : MonoBehaviour
     [SerializeField] private bool walkAfterAppraisal;
     [SerializeField] private StoryData appraisalLastLine;
     [SerializeField] private bool facePlayerUpOnEntry;
-    [SerializeField] private Vector2 phonePosition = new Vector2(-4, 0);
-    [SerializeField] private Vector2 trashPosition = new Vector2(4, -3);
+    [SerializeField] private Vector2 phonePosition = new Vector2(-4, 1);
+    [SerializeField] private Vector2 trashPosition = new Vector2(3, -3);
     [SerializeField] private Vector2 cabinetPosition = new Vector2(4, 4);
     [Header("Witness Facing After Arrival")]
     [Tooltip("Up (0,1), right (1,0), down (0,-1), left (-1,0).")]
@@ -39,13 +39,15 @@ public sealed class TutorialWitnessStaging : MonoBehaviour
         if (SceneLoadManager.IsMemoryRevisit)
         {
             Place(witnessA, phonePosition, phoneFacing, witnessAAnimator);
-            Place(witnessB, cabinetPosition, cabinetFacing, witnessBAnimator);
+            bool beforeBlackout = gameObject.scene.name == "T1" || gameObject.scene.name == "T2";
+            Place(witnessB, beforeBlackout ? trashPosition : cabinetPosition,
+                beforeBlackout ? trashFacing : cabinetFacing, witnessBAnimator);
             yield break;
         }
         Place(witnessB, trashPosition, trashFacing, witnessBAnimator);
         if (!walkAfterAppraisal)
         {
-            TutorialActorAnimation.SetMotion(witnessAAnimator, phoneFacing, false);
+            Place(witnessA, phonePosition, phoneFacing, witnessAAnimator);
             yield break;
         }
         while (DialogManager.Instance == null) yield return null;

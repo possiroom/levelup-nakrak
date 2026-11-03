@@ -35,26 +35,29 @@ public static class TutorialRouteSetup
         var a = Find("A");
         var b = Find("B");
         if (a == null || b == null) return;
-        Vector2 phone = (Vector2)Find("phone").position + Vector2.right;
+        // Leave the phone's only floor-level approach open for player investigation.
+        Vector2 phone = (Vector2)Find("phone").position + Vector2.right + Vector2.up;
         Vector2 trash = (Vector2)Find("Trash Can").position + Vector2.up;
         Vector2 cabinet = (Vector2)Find("Cabinet Number 2").position + Vector2.down;
         Vector2 counter = (Vector2)Find("Counter Watch").position + Vector2.down;
         Vector2 vase = Find("Vase Toy") != null ? (Vector2)Find("Vase Toy").position : new Vector2(-5, -1);
         Vector2 toy = vase + new Vector2(1, -1);
-        b.position = new Vector3(trash.x, trash.y, b.position.z);
+        Vector2 trashWaiting = trash + Vector2.left;
+        b.position = new Vector3(trashWaiting.x, trashWaiting.y, b.position.z);
         if (scene.name != "T1") a.position = new Vector3(phone.x, phone.y, a.position.z);
         foreach (var staging in all.Select(t => t.GetComponent<TutorialWitnessStaging>()).Where(s => s != null))
         {
             var so = new SerializedObject(staging);
             so.FindProperty("phonePosition").vector2Value = phone;
-            so.FindProperty("trashPosition").vector2Value = trash;
+            so.FindProperty("trashPosition").vector2Value = trashWaiting;
             so.FindProperty("cabinetPosition").vector2Value = cabinet + Vector2.left;
             so.ApplyModifiedPropertiesWithoutUndo();
         }
         foreach (var actor in new[] { a, b })
         {
-            Vector2 previousCounter = counter;
-            Vector2 previousToy = toy;
+            // Start each action where the previous chronological action ended,
+            // regardless of the order in which the player presents evidence.
+            Vector2 previousEnd = actor == a ? new Vector2(-3, 1) : new Vector2(1, 2);
             var reconstruction = actor.GetComponent<EvidenceReconstruction>();
             if (reconstruction == null) continue;
             var so = new SerializedObject(reconstruction);
@@ -62,8 +65,7 @@ public static class TutorialRouteSetup
             for (int i = 0; i < clips.arraySize; i++)
             {
                 var clip = clips.GetArrayElementAtIndex(i);
-                Vector2 start = actor == a ? (i == 2 ? previousCounter : new Vector2(-3, 1)) :
-                    (i == 2 ? previousToy : new Vector2(1, 2));
+                Vector2 start = previousEnd;
                 Vector2 target = actor == a ? (i == 0 ? trash : i == 1 ? counter : phone) :
                     (i == 0 ? trash : i == 1 ? toy : cabinet);
                 var startMarker = clip.FindPropertyRelative("startPoint").objectReferenceValue as Transform;
@@ -99,7 +101,7 @@ public static class TutorialRouteSetup
                         i == 0 ? Vector2.down : actor == b && i == 1 ? Vector2.left : Vector2.up;
                     start = end;
                 }
-                if (i == 1) { previousCounter = start; previousToy = start; }
+                previousEnd = start;
             }
             so.ApplyModifiedPropertiesWithoutUndo();
         }

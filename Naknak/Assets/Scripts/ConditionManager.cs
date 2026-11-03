@@ -88,6 +88,14 @@ public class ConditionManager : MonoBehaviour
         return 0; 
     }
 
+    // Stored with ordinary condition values so scene changes and save/load keep
+    // the introduction, while a new memory visit naturally starts it again.
+    public bool HasInvestigatedWitness(string witness, int visit) =>
+        variables.TryGetValue("MemoryWitnessIntroduction:" + witness, out var introducedVisit) && introducedVisit == visit;
+
+    public void MarkWitnessInvestigated(string witness, int visit) =>
+        variables["MemoryWitnessIntroduction:" + witness] = visit;
+
     public string GetPresentedEvidence(ConditionID observed) => observed != null &&
         presentedEvidence.TryGetValue(observed.name, out var itemId) ? itemId : null;
 

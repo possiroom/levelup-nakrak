@@ -1,0 +1,75 @@
+﻿{
+    "version": 1,
+    "savedAt": "2026-11-02T18:24:20.6856923+09:00",
+    "scene": "PrototypeScene",
+    "additiveScenes": [
+        "S3"
+    ],
+    "position": {
+        "x": 0.0,
+        "y": 2.0,
+        "z": 0.0
+    },
+    "facing": {
+        "x": 0.0,
+        "y": 1.0
+    },
+    "floor": 1,
+    "health": 100,
+    "playSeconds": 99.0,
+    "inventory": [],
+    "conditions": [
+        {
+            "key": "npc1_meet",
+            "value": 0,
+            "presentedItemId": ""
+        },
+        {
+            "key": "T0Initialized",
+            "value": 1,
+            "presentedItemId": ""
+        },
+        {
+            "key": "T0BroochPacked",
+            "value": 0,
+            "presentedItemId": ""
+        },
+        {
+            "key": "T2AwaitingItem",
+            "value": 0,
+            "presentedItemId": ""
+        },
+        {
+            "key": "T2AppraisalSubmitted",
+            "value": 0,
+            "presentedItemId": ""
+        },
+        {
+            "key": "T3Occurred",
+            "value": 0,
+            "presentedItemId": ""
+        },
+        {
+            "key": "T4BoxReturned",
+            "value": 0,
+            "presentedItemId": ""
+        },
+        {
+            "key": "T4DialogueCompleted",
+            "value": 0,
+            "presentedItemId": ""
+        },
+        {
+            "key": "T0BroochCollected",
+            "value": 0,
+            "presentedItemId": ""
+        },
+        {
+            "key": "MemoryVisitCount",
+            "value": 1,
+            "presentedItemId": ""
+        }
+    ],
+    "world": [],
+    "mansions": []
+}

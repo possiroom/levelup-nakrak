@@ -1,0 +1,285 @@
+PASS
+S0 has 18 ordered dialogue/sound beats
+S0 sleeping portrait
+S0/S1 footsteps and door bell finish before S1
+S1 detective walks before entrance dialogue
+S2 assistant attention marker
+Memory narration appears over the black transition
+T0 memory uses grayscale
+T0 packing opens inventory
+T0 packing assistant line
+T1 assistant starts at the entrance
+T1 assistant faces away from the camera
+A starts walking after the A/owner conversation in T1
+A is already at the telephone on T2 entry
+Owner stands behind the center of the counter
+Owner is reachable from the counter front through normal interaction
+Ctrl skip follows the first price choice and closes appraisal
+Assistant appraisal does not start another A walk
+Blackout remains held longer after the vase breaks
+First memory returns through T4 without enabling investigation
+Second memory enables investigation
+Pre-blackout cabinet is ordinary
+A interaction opens evidence immediately
+Cancel restores gameplay without evidence credit
+Unrelated evidence shows the rejection line
+Rejected evidence does not increase progress
+A opens evidence menu by interaction (1)
+A distinct route count 1
+A opens evidence menu by interaction (1)
+A distinct route count 1
+Repeated evidence counts once
+Evidence menu shows successful items including prior visits
+A opens evidence menu by interaction (2)
+A distinct route count 2
+A opens evidence menu by interaction (3)
+A distinct route count 3
+A complete interaction shows the completion line
+B opens evidence menu by interaction (1)
+B distinct route count 1
+B opens evidence menu by interaction (2)
+B distinct route count 2
+Driver without cabinet investigation does not complete the third route
+T3 revisit remains dark and playable
+Dark T3 cabinet investigation works through normal interaction without B blocking it
+All six actions trigger combined completion
+PA is a stationary reality conversation
+PB is a reality conversation
+Both truth confirmations remain complete after memory exit
+Ordinary dropped-box interaction reaches owner confession
+Late memory retains collected watch box
+Inspecting pre-blackout watch box records empty state
+Natural before/after comparison grants final evidence
+Natural ending solves case without injecting evidence
+S1 entry Menu menu renders
+S1 entry Menu text visible
+S1 entry Items menu renders
+S1 entry Items text visible
+S1 entry Options menu renders
+S1 entry Options text visible
+S1 entry Save menu renders
+S1 entry Save text visible
+S1 entry Load menu renders
+S1 entry Load text visible
+S1 entry Menu menu renders
+S1 entry Menu text visible
+S1 entry menu closes and restores time
+S1 menu leaves player position unchanged
+S2 entry Menu menu renders
+S2 entry Menu text visible
+S2 entry Items menu renders
+S2 entry Items text visible
+S2 entry Options menu renders
+S2 entry Options text visible
+S2 entry Save menu renders
+S2 entry Save text visible
+S2 entry Load menu renders
+S2 entry Load text visible
+S2 entry Menu menu renders
+S2 entry Menu text visible
+S2 entry menu closes and restores time
+S2 menu leaves player position unchanged
+T2 entry Menu menu renders
+T2 entry Menu text visible
+T2 entry Items menu renders
+T2 entry Items text visible
+T2 entry Options menu renders
+T2 entry Options text visible
+T2 entry Save menu renders
+T2 entry Save text visible
+T2 entry Load menu renders
+T2 entry Load text visible
+T2 entry Menu menu renders
+T2 entry Menu text visible
+T2 entry menu closes and restores time
+T2 menu leaves player position unchanged
+Tutorial_T3_VaseBreak entry Menu menu renders
+Tutorial_T3_VaseBreak entry Menu text visible
+Tutorial_T3_VaseBreak entry Items menu renders
+Tutorial_T3_VaseBreak entry Items text visible
+Tutorial_T3_VaseBreak entry Options menu renders
+Tutorial_T3_VaseBreak entry Options text visible
+Tutorial_T3_VaseBreak entry Save menu renders
+Tutorial_T3_VaseBreak entry Save text visible
+Tutorial_T3_VaseBreak entry Load menu renders
+Tutorial_T3_VaseBreak entry Load text visible
+Tutorial_T3_VaseBreak entry Menu menu renders
+Tutorial_T3_VaseBreak entry Menu text visible
+Tutorial_T3_VaseBreak entry menu closes and restores time
+Tutorial_T3_VaseBreak menu leaves player position unchanged
+Tutorial_T4_BroochMissing entry Menu menu renders
+Tutorial_T4_BroochMissing entry Menu text visible
+Tutorial_T4_BroochMissing entry Items menu renders
+Tutorial_T4_BroochMissing entry Items text visible
+Tutorial_T4_BroochMissing entry Options menu renders
+Tutorial_T4_BroochMissing entry Options text visible
+Tutorial_T4_BroochMissing entry Save menu renders
+Tutorial_T4_BroochMissing entry Save text visible
+Tutorial_T4_BroochMissing entry Load menu renders
+Tutorial_T4_BroochMissing entry Load text visible
+Tutorial_T4_BroochMissing entry Menu menu renders
+Tutorial_T4_BroochMissing entry Menu text visible
+Tutorial_T4_BroochMissing entry menu closes and restores time
+Tutorial_T4_BroochMissing menu leaves player position unchanged
+S3 entry Menu menu renders
+S3 entry Menu text visible
+S3 entry Items menu renders
+S3 entry Items text visible
+S3 entry Options menu renders
+S3 entry Options text visible
+S3 entry Save menu renders
+S3 entry Save text visible
+S3 entry Load menu renders
+S3 entry Load text visible
+S3 entry Menu menu renders
+S3 entry Menu text visible
+S3 entry menu closes and restores time
+S3 menu leaves player position unchanged
+Tutorial_T35_BlackoutSearch entry Menu menu renders
+Tutorial_T35_BlackoutSearch entry Menu text visible
+Tutorial_T35_BlackoutSearch entry Items menu renders
+Tutorial_T35_BlackoutSearch entry Items text visible
+Tutorial_T35_BlackoutSearch entry Options menu renders
+Tutorial_T35_BlackoutSearch entry Options text visible
+Tutorial_T35_BlackoutSearch entry Save menu renders
+Tutorial_T35_BlackoutSearch entry Save text visible
+Tutorial_T35_BlackoutSearch entry Load menu renders
+Tutorial_T35_BlackoutSearch entry Load text visible
+Tutorial_T35_BlackoutSearch entry Menu menu renders
+Tutorial_T35_BlackoutSearch entry Menu text visible
+Tutorial_T35_BlackoutSearch entry menu closes and restores time
+Tutorial_T35_BlackoutSearch menu leaves player position unchanged
+Tutorial_S6_OwnerConfession entry Menu menu renders
+Tutorial_S6_OwnerConfession entry Menu text visible
+Tutorial_S6_OwnerConfession entry Items menu renders
+Tutorial_S6_OwnerConfession entry Items text visible
+Tutorial_S6_OwnerConfession entry Options menu renders
+Tutorial_S6_OwnerConfession entry Options text visible
+Tutorial_S6_OwnerConfession entry Save menu renders
+Tutorial_S6_OwnerConfession entry Save text visible
+Tutorial_S6_OwnerConfession entry Load menu renders
+Tutorial_S6_OwnerConfession entry Load text visible
+Tutorial_S6_OwnerConfession entry Menu menu renders
+Tutorial_S6_OwnerConfession entry Menu text visible
+Tutorial_S6_OwnerConfession entry menu closes and restores time
+Tutorial_S6_OwnerConfession menu leaves player position unchanged
+S#6 entry Menu menu renders
+S#6 entry Menu text visible
+S#6 entry Items menu renders
+S#6 entry Items text visible
+S#6 entry Options menu renders
+S#6 entry Options text visible
+S#6 entry Save menu renders
+S#6 entry Save text visible
+S#6 entry Load menu renders
+S#6 entry Load text visible
+S#6 entry Menu menu renders
+S#6 entry Menu text visible
+S#6 entry menu closes and restores time
+S#6 menu leaves player position unchanged
+T0 entry Menu menu renders
+T0 entry Menu text visible
+T0 entry Items menu renders
+T0 entry Items text visible
+T0 entry Options menu renders
+T0 entry Options text visible
+T0 entry Save menu renders
+T0 entry Save text visible
+T0 entry Load menu renders
+T0 entry Load text visible
+T0 entry Menu menu renders
+T0 entry Menu text visible
+T0 entry menu closes and restores time
+T0 menu leaves player position unchanged
+T1 entry Menu menu renders
+T1 entry Menu text visible
+T1 entry Items menu renders
+T1 entry Items text visible
+T1 entry Options menu renders
+T1 entry Options text visible
+T1 entry Save menu renders
+T1 entry Save text visible
+T1 entry Load menu renders
+T1 entry Load text visible
+T1 entry Menu menu renders
+T1 entry Menu text visible
+T1 entry menu closes and restores time
+T1 menu leaves player position unchanged
+Tutorial_PA_Alibi entry Menu menu renders
+Tutorial_PA_Alibi entry Menu text visible
+Tutorial_PA_Alibi entry Items menu renders
+Tutorial_PA_Alibi entry Items text visible
+Tutorial_PA_Alibi entry Options menu renders
+Tutorial_PA_Alibi entry Options text visible
+Tutorial_PA_Alibi entry Save menu renders
+Tutorial_PA_Alibi entry Save text visible
+Tutorial_PA_Alibi entry Load menu renders
+Tutorial_PA_Alibi entry Load text visible
+Tutorial_PA_Alibi entry Menu menu renders
+Tutorial_PA_Alibi entry Menu text visible
+Tutorial_PA_Alibi entry menu closes and restores time
+Tutorial_PA_Alibi menu leaves player position unchanged
+Tutorial_PB_Alibi entry Menu menu renders
+Tutorial_PB_Alibi entry Menu text visible
+Tutorial_PB_Alibi entry Items menu renders
+Tutorial_PB_Alibi entry Items text visible
+Tutorial_PB_Alibi entry Options menu renders
+Tutorial_PB_Alibi entry Options text visible
+Tutorial_PB_Alibi entry Save menu renders
+Tutorial_PB_Alibi entry Save text visible
+Tutorial_PB_Alibi entry Load menu renders
+Tutorial_PB_Alibi entry Load text visible
+Tutorial_PB_Alibi entry Menu menu renders
+Tutorial_PB_Alibi entry Menu text visible
+Tutorial_PB_Alibi entry menu closes and restores time
+Tutorial_PB_Alibi menu leaves player position unchanged
+Tutorial_Prologue entry Menu menu renders
+Tutorial_Prologue entry Menu text visible
+Tutorial_Prologue Menu no opaque black overlay covers menu (Black)
+Tutorial_Prologue entry Items menu renders
+Tutorial_Prologue entry Items text visible
+Tutorial_Prologue Items no opaque black overlay covers menu (Black)
+Tutorial_Prologue entry Options menu renders
+Tutorial_Prologue entry Options text visible
+Tutorial_Prologue Options no opaque black overlay covers menu (Black)
+Tutorial_Prologue entry Save menu renders
+Tutorial_Prologue entry Save text visible
+Tutorial_Prologue Save no opaque black overlay covers menu (Black)
+Tutorial_Prologue entry Load menu renders
+Tutorial_Prologue entry Load text visible
+Tutorial_Prologue Load no opaque black overlay covers menu (Black)
+Tutorial_Prologue entry Menu menu renders
+Tutorial_Prologue entry Menu text visible
+Tutorial_Prologue Menu no opaque black overlay covers menu (Black)
+Tutorial_Prologue entry menu closes and restores time
+Tutorial_Prologue menu leaves player position unchanged
+T0 actual pickup grants brooch for UI verification
+T0 brooch Menu menu renders
+T0 brooch Menu text visible
+T0 brooch Items menu renders
+T0 brooch Items text visible
+T0 brooch Options menu renders
+T0 brooch Options text visible
+T0 brooch Save menu renders
+T0 brooch Save text visible
+T0 brooch Load menu renders
+T0 brooch Load text visible
+T0 brooch Menu menu renders
+T0 brooch Menu text visible
+T0 brooch menu closes and restores time
+T0 menu leaves player position unchanged
+T0 checkpoint reload preserves room and brooch
+T0 restored Menu menu renders
+T0 restored Menu text visible
+T0 restored Items menu renders
+T0 restored Items text visible
+T0 restored Options menu renders
+T0 restored Options text visible
+T0 restored Save menu renders
+T0 restored Save text visible
+T0 restored Load menu renders
+T0 restored Load text visible
+T0 restored Menu menu renders
+T0 restored Menu text visible
+T0 restored menu closes and restores time
+T0 menu leaves player position unchanged
