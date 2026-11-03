@@ -70,7 +70,7 @@ MonoBehaviour:
   - scene:
       path: Assets/Scenes/S3.unity
     conditions: []
-    text: "\uC870\uC218\uC5D0\uAC8C \uB9D0\uC744 \uAC78\uC5B4 \uAE30\uC5B5\uC744
+    text: "\uC18C\uB140\uC5D0\uAC8C \uB9D0\uC744 \uAC78\uC5B4 \uAE30\uC5B5\uC744
       \uC7AC\uD0D0\uC0C9\uD558\uC790. \uC7AC\uD0D0\uC0C9 \uC911 Ctrl\uB85C \uB300\uC0AC\uB97C
       \uB118\uAE38 \uC218 \uC788\uB2E4."
   - scene:
@@ -87,5 +87,5 @@ MonoBehaviour:
     - id: {fileID: 11400000, guid: 59446408f5b99bc4784b4671c57fa289, type: 2}
       compare: 2
       value: 1
-    text: "A\uB97C \uCD94\uAD81\uD55C \uB4A4 \uC870\uC218\uC640 \uD568\uAED8 \uC815\uC804
+    text: "A\uB97C \uCD94\uAD81\uD55C \uB4A4 \uC18C\uB140\uC640 \uD568\uAED8 \uC815\uC804
       \uC804\uD6C4\uB97C \uB2E4\uC2DC \uD655\uC778\uD558\uC790."

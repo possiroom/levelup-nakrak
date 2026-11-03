@@ -11,14 +11,16 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: T4_Missing_02
-  m_EditorClassIdentifier:
-  charName: 조수
-  text: …….
+  m_EditorClassIdentifier: 
+  charName: "\uC18C\uB140"
+  text: "\u2026\u2026."
   portrait: {fileID: -7362208201486185302, guid: 01056c40ff62582469cb1e142c4907a6, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: 0
   isSelect: 0
   isEnd: 0
   selects: []
   nextData: {fileID: 11400000, guid: f7567bca5f094e73b45e680183bc7496, type: 2}
-  nextSceneName:
+  nextSceneName: 
   endActions: []

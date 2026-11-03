@@ -11,14 +11,16 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: T4_Missing_03
-  m_EditorClassIdentifier:
-  charName: 조수
-  text: 브로치가 없는데요.
+  m_EditorClassIdentifier: 
+  charName: "\uC18C\uB140"
+  text: "\uBE0C\uB85C\uCE58\uAC00 \uC5C6\uB294\uB370\uC694."
   portrait: {fileID: -7362208201486185302, guid: 01056c40ff62582469cb1e142c4907a6, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: 0
   isSelect: 0
   isEnd: 0
   selects: []
   nextData: {fileID: 11400000, guid: 5a2057fc365046c2b4dc24f0c4d56a25, type: 2}
-  nextSceneName:
+  nextSceneName: 
   endActions: []

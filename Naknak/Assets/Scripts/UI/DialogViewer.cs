@@ -33,6 +33,7 @@ public class DialogViewer : MonoBehaviour
             string resource = null;
             switch (story.charName)
             {
+                case "소녀":
                 case "조수": resource = "조수 기본"; break;
                 case "탐정":
                 case "주인공": resource = "탐정 기본"; break;

@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: LateMemory
   m_EditorClassIdentifier: 
-  charName: "\uC870\uC218"
+  charName: "\uC18C\uB140"
   text: "\uB2E4\uC2DC \uAE30\uC5B5\uC73C\uB85C \uB4E4\uC5B4\uAC00 \uBCFC\uAC8C\uC694.
     \uBD88\uC774 \uAEBC\uC9C0\uAE30 \uC804\uACFC \uD6C4\uC758 \uC2DC\uACC4 \uC0C1\uC790\uB97C
     \uD655\uC778\uD574 \uC8FC\uC138\uC694."
   portrait: {fileID: -2375540159661161618, guid: fd48403ee249c074fa453b38baa4c29a, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: 0
   isSelect: 0
   isEnd: 1

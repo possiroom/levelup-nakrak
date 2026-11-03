@@ -183,19 +183,19 @@ public static class TutorialRevisionSetup
         EditorUtility.SetDirty(prologueContainer);
         foreach (var c in flow.connections.Where(c => c.from.Name == "Tutorial_Prologue")) c.completedDialog = prologue.Last();
 
-        var narration = Line("Assets/Story/Tutorial/Prologue/MemoryEntryNarration.asset", "조수",
+        var narration = Line("Assets/Story/Tutorial/Prologue/MemoryEntryNarration.asset", "소녀",
             "저는 브로치를 팔려고 전당포 안으로 들어왔어요.", null);
         var s2Last = Load<StoryData>("Assets/Scripts/New Folder/Text_#2/Ait_4.asset");
         for (int i = 1; i <= 4; i++)
         {
             var line = Load<StoryData>("Assets/Scripts/New Folder/Text_#2/Ait_" + i + ".asset");
-            line.charName = i % 2 == 1 ? "탐정" : "조수";
+            line.charName = i % 2 == 1 ? "탐정" : "소녀";
             EditorUtility.SetDirty(line);
         }
         s2Last.isEnd = true; s2Last.nextData = null; EditorUtility.SetDirty(s2Last);
         foreach (var c in flow.connections.Where(c => c.from.Name == "S2" && c.to.Name == "T0"))
         { c.completedDialog = s2Last; c.transitionDialog = narration; }
-        Line("Assets/Story/T0/T0PackedMessage.asset", "조수", "미안해요. 팔 수밖에 없어요.", "조수 슬픔");
+        Line("Assets/Story/T0/T0PackedMessage.asset", "소녀", "미안해요. 팔 수밖에 없어요.", "조수 슬픔");
         Line(Case + "CabinetBeforeIncident.asset", "", "진열장이다.", null);
 
         var aFlag = Flag("EvidenceARouteComplete");

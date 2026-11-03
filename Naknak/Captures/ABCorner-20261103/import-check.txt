@@ -1,0 +1,2 @@
+Assets/Sprite/npc1.png format=RGBA32 filter=Point sprites=4
+Assets/Sprite/npc2.png format=RGBA32 filter=Point sprites=4

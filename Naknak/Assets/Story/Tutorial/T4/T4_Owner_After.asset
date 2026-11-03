@@ -11,14 +11,16 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: T4_Owner_After
-  m_EditorClassIdentifier:
-  charName: 주인
-  text: 난 그대로 돌려줬소.
+  m_EditorClassIdentifier: 
+  charName: "\uC8FC\uC778"
+  text: "\uB09C \uD655\uC2E4\uD558\uAC8C \uB3CC\uB824\uC92C\uC5B4"
   portrait: {fileID: -4014555021377830404, guid: 222bc4665b9d67649995f78fff30f14d, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: 0
   isSelect: 0
   isEnd: 1
   selects: []
   nextData: {fileID: 0}
-  nextSceneName:
+  nextSceneName: 
   endActions: []

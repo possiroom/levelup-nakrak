@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: MemoryEntryNarration
   m_EditorClassIdentifier: 
-  charName: "\uC870\uC218"
+  charName: "\uC18C\uB140"
   text: "\uC800\uB294 \uBE0C\uB85C\uCE58\uB97C \uD314\uB824\uACE0 \uC804\uB2F9\uD3EC
     \uC548\uC73C\uB85C \uB4E4\uC5B4\uC654\uC5B4\uC694."
   portrait: {fileID: 0}

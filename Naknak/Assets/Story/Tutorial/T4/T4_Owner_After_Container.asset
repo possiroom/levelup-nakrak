@@ -11,8 +11,11 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33dad9c7368764146a3e52da044785c8, type: 3}
   m_Name: T4_Owner_After_Container
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   dialogSlots:
   - memo: T4
-    conditions: []
+    conditions:
+    - id: {fileID: 11400000, guid: b67d5e32e82046fcbd46648a8bbeca1d, type: 2}
+      compare: 2
+      value: 1
     headStoryData: {fileID: 11400000, guid: 834fa863ba7c4666b70115e070f31a6a, type: 2}

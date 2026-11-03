@@ -257,15 +257,15 @@ public class TutorialT3T4SceneController : MonoBehaviour
             "T4",
             new CutsceneLine[]
             {
-                new CutsceneLine("조수", "잠깐만요. 제 브로치부터 돌려주세요."),
+                new CutsceneLine("소녀", "잠깐만요. 제 브로치부터 돌려주세요."),
                 new CutsceneLine("주인", "아, 그래. 여기 있소."),
                 new CutsceneLine("", "[브로치가 없는 보석함 아이템을 획득한다.]"),
-                new CutsceneLine("조수", "…….", portraitResource: "조수 당황"),
-                new CutsceneLine("조수", "브로치가 없는데요.", portraitResource: "조수 당황"),
+                new CutsceneLine("소녀", "…….", portraitResource: "조수 당황"),
+                new CutsceneLine("소녀", "브로치가 없는데요.", portraitResource: "조수 당황"),
                 new CutsceneLine("주인", "뭐?"),
-                new CutsceneLine("조수", "분명 여기 넣어뒀잖아요.", portraitResource: "조수 화남"),
+                new CutsceneLine("소녀", "분명 여기 넣어뒀잖아요.", portraitResource: "조수 화남"),
                 new CutsceneLine("주인", "난 그대로 돌려줬소."),
-                new CutsceneLine("조수", "지금 장난하세요?", portraitResource: "조수 화남"),
+                new CutsceneLine("소녀", "지금 장난하세요?", portraitResource: "조수 화남"),
                 new CutsceneLine("주인", "나한테 따져봐야 소용없소!")
             }
         );

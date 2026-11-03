@@ -166,9 +166,29 @@ public sealed partial class GameMenuController
 
     private void Option(string name, Func<string> value, Action<int> adjust, float top)
     {
-        Command(name + "    ‹  " + value() + "  ›", () => { adjust(1); ShowPage(Page.Options); },
+        int rowIndex = buttons.Count;
+        Action<int> change = step => { adjust(step); ShowPage(Page.Options); };
+        var row = Command(name, () => change(1),
             new Vector2(0.15f, top - 0.09f), new Vector2(0.85f, top), null,
-            step => { adjust(step); ShowPage(Page.Options); });
+            change);
+        var heading = row.GetComponentInChildren<TextMeshProUGUI>();
+        var headingRect = heading.rectTransform;
+        headingRect.anchorMin = new Vector2(.04f, .03f);
+        headingRect.anchorMax = new Vector2(.44f, .97f);
+        heading.alignment = TextAlignmentOptions.MidlineLeft;
+        Label(row.transform, value(), 27, new Vector2(.56f, .03f), new Vector2(.84f, .97f), TextAlignmentOptions.Center);
+        OptionArrow(row.transform, "Decrease", "‹", new Vector2(.44f, .03f), new Vector2(.56f, .97f), () => change(-1), rowIndex);
+        OptionArrow(row.transform, "Increase", "›", new Vector2(.84f, .03f), new Vector2(.98f, .97f), () => change(1), rowIndex);
+    }
+
+    private void OptionArrow(Transform parent, string name, string text, Vector2 min, Vector2 max, Action action, int rowIndex)
+    {
+        var rect = Box(parent, name, new Color(1, 1, 1, .04f), min, max);
+        Label(rect, text, 32, Vector2.zero, Vector2.one, TextAlignmentOptions.Center);
+        var button = rect.gameObject.AddComponent<Button>();
+        button.navigation = new Navigation { mode = Navigation.Mode.None };
+        button.onClick.AddListener(() => action());
+        rect.gameObject.AddComponent<MenuPointerFocus>().OnFocus = () => Focus(rowIndex);
     }
 
     private void SaveOptions()

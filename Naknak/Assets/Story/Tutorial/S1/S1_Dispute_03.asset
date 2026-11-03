@@ -11,14 +11,16 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: S1_Dispute_03
-  m_EditorClassIdentifier:
-  charName: "조수"
-  text: "브로치요. 상자에 넣어서 드렸잖아요."
+  m_EditorClassIdentifier: 
+  charName: "\uC18C\uB140"
+  text: "\uBE0C\uB85C\uCE58\uC694. \uC0C1\uC790\uC5D0 \uB123\uC5B4\uC11C \uB4DC\uB838\uC796\uC544\uC694."
   portrait: {fileID: -7135239514645827687, guid: 51dbd030cd81f394998871121907571d, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: 0
   isSelect: 0
   isEnd: 0
   selects: []
   nextData: {fileID: 11400000, guid: 7c1ae78814204578a701eb84b79f7bd2, type: 2}
-  nextSceneName:
+  nextSceneName: 
   endActions: []

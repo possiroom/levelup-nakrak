@@ -11,8 +11,8 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: T0PackedMessage
-  m_EditorClassIdentifier:
-  charName: "\uC870\uC218"
+  m_EditorClassIdentifier: 
+  charName: "\uC18C\uB140"
   text: "\uBBF8\uC548\uD574\uC694. \uD314 \uC218\uBC16\uC5D0 \uC5C6\uC5B4\uC694."
   portrait: {fileID: -5843781598869218212, guid: d9acf9e4dc242704db11fa02f98b7422, type: 3}
   doorSlam: 0
@@ -22,5 +22,5 @@ MonoBehaviour:
   isEnd: 1
   selects: []
   nextData: {fileID: 0}
-  nextSceneName:
+  nextSceneName: 
   endActions: []

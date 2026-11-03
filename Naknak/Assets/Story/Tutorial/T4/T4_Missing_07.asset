@@ -11,14 +11,16 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: T4_Missing_07
-  m_EditorClassIdentifier:
-  charName: 조수
-  text: 지금 장난하세요?
+  m_EditorClassIdentifier: 
+  charName: "\uC18C\uB140"
+  text: "\uC9C0\uAE08 \uC7A5\uB09C\uD558\uC138\uC694?"
   portrait: {fileID: -7135239514645827687, guid: 51dbd030cd81f394998871121907571d, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: 0
   isSelect: 0
   isEnd: 0
   selects: []
   nextData: {fileID: 11400000, guid: 62edfce2ce2b497d9560d92050251548, type: 2}
-  nextSceneName:
+  nextSceneName: 
   endActions: []

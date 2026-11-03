@@ -11,14 +11,16 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36a64ccd0b7f04e1db59e128cda30338, type: 3}
   m_Name: T4_Return_01
-  m_EditorClassIdentifier:
-  charName: 조수
-  text: 잠깐만요. 제 브로치부터 돌려주세요.
+  m_EditorClassIdentifier: 
+  charName: "\uC18C\uB140"
+  text: "\uC7A0\uAE50\uB9CC\uC694. \uC81C \uBE0C\uB85C\uCE58\uBD80\uD130 \uB3CC\uB824\uC8FC\uC138\uC694."
   portrait: {fileID: -2375540159661161618, guid: fd48403ee249c074fa453b38baa4c29a, type: 3}
+  doorSlam: 0
+  autoAdvanceAfter: 0
   activatedImage: 0
   isSelect: 0
   isEnd: 0
   selects: []
   nextData: {fileID: 11400000, guid: ab76048e98164d7ea9a45e63c198fb47, type: 2}
-  nextSceneName:
+  nextSceneName: 
   endActions: []
