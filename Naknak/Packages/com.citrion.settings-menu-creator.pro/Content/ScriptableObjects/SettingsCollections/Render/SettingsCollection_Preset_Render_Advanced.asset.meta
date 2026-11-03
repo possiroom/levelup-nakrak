@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ced6ea6ce4805ee4aa5a375f75286a77
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/Content/ScriptableObjects/SettingsCollections/Render/SettingsCollection_Preset_Render_Advanced.asset
+  uploadId: 988202

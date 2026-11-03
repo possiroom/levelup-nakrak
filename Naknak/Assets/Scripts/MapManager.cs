@@ -18,6 +18,8 @@ public class MapManager : MonoBehaviour
     [SerializeField] bool debugMode = false;
 
     private MapContainer CurrentMap { get; set; }
+    private GameObject currentMapPrefab;
+    private Vector2Int currentMapStartPos;
     private Dictionary<string, MapContainer> mapStore = new();
 
     // Singleton Pattern
@@ -48,23 +50,48 @@ public class MapManager : MonoBehaviour
         bool hasPrevMap = mapStore.Count > 0;
         if (hasPrevMap)
         {
-            StartCoroutine(panel.FadeInOut(changeMapTime, 0.3f, 0.5f));
-            StartCoroutine(playerCtrl.Teleport(pos, changeMapTime));
+            if (panel != null)
+                StartCoroutine(panel.FadeInOut(changeMapTime, 0.3f, 0.5f));
+
             playerCtrl.SetFloor(1);
             yield return new WaitForSeconds(changeMapTime);
+
+            StartCoroutine(playerCtrl.Teleport(pos, 0f));
+
             if (destroy) FreeMap(CurrentMap);
         }
 
+        currentMapPrefab = newMap;
+        currentMapStartPos = pos;
         CurrentMap = LoadMap(newMap);
-        TriggerExecutor.Instance.ChangeMap(CurrentMap.GridLayout, CurrentMap.TriggerTilemap);
+        TriggerExecutor.Instance.ChangeMap(CurrentMap.GridLayout, CurrentMap.gameObject);
         TriggerExecutor.Instance.ChangeC2E(CurrentMap.GetC2E());
         CurrentMap.debugMode = debugMode;
+    }
+
+    public void RestartCurrentMap()
+    {
+        // Temporary: do not restart the current map while death is disabled.
+        if (!TemporaryFeatureSwitches.HealthSystemEnabled) return;
+        if (currentMapPrefab == null) return;
+
+        StartCoroutine(RestartCurrentMapRoutine());
+    }
+
+    private IEnumerator RestartCurrentMapRoutine()
+    {
+        yield return ChangeMap(currentMapPrefab, currentMapStartPos, true);
+
+        if (PlayerStatus.Instance != null)
+        {
+            PlayerStatus.Instance.ResetHealth();
+        }
     }
 
     private MapContainer LoadMap(GameObject mapPrefab)
     {
         MapContainer loadMap;
-        // 메모리에 맵에 올라와 있을 때
+        // 메모리에 맵에 ?�라?� ?�을 ??
         if (mapStore.ContainsKey(mapPrefab.name))
         {
             loadMap = mapStore[mapPrefab.name];

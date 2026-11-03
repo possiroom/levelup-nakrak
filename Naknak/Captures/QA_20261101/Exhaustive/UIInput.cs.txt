@@ -1,0 +1,118 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.IO;
+using UnityEngine;
+using UnityEditor;
+using TMPro;
+using UnityEngine.UI;
+using Naknak.Inventory;
+public static class NaknakUIReview
+{
+    public static bool Running; public static string Phase;
+    static BindingFlags P=BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public;
+    static string Root="Captures/QA_20261101/Exhaustive/";
+    static List<string> Log=new List<string>();
+    static GameMenuController M { get { return GameMenuController.Instance; } }
+    static PlayerMoveController3 Player { get { return UnityEngine.Object.FindFirstObjectByType<PlayerMoveController3>(); } }
+    static object Get(object o,string n){return o.GetType().GetField(n,P).GetValue(o);}
+    static object Call(object o,string n,params object[] args){return o.GetType().GetMethod(n,P).Invoke(o,args);}
+    static void Note(string s){Log.Add(s);File.WriteAllLines(Root+"ui-input-runtime.txt",Log.ToArray());}
+    static void Check(bool b,string s){Note((b?"PASS | ":"ISSUE | ")+s);}
+    static Type Helper { get { return AppDomain.CurrentDomain.GetAssemblies().Select(a=>a.GetType("NaknakMatrix")).First(t=>t!=null); } }
+    static object H(string n,params object[] args){return Helper.GetMethod(n,BindingFlags.NonPublic|BindingFlags.Static).Invoke(null,args);}
+    static void Page(string n){Call(M,"ShowPage",Enum.Parse(Get(M,"page").GetType(),n));}
+    public static void Begin(){Running=true;M.enabled=false;M.StartCoroutine(RunGuard());}
+    static IEnumerator RunGuard()
+    {
+        var stack=new Stack<IEnumerator>();stack.Push(Run());
+        while(stack.Count>0){object next=null;bool moved=false;try{moved=stack.Peek().MoveNext();if(moved)next=stack.Peek().Current;}catch(Exception e){Note("CASE ERROR | "+Phase+" | "+e);break;}if(!moved){stack.Pop();continue;}if(next is IEnumerator)stack.Push((IEnumerator)next);else yield return next;}
+        Running=false;Phase="Finished";Note("FINISHED");
+    }
+    static IEnumerator Delay(float duration){float until=Time.realtimeSinceStartup+duration;while(Time.realtimeSinceStartup<until)yield return null;}
+    static void Queue(KeyCode key,EventType type){EditorGUIUtility.QueueGameViewInputEvent(new Event{type=type,keyCode=key});}
+    static IEnumerator Tap(KeyCode key,bool menu)
+    {
+        EditorWindow.GetWindow(typeof(Editor).Assembly.GetType("UnityEditor.GameView")).Focus();
+        yield return null;Queue(key,EventType.KeyDown);bool received=false;
+        for(int i=0;i<15;i++){yield return null;if(Input.GetKeyDown(key)){received=true;if(menu)Call(M,"HandleMenuInput");break;}}
+        Queue(key,EventType.KeyUp);yield return null;Note("KEY | "+key+" legacy-Input-received="+received);
+    }
+    static IEnumerator Keyboard()
+    {
+        Phase="Keyboard";yield return (IEnumerator)H("Reset","T2",true);yield return (IEnumerator)H("Close",20f);
+        H("Dismiss");Player.TeleportToWorld(new Vector2(1,-2));yield return Delay(.25f);
+        var before=Player.transform.position;yield return Tap(KeyCode.RightArrow,false);yield return Delay(.5f);
+        Note("MOVEMENT | RightArrow "+before+" -> "+Player.transform.position);
+        bool works=Vector3.Distance(before,Player.transform.position)>.5f;
+        if(!works){Note("LIMITATION | Editor queued keyboard did not move player; physical keyboard verification unavailable through this input path.");yield break;}
+        foreach(var key in new[]{KeyCode.LeftArrow,KeyCode.UpArrow,KeyCode.DownArrow,KeyCode.A,KeyCode.D,KeyCode.W,KeyCode.S})
+        {
+            Player.TeleportToWorld(new Vector2(1,-2));yield return Delay(.2f);before=Player.transform.position;yield return Tap(key,false);yield return Delay(.5f);Check(Vector3.Distance(before,Player.transform.position)>.5f,"Actual key movement "+key);
+        }
+        foreach(var key in new[]{KeyCode.Z,KeyCode.Return,KeyCode.KeypadEnter})
+        {
+            H("Dismiss");Player.TeleportToWorld(new Vector2(1,-4));Player.SetFacingDirection(Vector2.down);yield return Delay(.2f);
+            yield return Tap(key,false);Check(DialogManager.Instance.IsDialogOpen,"Confirm key opens exit dialogue "+key);
+        }
+        H("Dismiss");Call(M,"Pause");Page("Menu");yield return null;
+        foreach(var key in new[]{KeyCode.RightArrow,KeyCode.LeftArrow,KeyCode.DownArrow,KeyCode.UpArrow,KeyCode.Q,KeyCode.E,KeyCode.Tab})
+        {yield return Tap(key,true);Check(Get(M,"page").ToString()=="Menu"&&Time.timeScale==0,"Menu navigation remains paused "+key);}
+        yield return Tap(KeyCode.Escape,true);Check(Get(M,"page").ToString()=="Closed"&&Time.timeScale>0,"Esc resumes menu");
+    }
+    static IEnumerator Screens()
+    {
+        Phase="Resolution and layout";yield return (IEnumerator)H("Reset","Tutorial_T3_VaseBreak",true);yield return (IEnumerator)H("Close",20f);
+        var catalog=Resources.Load<GameMenuConfiguration>("NaknakMenu").items;foreach(var i in catalog.Where(i=>i!=null&&!i.Retired))GameMenuController.Inventory.Add(i.Id);
+        var vt=typeof(Editor).Assembly.GetType("UnityEditor.GameView");var window=EditorWindow.GetWindow(vt);var prop=vt.GetProperty("selectedSizeIndex",P);int original=(int)prop.GetValue(window,null);
+        var st=typeof(Editor).Assembly.GetType("UnityEditor.GameViewSizes");var singleton=typeof(ScriptableSingleton<>).MakeGenericType(st).GetProperty("instance").GetValue(null,null);
+        var group=st.GetProperty("currentGroup",P).GetValue(singleton,null);int customs=(int)Call(group,"GetCustomCount");
+        try
+        {
+            foreach(var size in new[]{new Vector2Int(960,540),new Vector2Int(1280,720),new Vector2Int(1920,1080),new Vector2Int(1024,768),new Vector2Int(2560,1080),new Vector2Int(720,1280)})
+            {
+                var sizeType=typeof(Editor).Assembly.GetType("UnityEditor.GameViewSize");var mode=typeof(Editor).Assembly.GetType("UnityEditor.GameViewSizeType");
+                var entry=Activator.CreateInstance(sizeType,new object[]{Enum.Parse(mode,"FixedResolution"),size.x,size.y,"Naknak QA "+size});Call(group,"AddCustomSize",entry);
+                int index=(int)Call(group,"GetTotalCount")-1;prop.SetValue(window,index,null);window.Repaint();yield return Delay(.3f);
+                Note("RESOLUTION | requested="+size+" actual="+Screen.width+"x"+Screen.height);
+                foreach(var page in new[]{"Title","Menu","Options","Save","Load"})
+                {
+                    Call(M,"Pause");Page(page);yield return Delay(.1f);Canvas.ForceUpdateCanvases();
+                    int overflow=0;
+                    foreach(var text in ((RectTransform)Get(M,"panel")).GetComponentsInChildren<TextMeshProUGUI>())
+                    {text.ForceMeshUpdate();if(text.isTextOverflowing){overflow++;Note("TEXT OVERFLOW | "+size+" "+page+" | "+text.text.Replace("\n"," "));}}
+                    yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Root+"layout-"+size.x+"x"+size.y+"-"+page+".png");yield return null;
+                    Note("LAYOUT | "+size+" "+page+" overflowing-labels="+overflow);
+                }
+                H("Dismiss");
+                var stories=AssetDatabase.FindAssets("t:StoryData",new[]{"Assets/Story/Tutorial"}).Select(g=>AssetDatabase.LoadAssetAtPath<StoryData>(AssetDatabase.GUIDToAssetPath(g))).ToArray();
+                int dialogOverflow=0;
+                foreach(var story in stories)
+                {
+                    DialogManager.Instance.ShowDialog(story);DialogManager.Instance.NextDialog();Canvas.ForceUpdateCanvases();
+                    var view=(DialogViewer)Get(DialogManager.Instance,"view");var text=(TextMeshProUGUI)Get(view,"storyText");text.ForceMeshUpdate();
+                    if(text.isTextOverflowing){dialogOverflow++;Note("DIALOG OVERFLOW | "+size+" "+story.name+" | "+story.text.Replace("\n"," "));}
+                }
+                Note("DIALOG LAYOUT | "+size+" checked="+stories.Length+" overflow="+dialogOverflow);
+                var longest=stories.OrderByDescending(s=>s.text==null?0:s.text.Length).First();DialogManager.Instance.ShowDialog(longest);DialogManager.Instance.NextDialog();yield return null;
+                yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Root+"dialog-"+size.x+"x"+size.y+".png");yield return null;H("Dismiss");
+            }
+        }
+        finally
+        {
+            prop.SetValue(window,original,null);
+            while((int)Call(group,"GetCustomCount")>customs)Call(group,"RemoveCustomSize",(int)Call(group,"GetCustomCount")-1);
+            window.Repaint();H("Dismiss");
+        }
+    }
+    static IEnumerator OverlapReality()
+    {
+        Phase="Reality overlap";yield return (IEnumerator)H("Reset","S3",true);yield return (IEnumerator)H("Close",20f);
+        var npc=UnityEngine.Object.FindObjectsByType<NPC>(FindObjectsSortMode.None).First(n=>n.name=="assist"&&n.gameObject.scene.path==SceneLoadManager.CurrentScenePath);
+        var seen=(Dictionary<Vector2Int,Vector2Int>)H("Reach");var target=Vector2Int.RoundToInt(npc.transform.position);
+        if(seen.ContainsKey(target)){yield return (IEnumerator)H("Walk",seen,target);Note("OVERLAP | S3 actual controller walked into assist at "+Player.transform.position);yield return Delay(.3f);yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Root+"S3-assistant-overlap.png");yield return null;}
+    }
+    static IEnumerator Run(){yield return OverlapReality();yield return Keyboard();yield return Screens();}
+}

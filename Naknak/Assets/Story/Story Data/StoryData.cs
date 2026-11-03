@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "StoryData", menuName = "Scriptable Objects/Create New Story Data")]
@@ -8,6 +9,11 @@ public class StoryData : ScriptableObject
     
     [TextArea(3, 10)]
     public string text;
+
+    [Tooltip("Portrait for this line. Leave empty to use the speaker's default portrait.")]
+    public Sprite portrait;
+    public bool doorSlam;
+    [Min(0)] public float autoAdvanceAfter;
     
     public int activatedImage;    // 이미지 번호
     public bool isSelect;         // 선택지 여부
@@ -17,6 +23,10 @@ public class StoryData : ScriptableObject
     [Header("연결")]
     public List<StorySelectData> selects;
     public StoryData nextData; 
+
+    [Header("Scene Transition")]
+    [Tooltip("Enter a scene name from Build Settings. Leave empty to stay in the current scene.")]
+    public string nextSceneName;
 
     public List<DialogAction> endActions = new List<DialogAction>();
 }

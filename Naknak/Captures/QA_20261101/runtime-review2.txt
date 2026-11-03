@@ -1,0 +1,19 @@
+CATEGORY | evidence mode category=0 items=evidence-expired-ticket,evidence-returned-letter,evidence-watch-box,evidence-telephone-trace
+CATEGORY | evidence mode category=1 items=
+CATEGORY | evidence mode category=2 items=evidence-expired-ticket,evidence-returned-letter,evidence-watch-box,evidence-telephone-trace
+PASS | T2 | Isolated manual save round trip
+PASS | T2 | Memory checkpoint restores scene and investigation phase
+PASS | T2 | Memory checkpoint restores inventory entries 4 -> 4
+RESTORE | pos=(5.00, -1.00, 0.00) facing=(-1.00, 0.00) page=Closed
+PASS | T2 | A opens the normal evidence menu with S3Seen set
+REENTRY BEFORE | evidence-expired-ticket,evidence-returned-letter,evidence-telephone-trace,evidence-watch-box
+REENTRY AFTER | evidence-expired-ticket,evidence-returned-letter,evidence-telephone-trace,evidence-watch-box,tutorial-packed-jewelry-box
+PASS | T2 | Watch box can be reacquired after exiting memory before presenting it
+PASS | T2 | Returned letter can be reacquired after exiting memory
+LATE QUESTION | S3Seen=1,MemoryReturnUnlocked=1,PACompleted=1,PBCompleted=1,OwnerConfessed=1,OpenBoxFound=1,ABoxCollected=1,AQuestioned=1
+ISSUE | T2 | Late reentry provides A's watch box for the final comparison
+FIXTURE | Add only the missing watch box to inspect content beyond the progression blocker
+FINAL BOX | description=시계 제조사의 로고가 박힌 상자. 전보다 묵직하다. 안에 무언가 들어 있다. inspect=WatchBoxHeavy
+ISSUE | S#6 | Ending reaches case solved after the blocked item is supplied as a test fixture
+FINAL PAGE | Closed
+FINISHED

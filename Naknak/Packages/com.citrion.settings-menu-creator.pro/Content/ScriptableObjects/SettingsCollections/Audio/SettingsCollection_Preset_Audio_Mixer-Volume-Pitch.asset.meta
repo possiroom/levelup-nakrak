@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f23a68ba5ae972547ba1543c17fbfa0c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/Content/ScriptableObjects/SettingsCollections/Audio/SettingsCollection_Preset_Audio_Mixer-Volume-Pitch.asset
+  uploadId: 988202

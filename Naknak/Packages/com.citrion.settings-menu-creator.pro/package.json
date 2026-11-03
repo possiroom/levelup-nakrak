@@ -1,0 +1,23 @@
+{
+  "name": "com.citrion.settings-menu-creator.pro",
+  "version": "1.6.8",
+  "displayName": "CitrioN - Settings Menu Creator - Pro",
+  "unity": "2021.3",
+  "keywords": [
+    "settings",
+    "options",
+    "ui",
+    "gui",
+    "ugui",
+    "uielements",
+    "uitoolkit",
+    "menu",
+    "interface",
+    "automatic",
+    "generate"
+  ],
+  "author": {
+    "name": "CitrioN"
+  },
+  "description": "The Settings Menu Creator is a tool that makes the creation of settings/options menus quick and easy. The Pro version features many addtional settings, additional save options and more."
+}

@@ -1,0 +1,35 @@
+PASS
+Keys=641
+Walked tiles=145
+Z S2/assist from (0.00, 2.00, 0.00) facing (0.00, 1.00)
+Z T0/T0 Broach from (-2.00, -2.00, 0.00) facing (0.00, 1.00)
+Z T0/T0 Jewelry Box from (-4.00, -5.00, 0.00) facing (-1.00, 0.00)
+Z T0/T0 Room Exit from (-2.00, -5.00, 0.00) facing (0.00, -1.00)
+Z T2/Owner from (-3.00, 1.00, 0.00) facing (0.00, 1.00)
+Z S3/assist from (0.00, 2.00, 0.00) facing (0.00, 1.00)
+Z T2/Cabinet Number 2 from (5.00, 4.00, 0.00) facing (0.00, 1.00)
+Z T2/Trash Can from (4.00, -3.00, 0.00) facing (0.00, -1.00)
+Z T2/phone from (-4.00, 0.00, 0.00) facing (-1.00, 0.00)
+Z T2/Counter Watch from (-2.00, 2.00, 0.00) facing (0.00, 1.00)
+Z T2/Vase Toy from (-4.00, -1.00, 0.00) facing (-1.00, 0.00)
+Z T2/Unremembered Back Door from (-4.00, 5.00, 0.00) facing (-1.00, 0.00)
+Z T2/A from (-3.00, 1.00, 0.00) facing (-1.00, 0.00)
+Z T2/A from (-3.00, 1.00, 0.00) facing (-1.00, 0.00)
+Evidence A <- evidence-returned-letter
+Z T2/A from (-3.00, 1.00, 0.00) facing (-1.00, 0.00)
+Evidence A <- evidence-watch-box
+Z T2/A from (-3.00, 1.00, 0.00) facing (-1.00, 0.00)
+Evidence A <- evidence-telephone-trace
+Z T2/B from (3.00, -2.00, 0.00) facing (0.00, -1.00)
+Evidence B <- evidence-expired-ticket
+Z T2/B from (3.00, -2.00, 0.00) facing (0.00, -1.00)
+Evidence B <- evidence-clockwork-toy
+Z T2/Owner from (-3.00, 1.00, 0.00) facing (0.00, 1.00)
+Z Tutorial_T3_VaseBreak/VaseBroken from (-4.00, -1.00, 0.00) facing (0.00, -1.00)
+Z Tutorial_T3_VaseBreak/Trash Can from (4.00, -3.00, 0.00) facing (0.00, -1.00)
+Z Tutorial_T3_VaseBreak/phone from (-4.00, 0.00, 0.00) facing (-1.00, 0.00)
+Z Tutorial_T3_VaseBreak/Cabinet Number 2 from (5.00, 4.00, 0.00) facing (0.00, 1.00)
+Z Tutorial_T3_VaseBreak/B from (5.00, 4.00, 0.00) facing (-1.00, 0.00)
+Evidence B <- evidence-flathead-driver
+Z Tutorial_T35_BlackoutSearch/DroppedOpenBoxInteract from (-1.00, 5.00, 0.00) facing (-1.00, 0.00)
+Six reconstructions completed using walking and Z/item keys only. Scene=S#6

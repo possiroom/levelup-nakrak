@@ -1,0 +1,52 @@
+OVERLAP | S3 actual controller walked into assist at (0.00, 3.00, 0.00)
+KEY | RightArrow legacy-Input-received=False
+MOVEMENT | RightArrow (1.00, -2.00, 0.00) -> (1.00, -2.00, 0.00)
+LIMITATION | Editor queued keyboard did not move player; physical keyboard verification unavailable through this input path.
+RESOLUTION | requested=(960, 540) actual=960x540
+LAYOUT | (960, 540) Title overflowing-labels=0
+LAYOUT | (960, 540) Menu overflowing-labels=0
+LAYOUT | (960, 540) Options overflowing-labels=0
+LAYOUT | (960, 540) Save overflowing-labels=0
+LAYOUT | (960, 540) Load overflowing-labels=0
+DIALOG LAYOUT | (960, 540) checked=106 overflow=0
+RESOLUTION | requested=(1280, 720) actual=1280x720
+LAYOUT | (1280, 720) Title overflowing-labels=0
+LAYOUT | (1280, 720) Menu overflowing-labels=0
+LAYOUT | (1280, 720) Options overflowing-labels=0
+LAYOUT | (1280, 720) Save overflowing-labels=0
+LAYOUT | (1280, 720) Load overflowing-labels=0
+DIALOG LAYOUT | (1280, 720) checked=106 overflow=0
+RESOLUTION | requested=(1920, 1080) actual=1920x1080
+LAYOUT | (1920, 1080) Title overflowing-labels=0
+LAYOUT | (1920, 1080) Menu overflowing-labels=0
+LAYOUT | (1920, 1080) Options overflowing-labels=0
+LAYOUT | (1920, 1080) Save overflowing-labels=0
+LAYOUT | (1920, 1080) Load overflowing-labels=0
+DIALOG LAYOUT | (1920, 1080) checked=106 overflow=0
+RESOLUTION | requested=(1024, 768) actual=1024x768
+LAYOUT | (1024, 768) Title overflowing-labels=0
+LAYOUT | (1024, 768) Menu overflowing-labels=0
+LAYOUT | (1024, 768) Options overflowing-labels=0
+LAYOUT | (1024, 768) Save overflowing-labels=0
+LAYOUT | (1024, 768) Load overflowing-labels=0
+DIALOG LAYOUT | (1024, 768) checked=106 overflow=0
+RESOLUTION | requested=(2560, 1080) actual=2560x1080
+LAYOUT | (2560, 1080) Title overflowing-labels=0
+LAYOUT | (2560, 1080) Menu overflowing-labels=0
+LAYOUT | (2560, 1080) Options overflowing-labels=0
+LAYOUT | (2560, 1080) Save overflowing-labels=0
+LAYOUT | (2560, 1080) Load overflowing-labels=0
+DIALOG LAYOUT | (2560, 1080) checked=106 overflow=0
+RESOLUTION | requested=(720, 1280) actual=720x1280
+LAYOUT | (720, 1280) Title overflowing-labels=0
+TEXT OVERFLOW | (720, 1280) Menu | 기한이 지난 전당포증
+TEXT OVERFLOW | (720, 1280) Menu | 떨어진 보석함
+TEXT OVERFLOW | (720, 1280) Menu | 브로치가 담긴 보석함
+TEXT OVERFLOW | (720, 1280) Menu | 일자 드라이버
+TEXT OVERFLOW | (720, 1280) Menu | 전화기 사용 흔적
+LAYOUT | (720, 1280) Menu overflowing-labels=5
+LAYOUT | (720, 1280) Options overflowing-labels=0
+LAYOUT | (720, 1280) Save overflowing-labels=0
+LAYOUT | (720, 1280) Load overflowing-labels=0
+DIALOG LAYOUT | (720, 1280) checked=106 overflow=0
+FINISHED

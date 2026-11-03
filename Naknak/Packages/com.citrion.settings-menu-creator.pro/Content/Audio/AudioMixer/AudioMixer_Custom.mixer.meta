@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f5faae31d30df7c4f8530669a333b336
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 24100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/Content/Audio/AudioMixer/AudioMixer_Custom.mixer
+  uploadId: 988202

@@ -8,10 +8,18 @@ public class UIFadeInOut : MonoBehaviour
     private Color baseColor;
     private Color transparent;
 
-    void Start()
+    void Awake()
     {
         image = GetComponent<Image>();
         if (image == null) return;
+
+        RectTransform rect = image.rectTransform;
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+        rect.anchoredPosition = Vector2.zero;
+        rect.localScale = Vector3.one;
 
         baseColor = image.color;
         transparent = new Color(baseColor.r, baseColor.g, baseColor.b, 0f);

@@ -1,0 +1,123 @@
+S0 has 18 ordered dialogue/sound beats
+S0 sleeping portrait
+S0/S1 footsteps and door bell finish before S1
+S1 detective walks before entrance dialogue
+S2 assistant attention marker
+Memory narration appears over the black transition
+T0 memory uses grayscale
+T0 packing opens inventory
+T0 packing assistant line
+T1 assistant starts at the entrance
+T1 assistant faces away from the camera
+A starts walking after the A/owner conversation in T1
+A is already at the telephone on T2 entry
+Owner stands behind the center of the counter
+Owner is reachable from the counter front through normal interaction
+Ctrl skip follows the first price choice and closes appraisal
+Assistant appraisal does not start another A walk
+Blackout remains held longer after the vase breaks
+First memory returns through T4 without enabling investigation
+Second memory enables investigation
+Pre-blackout cabinet is ordinary
+A interaction opens evidence immediately
+Cancel restores gameplay without evidence credit
+Unrelated evidence shows the rejection line
+Rejected evidence does not increase progress
+A opens evidence menu by interaction (1)
+A distinct route count 1
+A opens evidence menu by interaction (1)
+A distinct route count 1
+Repeated evidence counts once
+Evidence menu shows successful items including prior visits
+A opens evidence menu by interaction (2)
+A distinct route count 2
+A opens evidence menu by interaction (3)
+A distinct route count 3
+A complete interaction shows the completion line
+B opens evidence menu by interaction (1)
+B distinct route count 1
+B opens evidence menu by interaction (2)
+B distinct route count 2
+Driver without cabinet investigation does not complete the third route
+T3 revisit remains dark and playable
+Dark T3 cabinet investigation works through normal interaction without B blocking it
+All six actions trigger combined completion
+PA is a stationary reality conversation
+PB is a reality conversation
+Both truth confirmations remain complete after memory exit
+Ordinary dropped-box interaction reaches owner confession
+Late memory retains collected watch box
+Inspecting pre-blackout watch box records empty state
+Natural before/after comparison grants final evidence
+Natural ending solves case without injecting evidence
+T2 phone reachable from player without teleport
+Walk step toward phone at (4, -1)
+Walk step toward phone at (3, -1)
+Walk step toward phone at (2, -1)
+Walk step toward phone at (1, -1)
+Walk step toward phone at (0, -1)
+Walk step toward phone at (-1, -1)
+Walk step toward phone at (-2, -1)
+Walk step toward phone at (-3, -1)
+Walk step toward phone at (-4, -1)
+Walk step toward phone at (-4, 0)
+T2 Trash Can reachable from player without teleport
+Walk step toward Trash Can at (-3, 0)
+Walk step toward Trash Can at (-2, 0)
+Walk step toward Trash Can at (-1, 0)
+Walk step toward Trash Can at (-1, -1)
+Walk step toward Trash Can at (0, -1)
+Walk step toward Trash Can at (1, -1)
+Walk step toward Trash Can at (2, -1)
+Walk step toward Trash Can at (3, -1)
+Walk step toward Trash Can at (4, -1)
+Walk step toward Trash Can at (4, -2)
+Walk step toward Trash Can at (4, -3)
+T2 A reachable from player without teleport
+Walk step toward A at (4, -2)
+Walk step toward A at (3, -2)
+Walk step toward A at (2, -2)
+Walk step toward A at (1, -2)
+Walk step toward A at (0, -2)
+Walk step toward A at (-1, -2)
+Walk step toward A at (-2, -2)
+Walk step toward A at (-3, -2)
+Walk step toward A at (-4, -2)
+Walk step toward A at (-4, -1)
+Walk step toward A at (-4, 0)
+T2 B reachable from player without teleport
+Walk step toward B at (-3, 0)
+Walk step toward B at (-2, 0)
+Walk step toward B at (-1, 0)
+Walk step toward B at (-1, -1)
+Walk step toward B at (0, -1)
+Walk step toward B at (1, -1)
+Walk step toward B at (2, -1)
+Walk step toward B at (3, -1)
+Walk step toward B at (3, -2)
+T2 Cabinet Number 2 reachable from player without teleport
+Walk step toward Cabinet Number 2 at (4, -2)
+Walk step toward Cabinet Number 2 at (5, -2)
+Walk step toward Cabinet Number 2 at (5, -1)
+Walk step toward Cabinet Number 2 at (5, 0)
+Walk step toward Cabinet Number 2 at (5, 1)
+Walk step toward Cabinet Number 2 at (5, 2)
+Walk step toward Cabinet Number 2 at (5, 3)
+Walk step toward Cabinet Number 2 at (5, 4)
+T2 Counter Watch reachable from player without teleport
+Walk step toward Counter Watch at (4, 4)
+Walk step toward Counter Watch at (3, 4)
+Walk step toward Counter Watch at (2, 4)
+Walk step toward Counter Watch at (1, 4)
+Walk step toward Counter Watch at (0, 4)
+Walk step toward Counter Watch at (0, 3)
+Walk step toward Counter Watch at (0, 2)
+Walk step toward Counter Watch at (-1, 2)
+Walk step toward Counter Watch at (-2, 2)
+T2 all 720 six-evidence permutations tested
+T2 all 64 completion masks tested with selection, cancellation and wrong-witness evidence
+Tutorial_T3_VaseBreak all 720 six-evidence permutations tested
+Tutorial_T3_VaseBreak all 64 completion masks tested with selection, cancellation and wrong-witness evidence
+Tutorial_T4_BroochMissing all 720 six-evidence permutations tested
+Tutorial_T4_BroochMissing all 64 completion masks tested with selection, cancellation and wrong-witness evidence
+All three replay scenes complete their order and state matrices

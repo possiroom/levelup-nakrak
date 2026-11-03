@@ -46,13 +46,14 @@ public class ConditionManager : MonoBehaviour
     public static ConditionManager Instance;
 
     private Dictionary<string, int> variables = new Dictionary<string, int>();
-    private string SavePath => Application.dataPath + "/Story/GameData.csv";
+    private readonly Dictionary<string, string> presentedEvidence = new Dictionary<string, string>();
+    private string SavePath => Path.Combine(Application.persistentDataPath, "Naknak", "StoryVariables.csv");
 
     // Singleton
     void Awake()
     {
         if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        else { Destroy(gameObject); return; }
         DontDestroyOnLoad(gameObject);
 
         LoadFromCSV();
@@ -63,6 +64,7 @@ public class ConditionManager : MonoBehaviour
     {
         if (id == null) return;
         variables[id.name] = value;
+        if (value == 0) presentedEvidence.Remove(id.name);
         Debug.Log("[ConditionManager] Set: " + id.name + " = " + value);
     }
 
@@ -84,6 +86,23 @@ public class ConditionManager : MonoBehaviour
     {
         if (id != null && variables.ContainsKey(id.name)) return variables[id.name];
         return 0; 
+    }
+
+    // Stored with ordinary condition values so scene changes and save/load keep
+    // the introduction, while a new memory visit naturally starts it again.
+    public bool HasInvestigatedWitness(string witness, int visit) =>
+        variables.TryGetValue("MemoryWitnessIntroduction:" + witness, out var introducedVisit) && introducedVisit == visit;
+
+    public void MarkWitnessInvestigated(string witness, int visit) =>
+        variables["MemoryWitnessIntroduction:" + witness] = visit;
+
+    public string GetPresentedEvidence(ConditionID observed) => observed != null &&
+        presentedEvidence.TryGetValue(observed.name, out var itemId) ? itemId : null;
+
+    public void RecordPresentedEvidence(ConditionID observed, string itemId)
+    {
+        if (observed != null && !string.IsNullOrEmpty(itemId) && Get(observed) == 0)
+            presentedEvidence[observed.name] = itemId;
     }
 
     // Condition 커맨드 실행
@@ -131,6 +150,7 @@ public class ConditionManager : MonoBehaviour
     // 일단 인게임에서 즉시 Save/Load 할 수 있도록
     public void SaveToCSV()
     {
+        Directory.CreateDirectory(Path.GetDirectoryName(SavePath));
         StringBuilder sb = new StringBuilder();
         sb.AppendLine("Key,Value"); // 헤더
 
@@ -149,10 +169,46 @@ public class ConditionManager : MonoBehaviour
 #endif
     }
 
+    public List<ConditionValue> CaptureValues()
+    {
+        var result = new List<ConditionValue>();
+        foreach (var pair in variables) result.Add(new ConditionValue { key = pair.Key, value = pair.Value,
+            presentedItemId = presentedEvidence.TryGetValue(pair.Key, out var item) ? item : null });
+        return result;
+    }
+
+    public void RestoreValues(List<ConditionValue> values)
+    {
+        variables.Clear();
+        presentedEvidence.Clear();
+        if (values == null) return;
+        foreach (var value in values)
+            if (value != null && !string.IsNullOrWhiteSpace(value.key))
+            {
+                variables[value.key] = value.value;
+                if (value.value != 0 && !string.IsNullOrEmpty(value.presentedItemId))
+                    presentedEvidence[value.key] = value.presentedItemId;
+            }
+    }
+
+    public void ResetForNewGame()
+    {
+        variables.Clear();
+        presentedEvidence.Clear();
+        var defaults = Resources.Load<TextAsset>("DefaultStoryVariables");
+        if (defaults == null) return;
+        foreach (string line in defaults.text.Split('\n'))
+        {
+            var parts = line.Trim().Split(',');
+            if (parts.Length == 2 && int.TryParse(parts[1], out int value)) variables[parts[0]] = value;
+        }
+    }
+
     public void LoadFromCSV()
     {
         variables.Clear();
-        if (!File.Exists(SavePath)) return;
+        presentedEvidence.Clear();
+        if (!File.Exists(SavePath)) { ResetForNewGame(); return; }
 
         string[] lines = File.ReadAllLines(SavePath);
         

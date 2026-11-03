@@ -1,0 +1,46 @@
+﻿{
+    "version": 1,
+    "savedAt": "2026-11-01T20:34:44.8119379+09:00",
+    "scene": "PrototypeScene",
+    "additiveScenes": [
+        "S3"
+    ],
+    "position": {
+        "x": 0.0,
+        "y": 2.0,
+        "z": 0.0
+    },
+    "facing": {
+        "x": 0.0,
+        "y": -1.0
+    },
+    "floor": 1,
+    "health": 100,
+    "playSeconds": 99.0,
+    "inventory": [
+        {
+            "itemId": "missing-item-qa",
+            "quantity": 1
+        }
+    ],
+    "conditions": [
+        {
+            "key": "npc1_meet",
+            "value": 0
+        },
+        {
+            "key": "MemoryVisitCount",
+            "value": 1
+        },
+        {
+            "key": "S3Seen",
+            "value": 1
+        },
+        {
+            "key": "MemoryReturnUnlocked",
+            "value": 1
+        }
+    ],
+    "world": [],
+    "mansions": []
+}

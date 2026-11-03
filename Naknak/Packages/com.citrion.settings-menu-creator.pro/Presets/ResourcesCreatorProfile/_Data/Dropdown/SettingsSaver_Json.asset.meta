@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 46515d9d3c0f596499dc117ca2f51d62
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/Presets/ResourcesCreatorProfile/_Data/Dropdown/SettingsSaver_Json.asset
+  uploadId: 988202

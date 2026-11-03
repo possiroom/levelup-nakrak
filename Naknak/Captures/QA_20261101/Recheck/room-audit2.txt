@@ -1,0 +1,21 @@
+POINT | T0 Broach {"room":{"instanceID":316010},"action":2}
+POINT | T0 Jewelry Box {"room":{"instanceID":316010},"action":0}
+POINT | T0 Room Exit {"room":{"instanceID":316010},"action":1}
+T0 TARGETS | brooch=T0 Broach box=T0 Jewelry Box exit=T0 Room Progress
+PASS | Reachable by walking: T0 Room Exit
+INTERACT | T0 Room Exit dialog=T0ExitBlockedMessage menu=Closed
+PASS | T0 premature exit explains why blocked
+PASS | Reachable by walking: T0 Broach
+INTERACT | T0 Broach dialog=T0BroochFound menu=Closed
+PASS | Physical brooch interaction collects item
+PASS | Reachable by walking: T0 Jewelry Box
+INTERACT | T0 Jewelry Box dialog=none menu=Items
+PASS | Physical box interaction opens packing selection
+PASS | Reachable by walking: T0 Jewelry Box
+INTERACT | T0 Jewelry Box dialog=none menu=Items
+PASS | Physical packing succeeds after cancel and retry
+WHITE CIRCLE | object=S#3 position=(1.30, 2.71, 0.00)
+WHITE CIRCLE | dialogContainer=Assets/Scripts/New Folder/Text_S#3/DialogContainer/Start.asset
+PASS | Reachable by walking: S#3
+INTERACT | S#3 dialog=S menu=Closed
+FINISHED

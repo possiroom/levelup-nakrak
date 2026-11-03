@@ -3,9 +3,12 @@ using UnityEngine;
 public class NPC : MonoBehaviour, IInteractable
 {
     [SerializeField] private DialogContainer dialogContainer;
+    [SerializeField] private bool allowDuringFirstMemory;
+    public bool AllowDuringFirstMemory => allowDuringFirstMemory;
 
     public void Interact()
     {
+        if (SceneLoadManager.IsFirstMemoryVisit && !allowDuringFirstMemory) return;
         if (dialogContainer == null)
         {
             Debug.LogWarning($"[NPC] 올바른 Container가 아닙니다. {gameObject.name}");
@@ -16,6 +19,11 @@ public class NPC : MonoBehaviour, IInteractable
 
         if (storyData != null)
         {
+            if (SceneLoadManager.HasManagedScene && DialogManager.Instance != null)
+            {
+                DialogManager.Instance.ShowDialog(storyData, true);
+                return;
+            }
             Debug.Log("[NPC] 상호작용 storyID: " + storyData.name);
             GameEventBase evt = GameEventFactory.CreateDialogEvent(storyData);
             GameEventManager.Instance.Submit(evt);

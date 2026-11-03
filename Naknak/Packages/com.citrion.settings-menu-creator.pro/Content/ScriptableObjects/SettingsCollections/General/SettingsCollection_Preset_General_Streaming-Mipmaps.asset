@@ -1,0 +1,239 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ae6bbc263dffee45a6068e3f02a825b, type: 3}
+  m_Name: SettingsCollection_Preset_General_Streaming-Mipmaps
+  m_EditorClassIdentifier: 
+  identifier: 
+  settings:
+  - applyImmediately: 1
+    identifier: streaming-mipmaps-active
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694141061
+    inputElementProviderSettings:
+      rid: 8814626452293551029
+  - applyImmediately: 1
+    identifier: streaming-mipmaps-add-cameras
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694141060
+    inputElementProviderSettings:
+      rid: 8814626452293551031
+  - applyImmediately: 1
+    identifier: streaming-mipmaps-max-file-request
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694141059
+    inputElementProviderSettings:
+      rid: 8814626452293551033
+  - applyImmediately: 1
+    identifier: streaming-mipmaps-max-level-reduction
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694141058
+    inputElementProviderSettings:
+      rid: 8814626452293551035
+  - applyImmediately: 1
+    identifier: streaming-mipmaps-renderers-per-frame
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694141057
+    inputElementProviderSettings:
+      rid: 8814626452293551037
+  settingsSaver: {fileID: 0}
+  inputTemplatesUIToolkit: {fileID: 0}
+  inputTemplatesUGUI: {fileID: 0}
+  audioMixer: {fileID: 0}
+  postProcessProfile: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 3030833568694141057
+      type: {class: Setting_StreamingMipmapsRenderersPerFrame, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: 4
+          value: 4
+        - key: 8
+          value: 8
+        - key: 16
+          value: 16
+        - key: 32
+          value: 32
+        - key: 64
+          value: 64
+        - key: 128
+          value: 128
+        - key: 256
+          value: 256
+        - key: 512
+          value: 512
+        - key: 1024
+          value: 1024
+        - key: 2048
+          value: 2048
+        - key: 4096
+          value: 4096
+        defaultValue: 512
+        assignUnityValueAsDefault: 0
+    - rid: 3030833568694141058
+      type: {class: Setting_StreamingMipmapsMaxLevelReduction, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: 1
+          value: 1
+        - key: 2
+          value: 2
+        - key: 3
+          value: 3
+        - key: 4
+          value: 4
+        defaultValue: 2
+        assignUnityValueAsDefault: 0
+    - rid: 3030833568694141059
+      type: {class: Setting_StreamingMipmapsMaxFileIORequests, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: 4
+          value: 4
+        - key: 8
+          value: 8
+        - key: 16
+          value: 16
+        - key: 32
+          value: 32
+        - key: 64
+          value: 64
+        - key: 128
+          value: 128
+        - key: 256
+          value: 256
+        - key: 512
+          value: 512
+        - key: 1024
+          value: 1024
+        - key: 2048
+          value: 2048
+        - key: 4096
+          value: 4096
+        defaultValue: 1024
+        assignUnityValueAsDefault: 0
+    - rid: 3030833568694141060
+      type: {class: Setting_StreamingMipmapsAddAllCameras, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: True
+          value: True
+        - key: False
+          value: False
+        defaultValue: 1
+        assignUnityValueAsDefault: 0
+    - rid: 3030833568694141061
+      type: {class: Setting_StreamingMipmapsActive, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: True
+          value: True
+        - key: False
+          value: False
+        defaultValue: 0
+        assignUnityValueAsDefault: 0
+    - rid: 8814626452293551029
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 8814626452293551056
+        inputElementProvider_UGUI:
+          rid: 8814626452293551057
+    - rid: 8814626452293551031
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 8814626452293551059
+        inputElementProvider_UGUI:
+          rid: 8814626452293551060
+    - rid: 8814626452293551033
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 8814626452293551062
+        inputElementProvider_UGUI:
+          rid: 8814626452293551063
+    - rid: 8814626452293551035
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 8814626452293551065
+        inputElementProvider_UGUI:
+          rid: 8814626452293551066
+    - rid: 8814626452293551037
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 8814626452293551068
+        inputElementProvider_UGUI:
+          rid: 8814626452293551069
+    - rid: 8814626452293551056
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551057
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551059
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551060
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551062
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551063
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551065
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551066
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551068
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551069
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 

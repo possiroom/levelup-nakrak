@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a06e1b2b69ab0b343893eb21992ffde4
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 275525
+  packageName: Settings & Options Menu Creator - Input Rebinding Addon
+  packageVersion: 1.2.3
+  assetPath: Packages/com.citrion.settings-menu-creator.input/Scripts/Runtime/CitrioN.SettingsMenuCreator.Input.asmdef
+  uploadId: 988204

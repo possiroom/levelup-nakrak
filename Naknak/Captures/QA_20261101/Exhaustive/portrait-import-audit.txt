@@ -1,0 +1,12 @@
+Assets/Resources/Portraits/A.png | imported=1752x1752 max=4096 compression=Uncompressed filter=Bilinear
+Assets/Resources/Portraits/B.png | imported=1752x1752 max=4096 compression=Uncompressed filter=Bilinear
+Assets/Resources/Portraits/전당포주인.png | imported=1752x1752 max=4096 compression=Uncompressed filter=Bilinear
+Assets/Resources/Portraits/조수 기본.png | imported=1752x1752 max=4096 compression=Uncompressed filter=Bilinear
+Assets/Resources/Portraits/조수 당황.png | imported=1752x1752 max=4096 compression=Uncompressed filter=Bilinear
+Assets/Resources/Portraits/조수 무표정.png | imported=1752x1752 max=4096 compression=Uncompressed filter=Bilinear
+Assets/Resources/Portraits/조수 슬픔.png | imported=1752x1752 max=4096 compression=Uncompressed filter=Bilinear
+Assets/Resources/Portraits/조수 화남.png | imported=1752x1752 max=4096 compression=Uncompressed filter=Bilinear
+Assets/Resources/Portraits/탐정 기본.png | imported=1752x1752 max=4096 compression=Uncompressed filter=Bilinear
+Assets/Resources/Portraits/탐정 눈감.png | imported=1752x1752 max=4096 compression=Uncompressed filter=Bilinear
+Assets/Resources/Portraits/탐정 미소.png | imported=1752x1752 max=4096 compression=Uncompressed filter=Bilinear
+Assets/Resources/Portraits/탐정 잠.png | imported=1752x1752 max=4096 compression=Uncompressed filter=Bilinear

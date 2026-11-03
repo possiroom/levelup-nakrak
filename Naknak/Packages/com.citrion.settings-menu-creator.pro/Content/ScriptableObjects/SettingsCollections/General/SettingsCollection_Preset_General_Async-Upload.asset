@@ -1,0 +1,149 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ae6bbc263dffee45a6068e3f02a825b, type: 3}
+  m_Name: SettingsCollection_Preset_General_Async-Upload
+  m_EditorClassIdentifier: 
+  identifier: 
+  settings:
+  - applyImmediately: 1
+    identifier: async-upload-buffer
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694141051
+    inputElementProviderSettings:
+      rid: 8814626452293551041
+  - applyImmediately: 1
+    identifier: async-upload-time-slice
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694141050
+    inputElementProviderSettings:
+      rid: 8814626452293551043
+  - applyImmediately: 1
+    identifier: async-upload-buffer-size
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694141049
+    inputElementProviderSettings:
+      rid: 8814626452293551045
+  settingsSaver: {fileID: 0}
+  inputTemplatesUIToolkit: {fileID: 0}
+  inputTemplatesUGUI: {fileID: 0}
+  audioMixer: {fileID: 0}
+  postProcessProfile: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 3030833568694141049
+      type: {class: Setting_AsyncUploadBufferSize, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: 2
+          value: 2
+        - key: 4
+          value: 4
+        - key: 8
+          value: 8
+        - key: 16
+          value: 16
+        - key: 32
+          value: 32
+        - key: 64
+          value: 64
+        - key: 128
+          value: 128
+        - key: 256
+          value: 256
+        - key: 512
+          value: 512
+        - key: 1024
+          value: 1024
+        - key: 2047
+          value: 2047
+        defaultValue: 16
+        assignUnityValueAsDefault: 0
+    - rid: 3030833568694141050
+      type: {class: Setting_AsyncUploadTimeSlice, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: MIN_RANGE
+          value: 1
+        - key: MAX_RANGE
+          value: 33
+        - key: STEP_SIZE
+          value: 1
+        defaultValue: 2
+        assignUnityValueAsDefault: 0
+    - rid: 3030833568694141051
+      type: {class: Setting_AsyncUploadPersistentBuffer, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: True
+          value: True
+        - key: False
+          value: False
+        defaultValue: 1
+        assignUnityValueAsDefault: 0
+    - rid: 8814626452293551041
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 8814626452293551074
+        inputElementProvider_UGUI:
+          rid: 8814626452293551075
+    - rid: 8814626452293551043
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 8814626452293551077
+        inputElementProvider_UGUI:
+          rid: 8814626452293551078
+    - rid: 8814626452293551045
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 8814626452293551080
+        inputElementProvider_UGUI:
+          rid: 8814626452293551081
+    - rid: 8814626452293551074
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551075
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551077
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551078
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551080
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 8814626452293551081
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 

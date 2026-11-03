@@ -1,0 +1,7 @@
+The documentation for the core functionalities of the Settings Menu Creator is located at:
+Packages/CitrioN - Settings Menu Creator/Documentation.
+
+Additional documentation for the Pro version is located at:
+Packages/CitrioN - Settings Menu Creator - Pro/Documentation.
+
+You find the documentation for other addons in their respective Documentation folders too.

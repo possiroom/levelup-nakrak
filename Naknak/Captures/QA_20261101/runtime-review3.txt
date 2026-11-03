@@ -1,0 +1,15 @@
+ENDING START | S#6
+PASS | Tutorial_T35_BlackoutSearch | Dropped box can be approached by ordinary walking and interaction
+ENDING AFTER CONFESSION | scene=S#6 ownerConfessed=1
+ENDING INTERACTIONS | Owner,A,assist
+PASS | T2 | Natural late entry retains the actual previously collected watch box
+BOX INSPECT | T2 | WatchBoxEmpty 빈 시계 상자다. 제조사의 로고가 보인다.
+PASS | T2 | Inspecting box before blackout records it as empty
+BOX INSPECT | Tutorial_T3_VaseBreak | WatchBoxFinal_01 빈 시계 상자가 무거워졌다. 바뀐 시점은 불이 꺼지고 꽃병이 깨진 직후야.
+PASS | Tutorial_T3_VaseBreak | Box comparison unlocks final evidence on the natural route
+PASS | S#6 | Natural route reaches the real ending without injecting missing evidence
+NATURAL FINAL PAGE | Confirm
+COUNTER ACTUAL | dialog=none items=
+VASE ACTUAL | Tutorial_T3_VaseBreak hits= dialog=none
+VASE ACTUAL | Tutorial_T4_BroochMissing hits=VaseBroken/Interactable dialog=T4_Fragments_First
+FINISHED

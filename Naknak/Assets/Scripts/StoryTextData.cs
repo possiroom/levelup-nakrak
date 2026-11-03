@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-
+using UnityEngine.SceneManagement;
 public class StoryTextData
+
 {
     public string   storyID         { get; private set; }
     public string   text            { get; private set; }
@@ -11,6 +12,8 @@ public class StoryTextData
     public StoryTextData nextData   { get; private set; }
     public List<StorySelectData> selects { get; private set; }
 
+    public Scene? nextScene { get; set; }
+
     public StoryTextData(
         string storyID      = "<NULL>", 
         string text         = "", 
@@ -19,7 +22,8 @@ public class StoryTextData
         bool isSelect       = false, 
         string nextStoryID  = "<END>",
         StoryTextData nextData = null,
-        List<StorySelectData> selects = null
+        List<StorySelectData> selects = null,
+        Scene? nextScene = null
     ) {
         this.storyID        = storyID;          // 스토리 ID
         this.text           = text;             // 대사
@@ -29,6 +33,7 @@ public class StoryTextData
         this.nextStoryID    = nextStoryID;      // 상호작용 키를 누르면 재생할 다음 스토리(대사) ID
         this.nextData       = nextData;         // 재생할 다음 스토리 인스턴스 주소
         this.selects        = selects;          // 선택지 주소
+        this.nextScene      = nextScene;        // 다음 씬
     }
 
 
@@ -44,5 +49,9 @@ public class StoryTextData
     public void AddSelect(StorySelectData select)
     {
         selects.Add(select);
+    }
+    public void SetNextScene(Scene nextScene)
+    {
+        this.nextScene = nextScene;
     }
 }

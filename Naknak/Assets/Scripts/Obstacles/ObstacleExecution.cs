@@ -6,6 +6,7 @@ public abstract class ObstacleExecution : MonoBehaviour
 
     private void Start()
     {
+        if (!TemporaryFeatureSwitches.ObstaclesEnabled) return;
         Debug.Log("[ObstacleExecution] FirstExecuted");
         this.FirstExecute();
     }

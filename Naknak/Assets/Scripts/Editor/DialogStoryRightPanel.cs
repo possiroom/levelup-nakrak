@@ -53,6 +53,7 @@ public class DialogStoryRightPanel
         EditorGUILayout.LabelField("Character", EditorStyles.boldLabel);
         EditorGUILayout.PropertyField(cachedStorySO.FindProperty("charName"));
         EditorGUILayout.PropertyField(cachedStorySO.FindProperty("activatedImage"));
+        EditorGUILayout.PropertyField(cachedStorySO.FindProperty("portrait"));
 
         EditorGUILayout.Space();
 

@@ -1,0 +1,359 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ae6bbc263dffee45a6068e3f02a825b, type: 3}
+  m_Name: SettingsCollection_Preset_Terrain_All
+  m_EditorClassIdentifier: 
+  identifier: 
+  settings:
+  - applyImmediately: 1
+    identifier: terrain-basemap-distance
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694140991
+    inputElementProviderSettings:
+      rid: 2500579886459519139
+  - applyImmediately: 1
+    identifier: terrain-billboard-start
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694140990
+    inputElementProviderSettings:
+      rid: 2500579886459519149
+  - applyImmediately: 1
+    identifier: terrain-detail-density-scale
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 5988498131034309111
+    inputElementProviderSettings:
+      rid: 2500579886459519144
+  - applyImmediately: 1
+    identifier: terrain-detail-distance
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694140997
+    inputElementProviderSettings:
+      rid: 2500579886459519155
+  - applyImmediately: 1
+    identifier: terrain-fade-length
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694140996
+    inputElementProviderSettings:
+      rid: 2500579886459519160
+  - applyImmediately: 1
+    identifier: terrain-max-trees
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694140995
+    inputElementProviderSettings:
+      rid: 2500579886459519165
+  - applyImmediately: 1
+    identifier: terrain-tree-distance
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694140994
+    inputElementProviderSettings:
+      rid: 2500579886459519180
+  - applyImmediately: 1
+    identifier: terrain-pixel-error
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694140993
+    inputElementProviderSettings:
+      rid: 2500579886459519170
+  - applyImmediately: 1
+    identifier: terrain-use-legacy-detail-distribution
+    expanded: 0
+    overrideIdentifierWhenCopied: 0
+    setting:
+      rid: 3030833568694140992
+    inputElementProviderSettings:
+      rid: 2500579886459519185
+  settingsSaver: {fileID: 0}
+  inputTemplatesUIToolkit: {fileID: 0}
+  inputTemplatesUGUI: {fileID: 0}
+  audioMixer: {fileID: 0}
+  postProcessProfile: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 2500579886459519139
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 2500579886459519141
+        inputElementProvider_UGUI:
+          rid: 2500579886459519142
+    - rid: 2500579886459519141
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519142
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519144
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 2500579886459519146
+        inputElementProvider_UGUI:
+          rid: 2500579886459519147
+    - rid: 2500579886459519146
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519147
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519149
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 2500579886459519151
+        inputElementProvider_UGUI:
+          rid: 2500579886459519152
+    - rid: 2500579886459519151
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519152
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519155
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 2500579886459519157
+        inputElementProvider_UGUI:
+          rid: 2500579886459519158
+    - rid: 2500579886459519157
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519158
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519160
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 2500579886459519162
+        inputElementProvider_UGUI:
+          rid: 2500579886459519163
+    - rid: 2500579886459519162
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519163
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519165
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 2500579886459519167
+        inputElementProvider_UGUI:
+          rid: 2500579886459519168
+    - rid: 2500579886459519167
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519168
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519170
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 2500579886459519172
+        inputElementProvider_UGUI:
+          rid: 2500579886459519173
+    - rid: 2500579886459519172
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519173
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519180
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 2500579886459519182
+        inputElementProvider_UGUI:
+          rid: 2500579886459519183
+    - rid: 2500579886459519182
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519183
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519185
+      type: {class: InputElementProviderSettings, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data:
+        customLabel: 
+        parentIdentifier: settings-parent
+        addSpacer: 1
+        spacerElementClass: setting-spacer
+        inputElementProvider_UIToolkit:
+          rid: 2500579886459519187
+        inputElementProvider_UGUI:
+          rid: 2500579886459519188
+    - rid: 2500579886459519187
+      type: {class: InputElementProvider_UIT_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 2500579886459519188
+      type: {class: InputElementProvider_UGUI_None, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator}
+      data: 
+    - rid: 3030833568694140990
+      type: {class: Setting_TerrainBillboardStart, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: MIN_RANGE
+          value: 5
+        - key: MAX_RANGE
+          value: 2000
+        - key: STEP_SIZE
+          value: 5
+        defaultValue: 50
+        assignUnityValueAsDefault: 0
+    - rid: 3030833568694140991
+      type: {class: Setting_TerrainBasemapDistance, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: MIN_RANGE
+          value: 0
+        - key: MAX_RANGE
+          value: 20000
+        - key: STEP_SIZE
+          value: 20
+        defaultValue: 1000
+        assignUnityValueAsDefault: 0
+    - rid: 3030833568694140992
+      type: {class: Setting_UseLegacyDetailDistribution, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: True
+          value: True
+        - key: False
+          value: False
+        defaultValue: 1
+        assignUnityValueAsDefault: 0
+    - rid: 3030833568694140993
+      type: {class: Setting_TerrainPixelError, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: MIN_RANGE
+          value: 1
+        - key: MAX_RANGE
+          value: 200
+        - key: STEP_SIZE
+          value: 0.1
+        defaultValue: 1
+        assignUnityValueAsDefault: 0
+    - rid: 3030833568694140994
+      type: {class: Setting_TerrainTreeDistance, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: MIN_RANGE
+          value: 0
+        - key: MAX_RANGE
+          value: 5000
+        - key: STEP_SIZE
+          value: 10
+        defaultValue: 5000
+        assignUnityValueAsDefault: 0
+    - rid: 3030833568694140995
+      type: {class: Setting_TerrainMaxTrees, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: MIN_RANGE
+          value: 0
+        - key: MAX_RANGE
+          value: 10000
+        - key: STEP_SIZE
+          value: 10
+        defaultValue: 50
+        assignUnityValueAsDefault: 0
+    - rid: 3030833568694140996
+      type: {class: Setting_TerrainFadeLength, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: MIN_RANGE
+          value: 0
+        - key: MAX_RANGE
+          value: 200
+        - key: STEP_SIZE
+          value: 5
+        defaultValue: 5
+        assignUnityValueAsDefault: 0
+    - rid: 3030833568694140997
+      type: {class: Setting_TerrainDetailDistance, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: MIN_RANGE
+          value: 0
+        - key: MAX_RANGE
+          value: 1000
+        - key: STEP_SIZE
+          value: 5
+        defaultValue: 80
+        assignUnityValueAsDefault: 0
+    - rid: 5988498131034309111
+      type: {class: Setting_TerrainDetailDensityScale, ns: CitrioN.SettingsMenuCreator, asm: CitrioN.SettingsMenuCreator.Pro}
+      data:
+        options:
+        - key: MIN_RANGE
+          value: 0
+        - key: MAX_RANGE
+          value: 1
+        - key: STEP_SIZE
+          value: 0.01
+        - key: VALUE_VISUALS_MULTIPLIER
+          value: 100
+        - key: VALUE_SUFFIX
+          value: ' %'
+        defaultValue: 1
+        assignUnityValueAsDefault: 0

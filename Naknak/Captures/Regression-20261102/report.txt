@@ -1,0 +1,20 @@
+﻿Playtest report - 2026-11-02 (Asia/Seoul)
+
+Unity MCP Play Mode: 116 checks passed.
+- Story and natural ending: 53 checks (647 NPC walking clearance samples)
+- Camera, menus, save rotation, backup recovery and session restore: 46 checks
+- Invalid save values and slot bounds: 11 checks
+- Front/behind rendering: 6 checks
+
+Final Unity error-console query: 0 entries. Play Mode stopped after verification.
+
+Fixed: Persistent menu window border was destroyed on page changes; it is now preserved.
+Adjusted: Existing scene EventSystems are disabled before creating the persistent menu EventSystem.
+Expanded: Editor playtest now covers camera restoration, repeated menu transitions, isolated save tests, full session restore and natural ending.
+
+Test harness timing and interaction approach positions were corrected during testing; these were test failures, not game-runtime fixes.
+Save robustness tests used a separate captures directory and did not overwrite normal save slots.
+
+Limits: These are scripted Editor playthroughs, not exhaustive proof of all input timings, resolutions, hardware, audio output or standalone builds. Some interactions use test teleports followed by the ordinary interaction method. Existing nonfatal warnings include an unused S1 opening camera field and transient EventSystem/MCP connection warnings.
+
+Detailed results: story-result.txt, systems-result.txt, invalid-save-result.txt, depth-result.txt.

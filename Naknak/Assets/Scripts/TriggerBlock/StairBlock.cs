@@ -7,6 +7,7 @@ public class StairBlock : TriggerBlock
 
     protected override void OnTriggered()
     {
-        MapManager.Instance.ChangePlayerFloor(floor);
+        if (MapManager.Instance != null) MapManager.Instance.ChangePlayerFloor(floor);
+        else FindFirstObjectByType<PlayerMoveController3>()?.SetFloor(floor);
     }
 }

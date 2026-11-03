@@ -1,0 +1,546 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.IO;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEditor;
+using Naknak.Inventory;
+
+public static class NaknakMatrix
+{
+    public static bool Running;
+    public static string Phase;
+    public static List<string> Log = new List<string>();
+    static BindingFlags P = BindingFlags.Instance | BindingFlags.NonPublic;
+    static string Root = "Captures/QA_20261101/Exhaustive/";
+    static GameMenuController M { get { return GameMenuController.Instance; } }
+    static DialogManager D { get { return DialogManager.Instance; } }
+    static PlayerMoveController3 Player { get { return UnityEngine.Object.FindFirstObjectByType<PlayerMoveController3>(); } }
+    static string Scene { get { return Path.GetFileNameWithoutExtension(SceneLoadManager.CurrentScenePath); } }
+    static object Get(object o,string n) { return o.GetType().GetField(n,P).GetValue(o); }
+    static void Set(object o,string n,object v) { o.GetType().GetField(n,P).SetValue(o,v); }
+    static object Call(object o,string n,params object[] args) { return o.GetType().GetMethod(n,P).Invoke(o,args); }
+    static T Find<T>(string n) where T:Component { return UnityEngine.Object.FindObjectsByType<T>(FindObjectsInactive.Include,FindObjectsSortMode.None).FirstOrDefault(x=>x.name==n && x.gameObject.scene.path==SceneLoadManager.CurrentScenePath); }
+    static void Note(string s) { Log.Add(s); File.WriteAllLines(Root+"matrix-runtime.txt",Log.ToArray()); }
+    static void Check(bool b,string s) { Note((b?"PASS | ":"ISSUE | ")+Scene+" | "+s); }
+    public static void Begin()
+    {
+        if(Running) return;
+        M.enabled=false;
+        Application.runInBackground=true;
+        Running=true;
+        SceneLoadManager.Instance.StartCoroutine(Guard(Run(),"REVIEW"));
+    }
+    static IEnumerator Guard(IEnumerator routine,string label)
+    {
+        var stack=new Stack<IEnumerator>(); stack.Push(routine);
+        while(stack.Count>0)
+        {
+            object next=null;bool moved=false;
+            try { moved=stack.Peek().MoveNext(); if(moved) next=stack.Peek().Current; }
+            catch(Exception e) { Note("CASE ERROR | "+label+" | "+e); break; }
+            if(!moved){stack.Pop();continue;}
+            if(next is IEnumerator) stack.Push((IEnumerator)next); else yield return next;
+        }
+        if(label=="REVIEW") {Running=false;Phase="Finished";Note("FINISHED");}
+    }
+    static IEnumerator Wait(Func<bool> test,string label,float seconds=25)
+    {
+        float until=Time.realtimeSinceStartup+seconds;
+        while(!test()) { if(Time.realtimeSinceStartup>until)throw new Exception("Timeout: "+label+" scene="+Scene);yield return null; }
+    }
+    static void Dismiss()
+    {
+        Call(M,"ClearItemSelection"); Call(M,"Resume");
+        if(D!=null && D.IsDialogOpen)
+        {
+            var blank=ScriptableObject.CreateInstance<StoryData>();blank.text="QA setup";blank.isEnd=true;
+            D.ShowDialog(blank,true);D.SkipUntilChoice();UnityEngine.Object.Destroy(blank);
+        }
+        GameStateManager.Instance.ChangeGameState(GameState.Gameplay); Time.timeScale=1;
+    }
+    static IEnumerator Reset(string scene,bool revisit)
+    {
+        Dismiss(); yield return Wait(()=>!SceneLoadManager.IsLoading,"prior load");
+        yield return SceneLoadManager.Instance.LoadContent("S3");
+        yield return null; Dismiss();
+        ConditionManager.Instance.ResetForNewGame();GameMenuController.Inventory.Restore(null);
+        var flow=Resources.Load<SceneFlowContainer>("TutorialSceneFlow");
+        if(revisit)
+        {
+            ConditionManager.Instance.Set(flow.memoryVisitCount,1); ConditionManager.Instance.Set(AssetDatabase.LoadAssetAtPath<ConditionID>("Assets/Story/Tutorial/Case/S3Seen.asset"),1);
+            ConditionManager.Instance.Set(AssetDatabase.LoadAssetAtPath<ConditionID>("Assets/Story/Tutorial/Case/MemoryReturnUnlocked.asset"),1);
+        }
+        yield return SceneLoadManager.Instance.LoadContent(scene);
+        yield return null;
+        yield return Wait(()=>!SceneLoadManager.IsLoading && !SceneLoadManager.IsPreparingMemory,"case load");
+    }
+    static IEnumerator Close(float timeout=20)
+    {
+        float until=Time.realtimeSinceStartup+timeout;
+        while(D!=null && D.IsDialogOpen)
+        {
+            if(Time.realtimeSinceStartup>until) throw new Exception("Dialog stuck: "+D.CurrentStory.name);
+            D.NextDialog();yield return null;
+        }
+    }
+    static IEnumerator Capture(string name)
+    {
+        if(D!=null && D.IsDialogOpen && (bool)Get(D,"isPlaying"))D.NextDialog();
+        yield return new WaitForSecondsRealtime(.25f);yield return new WaitForEndOfFrame();
+        ScreenCapture.CaptureScreenshot(Root+name+".png");yield return null;
+    }
+    static void SelectItem(string id)
+    {
+        var items=(List<InventoryItem>)Get(M,"visibleItems");int i=items.FindIndex(x=>x.Id==id);
+        if(i<0) throw new Exception("Missing selectable item "+id);
+        Call(M,"ActivateInventoryItem",i);
+    }
+    static IEnumerator Choose(int index)
+    {
+        yield return Wait(()=>D.IsDialogOpen,"choice dialog");
+        while(!(bool)Get(D,"isSelectActivate")){D.NextDialog();yield return null;}
+        Set(D,"selectIndex",index); D.NextDialog();yield return null;
+    }
+    static Vector2[] Dirs={Vector2.left,Vector2.right,Vector2.down,Vector2.up};
+    static Dictionary<Vector2Int,Vector2Int> Reach()
+    {
+        var seen=new Dictionary<Vector2Int,Vector2Int>();var q=new Queue<Vector2Int>();
+        var first=Vector2Int.RoundToInt(Player.transform.position);seen[first]=first;q.Enqueue(first);
+        while(q.Count>0 && seen.Count<300)
+        {
+            var c=q.Dequeue();
+            foreach(var dir in Dirs)
+            {
+                var n=c+Vector2Int.RoundToInt(dir);
+                if(n.x < -6 || n.x > 8 || n.y < -6 || n.y > 6 || seen.ContainsKey(n)) continue;
+                bool blocked=(bool)Call(Player,"checkCollider",new Vector3(c.x,c.y,0),new Vector3(dir.x,dir.y,0));
+                if(blocked)continue;
+                seen[n]=c;q.Enqueue(n);
+            }
+        }
+        return seen;
+    }
+    static Transform Hit(Vector2 pos,Vector2 dir)
+    {
+        foreach(var h in Physics2D.RaycastAll(new Vector2(pos.x,pos.y-.5f),dir,1,LayerMask.GetMask("Col 1F")))
+            if(h.collider!=null && h.collider.CompareTag("Interactable")) return h.collider.transform;
+        return null;
+    }
+    static IEnumerator Walk(Dictionary<Vector2Int,Vector2Int> seen,Vector2Int target)
+    {
+        var cells=new List<Vector2Int>();var c=target;
+        while(seen[c]!=c){cells.Add(c);c=seen[c];} cells.Reverse();
+        foreach(var cell in cells)
+        {
+            Vector2 dir=(Vector2)cell-(Vector2)Player.transform.position;
+            if(dir.sqrMagnitude<.01f)continue;
+            if(Mathf.Abs(dir.x)>.5f){Set(Player,"_queuedDirectionX",new Vector2(Mathf.Sign(dir.x),0));Call(Player,"StartMoveX");}
+            else {Set(Player,"_queuedDirectionY",new Vector2(0,Mathf.Sign(dir.y)));Call(Player,"StartMoveY");}
+            yield return null; yield return Wait(()=>!Player.isMoving,"walk step",3);
+            if(Vector2.Distance(Player.transform.position,cell)>.05f)throw new Exception("Walk blocked en route to "+cell+" actual="+Player.transform.position);
+        }
+    }
+    static IEnumerator PhysicalSurvey(string name)
+    {
+        yield return Reset(name,true);
+        if(D.IsDialogOpen)yield return Close();
+        yield return Wait(()=>!SceneLoadManager.IsCutscene,"exploration");yield return null;
+        var points=UnityEngine.Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude,FindObjectsSortMode.None)
+            .Where(x=>x.gameObject.scene.path==SceneLoadManager.CurrentScenePath && x is IInteractable).Select(x=>x.transform).Distinct().ToArray();
+        var seen=Reach();Note("REACH | "+Scene+" | walkable="+seen.Count);
+        foreach(var target in points)
+        {
+            var options=new List<string>();
+            foreach(var pos in seen.Keys) foreach(var dir in Dirs)
+                if(Hit(pos,dir)==target) options.Add(pos+" facing "+dir);
+            Note((options.Count==0?"ISSUE | ":"REACHABLE | ")+Scene+" | "+target.name+" "+target.position+" | approaches="+options.Count+" "+string.Join(";",options.Take(3).ToArray()));
+        }
+        foreach(var actor in UnityEngine.Object.FindObjectsByType<EvidenceReconstruction>(FindObjectsSortMode.None))
+        {
+            if(actor.gameObject.scene.path!=SceneLoadManager.CurrentScenePath)continue;
+            var tile=Vector2Int.RoundToInt(actor.transform.position);
+            Check(!seen.ContainsKey(tile),"Player can reach the exact same standing tile as witness "+actor.name+" at "+tile+" (false = body overlap possible)");
+        }
+        var a=Find<EvidenceReconstruction>("A");
+        if(a!=null && seen.ContainsKey(Vector2Int.RoundToInt(a.transform.position)))
+        {
+            yield return Walk(seen,Vector2Int.RoundToInt(a.transform.position));
+            yield return Capture(name+"-overlap-A");
+        }
+        var counter=Find<InvestigationPoint>("Counter Watch");
+        if(counter!=null)
+        {
+            Player.TeleportToWorld(new Vector2(-2,2));Player.SetFacingDirection(Vector2.up);Physics2D.SyncTransforms();
+            Call(Player,"TryInteract");yield return null;
+            Note("COUNTER FRONT | "+Scene+" | dialog="+(D.CurrentStory==null?"none":D.CurrentStory.text)+" watch="+GameMenuController.Inventory.Has("evidence-pocket-watch"));
+            if(D.IsDialogOpen)yield return Capture(name+"-counter-front");
+            yield return Close();
+        }
+    }
+    static IEnumerator AppraisalCases()
+    {
+        for(int price=0;price<=3;price++)
+        {
+            yield return Reset("T2",false);
+            GameMenuController.Inventory.Add("tutorial-packed-jewelry-box");
+            Find<NPC>("Owner").Interact();
+            yield return Choose(price==0?2:1);yield return Close();
+            if(price==0)
+            { Check(Scene=="T2" && !(Get(M,"itemSelected") is Delegate),"Appraisal refusal stays in T2");continue; }
+            yield return Wait(()=>Get(M,"itemSelected")!=null,"appraisal inventory");
+            if(price==1)
+            {
+                Call(M,"ReturnFromItems");yield return null;
+                Check(!GameMenuController.IsBlockingGameplay,"Appraisal item selection cancel unpauses");
+                Find<NPC>("Owner").Interact();yield return Choose(1);yield return Close();
+                yield return Wait(()=>Get(M,"itemSelected")!=null,"appraisal after cancel");
+            }
+            SelectItem("tutorial-packed-jewelry-box");yield return Choose(price);yield return Close();
+            yield return Wait(()=>Scene=="Tutorial_T3_VaseBreak","price leads onward");
+            Check(true,"Price option "+price+" leads to blackout without being stuck");
+        }
+    }
+    static IEnumerator ExitCases()
+    {
+        foreach(bool revisit in new[]{false,true})foreach(int choice in new[]{2,1})
+        {
+            yield return Reset("T2",revisit);
+            var exit=Find<InvestigationPoint>("Memory Exit");exit.Interact();yield return null;
+            if(!D.IsDialogOpen){Note("EXIT | first="+!revisit+" no dialog");continue;}
+            if(D.CurrentStory.isSelect){yield return Choose(choice);}
+            yield return Close();yield return new WaitForSecondsRealtime(.5f);
+            Note("EXIT | revisit="+revisit+" choice="+choice+" -> "+Scene+" menu="+Get(M,"page"));
+        }
+    }
+    static IEnumerator InventoryAndSave()
+    {
+        yield return Reset("T2",true);
+        Find<InvestigationPoint>("Trash Can").Interact();yield return Close();
+        Find<InvestigationPoint>("phone").Interact();yield return Close();
+        Find<InvestigationPoint>("A").Interact();
+        for(int category=0;category<3;category++)
+        {
+            Call(M,"ChangeInventoryCategory",category);yield return null;
+            var items=(List<InventoryItem>)Get(M,"visibleItems");
+            Note("CATEGORY | evidence mode category="+category+" items="+string.Join(",",items.Select(x=>x.Id).ToArray()));
+        }
+        Call(M,"ReturnFromItems");yield return null;
+        var before=GameMenuController.Inventory.Capture();
+        Call(M,"Pause");var pageType=Get(M,"page").GetType();Call(M,"ShowPage",Enum.Parse(pageType,"Menu"));
+        yield return Capture("menu");
+        Call(M,"ShowPage",Enum.Parse(pageType,"Options"));yield return Capture("options");
+        Call(M,"ShowPage",Enum.Parse(pageType,"Save"));yield return Capture("save");
+        var checkpoint=(GameCheckpoint)Call(M,"CaptureCheckpoint",Player);
+        string dir=Path.GetFullPath(Root+"isolated-saves");GameCheckpointStore.WriteManual(1,checkpoint,dir);
+        GameCheckpoint loaded;string error;
+        Check(GameCheckpointStore.TryReadManual(1,out loaded,out error,dir),"Isolated manual save round trip");
+        Call(M,"Resume");
+        yield return (IEnumerator)Call(M,"ChangeSession",loaded.scene,loaded);
+        yield return Wait(()=>!SceneLoadManager.IsLoading&&!SceneLoadManager.IsRestoringSession,"restored session");yield return null;
+        Check(Scene=="T2" && SceneLoadManager.IsMemoryRevisit,"Memory checkpoint restores scene and investigation phase");
+        Check(before.Count==GameMenuController.Inventory.Capture().Count,"Memory checkpoint restores inventory entries "+before.Count+" -> "+GameMenuController.Inventory.Capture().Count);
+        Note("RESTORE | pos="+Player.transform.position+" facing="+Player.FacingDirection+" page="+Get(M,"page"));
+        yield return Capture("restored-memory");
+    }
+    static IEnumerator FinishStory()
+    {
+        Note("ENDING START | "+Scene);
+        yield return Close();
+        yield return Wait(()=>Scene=="Tutorial_T35_BlackoutSearch"&&!SceneLoadManager.IsLoading,"owner blackout search");
+        yield return new WaitForSecondsRealtime(1);
+        var controller=UnityEngine.Object.FindFirstObjectByType<TutorialT35EventController>();
+        var so=new SerializedObject(controller);var target=(Transform)so.FindProperty("droppedOpenBoxInteract").objectReferenceValue;
+        var seen=Reach();Vector2Int? approach=null;Vector2 face=Vector2.up;
+        foreach(var pos in seen.Keys)foreach(var dir in Dirs)if(Hit(pos,dir)==target){approach=pos;face=dir;}
+        Check(approach.HasValue,"Dropped box can be approached by ordinary walking and interaction");
+        if(approach.HasValue){yield return Walk(seen,approach.Value);Player.SetFacingDirection(face);Call(Player,"TryInteract");}
+        else {Note("FIXTURE | teleport near dropped box to continue checking later content");Player.TeleportToWorld((Vector2)target.position+Vector2.down);controller.Interact();}
+        yield return null;yield return Capture("dark-search-box");yield return Close();
+        yield return Wait(()=>Scene=="S#6"&&!SceneLoadManager.IsLoading,"return with box");
+        yield return Wait(()=>D.IsDialogOpen,"owner confession");yield return Close();
+        Note("ENDING AFTER CONFESSION | scene="+Scene+" ownerConfessed="+ConditionManager.Instance.Get(AssetDatabase.LoadAssetAtPath<ConditionID>("Assets/Story/Tutorial/Case/OwnerConfessed.asset")));
+        var all=UnityEngine.Object.FindObjectsByType<InvestigationPoint>(FindObjectsSortMode.None).Where(p=>p.gameObject.scene.path==SceneLoadManager.CurrentScenePath).ToArray();
+        Note("ENDING INTERACTIONS | "+string.Join(",",all.Select(p=>p.name).ToArray()));
+    }
+    static void Flag(string name,int value)
+    {
+        var paths=AssetDatabase.FindAssets(name+" t:ConditionID").Select(AssetDatabase.GUIDToAssetPath);
+        var path=paths.First(p=>Path.GetFileNameWithoutExtension(p)==name);
+        ConditionManager.Instance.Set(AssetDatabase.LoadAssetAtPath<ConditionID>(path),value);
+    }
+    static IEnumerator ExitReentry()
+    {
+        yield return Reset("T2",true);
+        Find<InvestigationPoint>("Trash Can").Interact();yield return Close();
+        Find<InvestigationPoint>("phone").Interact();yield return Close();
+        Find<InvestigationPoint>("A").Interact();yield return null;
+        Check(Get(M,"itemSelected")!=null,"A opens the normal evidence menu with S3Seen set");
+        Call(M,"ReturnFromItems");
+        string before=string.Join(",",GameMenuController.Inventory.Capture().Select(i=>i.itemId).ToArray());
+        Note("REENTRY BEFORE | "+before);
+        Find<InvestigationPoint>("Memory Exit").Interact();yield return Choose(1);yield return Close();
+        yield return Wait(()=>Scene=="S3"&&!SceneLoadManager.IsLoading,"exit to real world");
+        yield return null;
+        var assistant=Find<NPC>("assist");
+        if(assistant!=null)assistant.Interact();else Find<InvestigationPoint>("assist").Interact();
+        float until=Time.realtimeSinceStartup+30;
+        while(Scene!="T2" || SceneLoadManager.IsLoading)
+        {
+            if(Time.realtimeSinceStartup>until)throw new Exception("Natural memory reentry stuck: "+Scene);
+            if(D.IsDialogOpen)D.NextDialog();yield return null;
+        }
+        yield return null;
+        Find<InvestigationPoint>("Trash Can").Interact();yield return Close();
+        Find<InvestigationPoint>("phone").Interact();yield return Close();
+        Find<InvestigationPoint>("A").Interact();yield return null;
+        string after=string.Join(",",GameMenuController.Inventory.Capture().Select(i=>i.itemId).ToArray());
+        Note("REENTRY AFTER | "+after);
+        Check(GameMenuController.Inventory.Has("evidence-watch-box"),"Watch box can be reacquired after exiting memory before presenting it");
+        Check(GameMenuController.Inventory.Has("evidence-returned-letter"),"Returned letter can be reacquired after exiting memory");
+        yield return Capture("reentry-evidence-menu");Call(M,"ReturnFromItems");yield return Close();
+    }
+    static IEnumerator LateEnding()
+    {
+        yield return Reset("S3",false);Dismiss();
+        foreach(var f in new[]{"S3Seen","MemoryReturnUnlocked","PACompleted","PBCompleted","OwnerConfessed","OpenBoxFound","ABoxCollected"})Flag(f,1);
+        yield return SceneLoadManager.Instance.LoadContent("S#6");yield return null;yield return Wait(()=>!SceneLoadManager.IsLoading,"late reality");
+        Find<InvestigationPoint>("A").Interact();yield return Close();
+        Note("LATE QUESTION | "+string.Join(",",ConditionManager.Instance.CaptureValues().Where(c=>c.value!=0).Select(c=>c.key+"="+c.value).ToArray()));
+        Find<InvestigationPoint>("assist").Interact();
+        float until=Time.realtimeSinceStartup+35;
+        while(Scene!="T2"||SceneLoadManager.IsLoading)
+        {
+            if(Time.realtimeSinceStartup>until)throw new Exception("Late entry stuck: "+Scene);
+            if(D.IsDialogOpen)D.NextDialog();yield return null;
+        }
+        Find<InvestigationPoint>("A").Interact();yield return Close();
+        bool have=GameMenuController.Inventory.Has("evidence-watch-box");
+        Check(have,"Late reentry provides A's watch box for the final comparison");
+        if(!have){Note("FIXTURE | Add only the missing watch box to inspect content beyond the progression blocker");GameMenuController.Inventory.Add("evidence-watch-box");}
+        Find<NPC>("Owner").Interact();yield return Choose(1);yield return Close();
+        yield return Wait(()=>Get(M,"itemSelected")!=null,"late appraisal item");SelectItem("tutorial-packed-jewelry-box");yield return Choose(2);yield return Close();
+        yield return Wait(()=>Scene=="Tutorial_T3_VaseBreak"&&!SceneLoadManager.IsLoading&&!SceneLoadManager.IsCutscene,"late dark investigation");
+        var item=GameMenuController.Inventory.Find("evidence-watch-box");
+        Note("FINAL BOX | description="+item.Description+" inspect="+(item.InspectionDialog==null?"none":item.InspectionDialog.name));
+        Call(M,"Pause");var pageType=Get(M,"page").GetType();Call(M,"ShowPage",Enum.Parse(pageType,"Items"));SelectItem("evidence-watch-box");yield return Close();
+        Find<InvestigationPoint>("Memory Exit").Interact();yield return Choose(1);yield return Close();
+        yield return Wait(()=>Scene=="S#6"&&!SceneLoadManager.IsLoading,"final reality");yield return null;
+        Find<InvestigationPoint>("A").Interact();yield return null;yield return Capture("final-accusation");yield return Close();
+        yield return new WaitForSecondsRealtime(.3f);
+        Check(ConditionManager.Instance.Get(AssetDatabase.LoadAssetAtPath<ConditionID>("Assets/Story/Tutorial/Case/CaseSolved.asset"))==1,"Ending reaches case solved after the blocked item is supplied as a test fixture");
+        Note("FINAL PAGE | "+Get(M,"page"));yield return Capture("final-completion");
+    }
+    static IEnumerator InspectBox()
+    {
+        Call(M,"Pause");var pageType=Get(M,"page").GetType();Call(M,"ShowPage",Enum.Parse(pageType,"Items"));
+        Call(M,"ChangeInventoryCategory",0);SelectItem("evidence-watch-box");yield return null;
+        Note("BOX INSPECT | "+Scene+" | "+(D.CurrentStory==null?"none":D.CurrentStory.name+" "+D.CurrentStory.text));
+        yield return Close();
+    }
+    static IEnumerator NaturalEnding()
+    {
+        yield return FinishStory();
+        Find<InvestigationPoint>("A").Interact();yield return Close();
+        Find<InvestigationPoint>("assist").Interact();
+        float until=Time.realtimeSinceStartup+35;
+        while(Scene!="T2"||SceneLoadManager.IsLoading)
+        {
+            if(Time.realtimeSinceStartup>until)throw new Exception("Natural late entry stuck at "+Scene);
+            if(D.IsDialogOpen)D.NextDialog();yield return null;
+        }
+        Check(GameMenuController.Inventory.Has("evidence-watch-box"),"Natural late entry retains the actual previously collected watch box");
+        yield return InspectBox();
+        Check(ConditionManager.Instance.Get(AssetDatabase.LoadAssetAtPath<ConditionID>("Assets/Story/Tutorial/Case/WatchBoxSeenEmpty.asset"))==1,"Inspecting box before blackout records it as empty");
+        Find<NPC>("Owner").Interact();yield return Choose(1);yield return Close();
+        yield return Wait(()=>Get(M,"itemSelected")!=null,"natural late appraisal");SelectItem("tutorial-packed-jewelry-box");yield return Choose(1);yield return Close();
+        yield return Wait(()=>Scene=="Tutorial_T3_VaseBreak"&&!SceneLoadManager.IsLoading&&!SceneLoadManager.IsCutscene,"natural late blackout");
+        yield return InspectBox();
+        bool final=ConditionManager.Instance.Get(AssetDatabase.LoadAssetAtPath<ConditionID>("Assets/Story/Tutorial/Case/FinalBoxEvidence.asset"))==1;
+        Check(final,"Box comparison unlocks final evidence on the natural route");
+        Find<InvestigationPoint>("Memory Exit").Interact();yield return Choose(1);yield return Close();
+        yield return Wait(()=>Scene=="S#6"&&!SceneLoadManager.IsLoading,"natural final reality");yield return null;
+        Find<InvestigationPoint>("A").Interact();yield return null;yield return Capture("natural-final-dialogue");yield return Close(30);
+        yield return new WaitForSecondsRealtime(.3f);
+        Check(ConditionManager.Instance.Get(AssetDatabase.LoadAssetAtPath<ConditionID>("Assets/Story/Tutorial/Case/CaseSolved.asset"))==1,"Natural route reaches the real ending without injecting missing evidence");
+        Note("NATURAL FINAL PAGE | "+Get(M,"page"));yield return Capture("natural-ending");
+    }
+    static IEnumerator BrokenVaseAndCounter()
+    {
+        foreach(var scene in new[]{"T2","Tutorial_T3_VaseBreak","Tutorial_T4_BroochMissing"})
+        {
+            yield return Reset(scene,true);
+            if(D.IsDialogOpen)yield return Close();yield return Wait(()=>!SceneLoadManager.IsCutscene,"clue survey ready");
+            if(scene=="T2")
+            {
+                Player.TeleportToWorld(new Vector2(-2,2));Player.SetFacingDirection(Vector2.up);Physics2D.SyncTransforms();Call(Player,"TryInteract");yield return null;
+                Note("COUNTER ACTUAL | dialog="+(D.CurrentStory==null?"none":D.CurrentStory.name)+" items="+string.Join(",",GameMenuController.Inventory.Capture().Select(i=>i.itemId).ToArray()));
+                yield return Capture("counter-no-response");yield return Close();
+            }
+            else
+            {
+                Player.TeleportToWorld(new Vector2(-4,-1));Player.SetFacingDirection(Vector2.down);Physics2D.SyncTransforms();
+                var hits=Physics2D.RaycastAll(new Vector2(-4,-1.5f),Vector2.down,1,LayerMask.GetMask("Col 1F"));
+                Call(Player,"TryInteract");yield return null;
+                Note("VASE ACTUAL | "+scene+" hits="+string.Join(",",hits.Where(h=>h.collider!=null).Select(h=>h.collider.name+"/"+h.collider.tag).ToArray())+" dialog="+(D.CurrentStory==null?"none":D.CurrentStory.name));
+                yield return Capture(scene+"-vase-response");yield return Close();
+            }
+            var paths=Reach();var target=new Vector2Int(-3,0);if(paths.ContainsKey(target))yield return Walk(paths,target);
+            yield return Capture(scene+"-A-not-overlapped");
+        }
+    }
+    static IEnumerator EvidenceLabel()
+    {
+        yield return Reset("Tutorial_T3_VaseBreak",true);
+        yield return Wait(()=>!SceneLoadManager.IsCutscene,"evidence label setup");
+        Find<InvestigationPoint>("Cabinet Number 2").Interact();yield return Close();
+        Find<InvestigationPoint>("B").Interact();yield return null;
+        Check(Get(M,"itemSelected")!=null,"B evidence menu opens");
+        SelectItem("evidence-cabinet-trace");
+        yield return Close();yield return Wait(()=>!Find<EvidenceReconstruction>("B").IsReplaying,"label replay restore");
+        Find<InvestigationPoint>("B").Interact();yield return null;
+        var evidence=(string[])Get(M,"itemSelectionCompleted");
+        Note("PRESENTED | "+GameMenuController.Inventory.Find("evidence-cabinet-trace").DisplayName+" | successful list="+string.Join(",",evidence));
+        yield return Capture("successful-item-label");Call(M,"ReturnFromItems");
+    }
+    static IEnumerator LetterUse()
+    {
+        yield return Reset("T2",true);Find<InvestigationPoint>("Trash Can").Interact();yield return Close();
+        Call(M,"Pause");var pageType=Get(M,"page").GetType();Call(M,"ShowPage",Enum.Parse(pageType,"Items"));Call(M,"ChangeInventoryCategory",0);
+        SelectItem("evidence-returned-letter");yield return Close();
+        Check(!GameMenuController.Inventory.Has("evidence-returned-letter")&&GameMenuController.Inventory.Has("evidence-crumpled-letter"),"Letter inspection converts the envelope exactly once");
+        Find<InvestigationPoint>("A").Interact();yield return null;SelectItem("evidence-crumpled-letter");yield return Close();
+        yield return Wait(()=>!Find<EvidenceReconstruction>("A").IsReplaying,"converted letter replay");
+        Check(Find<EvidenceReconstruction>("A").CompletedEvidence.Length==1,"Converted letter is accepted as evidence");
+    }
+
+    static int checks;
+    static void Verify(bool ok,string message) { checks++; Note((ok?"PASS | ":"ISSUE | ")+message); }
+    static void Page(string name) { Call(M,"ShowPage",Enum.Parse(Get(M,"page").GetType(),name)); }
+    static InventoryItem[] Catalog { get { return Resources.Load<GameMenuConfiguration>("NaknakMenu").items; } }
+    static EvidenceReconstruction.Clip[] Clips(EvidenceReconstruction e) { return (EvidenceReconstruction.Clip[])Get(e,"clips"); }
+    static void ClearRoutes()
+    {
+        foreach(var e in UnityEngine.Object.FindObjectsByType<EvidenceReconstruction>(FindObjectsSortMode.None))
+            foreach(var c in Clips(e)) ConditionManager.Instance.Set(c.observed,0);
+        foreach(var n in new[]{"AObserved","BObserved","AlibisVerified","PACompleted","PBCompleted"})
+        {
+            var flag=AssetDatabase.LoadAssetAtPath<ConditionID>("Assets/Story/Tutorial/Case/"+n+".asset");
+            if(flag!=null)ConditionManager.Instance.Set(flag,0);
+        }
+    }
+    static IEnumerator SurveyAll()
+    {
+        foreach(var scene in new[]{"T2","Tutorial_T3_VaseBreak","Tutorial_T4_BroochMissing","S3","S#6"})
+        {
+            yield return Reset(scene,true);yield return Close();
+            yield return Wait(()=>!SceneLoadManager.IsCutscene,"survey ready");yield return null;
+            var seen=Reach();int rays=0;
+            var found=new Dictionary<Transform,int>();
+            foreach(var p in seen.Keys)foreach(var dir in Dirs){var target=Hit(p,dir);rays++;if(target!=null){if(!found.ContainsKey(target))found[target]=0;found[target]++;}}
+            Note("SURVEY | "+scene+" cells="+seen.Count+" directional-rays="+rays);
+            var targets=UnityEngine.Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .Where(o=>o.gameObject.scene.path==SceneLoadManager.CurrentScenePath&&o is IInteractable).Select(o=>o.transform).Distinct().ToArray();
+            foreach(var t in targets)Verify(found.ContainsKey(t),scene+" reachable "+t.name+" at "+t.position+" approaches="+(found.ContainsKey(t)?found[t]:0));
+            foreach(var t in targets.Where(t=>t.GetComponent<NPC>()!=null||t.GetComponent<EvidenceReconstruction>()!=null))
+                Verify(!seen.ContainsKey(Vector2Int.RoundToInt(t.position)),scene+" cannot stand inside "+t.name);
+        }
+    }
+    static IEnumerator EvidenceMatrix()
+    {
+        foreach(var scene in new[]{"T2","Tutorial_T3_VaseBreak","Tutorial_T4_BroochMissing"})
+        {
+            yield return Reset(scene,true);yield return Close();yield return Wait(()=>!SceneLoadManager.IsCutscene,"matrix ready");
+            var inventory=GameMenuController.Inventory;
+            foreach(var item in Catalog.Where(i=>i!=null&&!i.Retired))inventory.Add(item.Id);
+            if(scene!="T2") {Find<InvestigationPoint>("Cabinet Number 2").Interact();yield return Close();}
+            foreach(var who in new[]{"A","B"})
+            {
+                var actor=Find<EvidenceReconstruction>(who);var point=Find<InvestigationPoint>(who);var clips=Clips(actor);
+                foreach(var clip in clips)Note("CLIP | "+scene+" "+who+" "+clip.label+" evidence="+string.Join(",",clip.evidence.Where(i=>i!=null).Select(i=>i.Id).ToArray())+" required="+string.Join(",",clip.requiredItems.Where(i=>i!=null).Select(i=>i.Id).ToArray())+" conditions="+string.Join(",",clip.conditions.Select(c=>c.id.name+":"+c.compare+":"+c.value).ToArray()));
+                foreach(var item in Catalog.Where(i=>i!=null&&!i.Retired&&inventory.Has(i.Id)).ToArray())
+                {
+                    ClearRoutes();yield return null;
+                    point.Interact();yield return null;
+                    if(Get(M,"itemSelected")==null){Verify(false,scene+" "+who+" menu failed for "+item.Id);yield return Close();continue;}
+                    var clip=clips.FirstOrDefault(c=>c.evidence.Any(e=>e!=null&&e.Id==item.Id));
+                    bool expected=clip!=null&&SceneFlowContainer.Passes(clip.conditions)&&clip.requiredItems.All(i=>i!=null&&inventory.Has(i.Id));
+                    Vector3 pos=actor.transform.position;var cols=actor.GetComponentsInChildren<Collider2D>(true);var states=cols.Select(c=>c.enabled).ToArray();
+                    Call(M,"ChangeInventoryCategory",0);SelectItem(item.Id);yield return Close();yield return Wait(()=>!actor.IsReplaying,"matrix replay restore");yield return null;
+                    Verify(actor.CompletedEvidence.Length==(expected?1:0),scene+" "+who+" <- "+item.Id+" expected="+expected+" progress="+actor.CompletedEvidence.Length);
+                    Verify(Vector3.Distance(pos,actor.transform.position)<.01f&&cols.Select((c,i)=>c.enabled==states[i]).All(v=>v)&&Time.timeScale>0&&!GameMenuController.IsBlockingGameplay,scene+" "+who+" restores actor/collision/control after "+item.Id);
+                }
+            }
+            ClearRoutes();
+        }
+    }
+    static IEnumerable<int[]> Permutations(int[] values)
+    {
+        if(values.Length==0){yield return new int[0];yield break;}
+        for(int i=0;i<values.Length;i++)foreach(var rest in Permutations(values.Where((v,j)=>j!=i).ToArray()))yield return new[]{values[i]}.Concat(rest).ToArray();
+    }
+    static IEnumerator CompletionOrders()
+    {
+        yield return Reset("Tutorial_T3_VaseBreak",true);yield return Close();yield return Wait(()=>!SceneLoadManager.IsCutscene,"orders ready");
+        var conclusion=UnityEngine.Object.FindFirstObjectByType<TutorialEvidenceConclusion>();
+        var witnesses=(TutorialEvidenceConclusion.Witness[])Get(conclusion,"witnesses");
+        var all=witnesses.SelectMany(w=>w.observed).ToArray();var both=(ConditionID)Get(conclusion,"bothCompleted");
+        int orders=0;int premature=0;int missed=0;
+        foreach(var order in Permutations(Enumerable.Range(0,all.Length).ToArray()))
+        {
+            Dismiss();foreach(var f in all)ConditionManager.Instance.Set(f,0);foreach(var w in witnesses)ConditionManager.Instance.Set(w.completed,0);ConditionManager.Instance.Set(both,0);
+            for(int step=0;step<order.Length;step++)
+            {
+                ConditionManager.Instance.Set(all[order[step]],1);Call(conclusion,"Update");
+                if(step<order.Length-1&&D.IsDialogOpen)premature++;
+            }
+            if(!D.IsDialogOpen||D.CurrentStory.name!="AlibisVerified")missed++;orders++;
+            if(orders%60==0)yield return null;
+        }
+        Verify(orders==720&&premature==0&&missed==0,"Completion state machine: "+orders+" orders, premature="+premature+" missed="+missed+" (replay animation excluded)");
+        Dismiss();ClearRoutes();
+    }
+    static IEnumerator SaveCases()
+    {
+        foreach(var scene in new[]{"S3","T2","Tutorial_T3_VaseBreak","Tutorial_T4_BroochMissing","S#6"})
+        {
+            yield return Reset(scene,true);yield return Close();yield return Wait(()=>!SceneLoadManager.IsCutscene,"save ready");
+            Player.TeleportToWorld(new Vector2(1,-1));Player.SetFacingDirection(Vector2.left);
+            var cp=(GameCheckpoint)Call(M,"CaptureCheckpoint",Player);string dir=Path.GetFullPath(Root+"saves/"+scene);GameCheckpointStore.WriteManual(1,cp,dir);
+            GameCheckpoint loaded;string error;bool read=GameCheckpointStore.TryReadManual(1,out loaded,out error,dir);Verify(read,scene+" isolated save read");
+            if(!read)continue;
+            yield return (IEnumerator)Call(M,"ChangeSession",loaded.scene,loaded);
+            yield return Wait(()=>!SceneLoadManager.IsLoading&&!SceneLoadManager.IsRestoringSession,"save restored");yield return null;
+            Verify(Scene==scene&&Vector2.Distance(Player.transform.position,cp.position)<.01f&&Player.FacingDirection==cp.facing,scene+" restores correct content/position/facing (actual="+Scene+")");
+            Verify(GameStateManager.Instance.GameState==GameState.Gameplay&&!GameMenuController.IsBlockingGameplay&&Time.timeScale>0,scene+" restored controls unlocked");
+            var current=GameMenuController.Inventory.Capture();Verify(cp.inventory.Count==current.Count&&cp.inventory.All(i=>current.Any(j=>i.itemId==j.itemId&&i.quantity==j.quantity)),scene+" restored inventory matches");
+        }
+        var checkpoint=(GameCheckpoint)Call(M,"CaptureCheckpoint",Player);string root=Path.GetFullPath(Root+"save-edge-cases");Directory.CreateDirectory(root);
+        for(int i=1;i<=5;i++){checkpoint.playSeconds=i;GameCheckpointStore.Write(checkpoint,root);}
+        for(int i=1;i<=3;i++){GameCheckpoint data;string error;Verify(GameCheckpointStore.TryRead(i,out data,out error,root)&&data.playSeconds==6-i,"Autosave rotation slot "+i);}
+        for(int i=1;i<=3;i++){checkpoint.playSeconds=i+10;GameCheckpointStore.WriteManual(i,checkpoint,root);}
+        checkpoint.playSeconds=99;GameCheckpointStore.WriteManual(2,checkpoint,root);
+        for(int i=1;i<=3;i++){GameCheckpoint data;string error;Verify(GameCheckpointStore.TryReadManual(i,out data,out error,root)&&data.playSeconds==(i==2?99:i+10),"Manual slot isolation "+i);}
+        var cases=new Dictionary<string,string>{{"truncated","{\"version\":1,"},{"null","null"},{"empty","{}"},{"future",JsonUtility.ToJson(checkpoint).Replace("\"version\":1","\"version\":99")}};
+        foreach(var pair in cases){File.WriteAllText(GameCheckpointStore.ManualSlotPath(3,root),pair.Value);GameCheckpoint data;string error;Verify(!GameCheckpointStore.TryReadManual(3,out data,out error,root),"Invalid save rejected: "+pair.Key);}
+        GameCheckpointStore.WriteManual(1,checkpoint,root);File.WriteAllText(GameCheckpointStore.ManualSlotPath(1,root),"broken");GameCheckpoint fallback;string msg;
+        bool recovered=GameCheckpointStore.TryReadManual(1,out fallback,out msg,root);Note("OBSERVATION | corrupted main save with .bak exists: recovered="+recovered+" error="+msg);
+    }
+    static IEnumerator InventoryCases()
+    {
+        var inv=new InventoryModel(Catalog);inv.SetMemorySpace(true);int total=0;int fail=0;
+        foreach(var item in Catalog.Where(i=>i!=null))
+        {
+            inv.Restore(null);bool a=inv.Add(item.Id);total++;if(a==item.Retired)fail++;
+            inv.Restore(null);if(inv.Add(item.Id,0)||inv.Add(item.Id,-1)||inv.Add(item.Id,item.MaxStack+1))fail++;total+=3;
+            if(!item.Retired){inv.Add(item.Id,item.MaxStack);var before=inv.Capture();bool overflow=inv.Add(item.Id);if(overflow||inv.Count(item.Id)!=item.MaxStack)fail++;total++;}
+        }
+        Verify(fail==0,"Inventory catalog boundary checks="+total+" failures="+fail);
+        foreach(var item in Catalog.Where(i=>i!=null&&!i.Retired&&i.MemoryOnly))
+        {inv.Restore(null);inv.SetMemorySpace(true);inv.Add(item.Id);inv.SetMemorySpace(false);Verify(!inv.Has(item.Id)&&!inv.Add(item.Id),"Memory-only cleanup "+item.Id);}
+        yield return null;
+    }
+    static IEnumerator Run(){ Phase="Evidence matrix"; yield return Guard(EvidenceMatrix(),Phase);Note("CHECKS="+checks); } }

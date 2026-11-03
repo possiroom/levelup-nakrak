@@ -43,6 +43,7 @@ public class PlayerMoveController : MonoBehaviour
 
     void Update()
     {
+        if (GameMenuController.IsBlockingGameplay) return;
         // Input on update
         moveX = Input.GetAxisRaw("Horizontal"); // -1 ~ 1
         moveY = Input.GetAxisRaw("Vertical");   // -1 ~ 1

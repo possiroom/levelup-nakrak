@@ -1,0 +1,6 @@
+CASE ERROR | semantic-invalid save session | System.ArgumentException: Invalid or unavailable inventory item in save data.
+  at Naknak.Inventory.InventoryModel.Restore (System.Collections.Generic.IEnumerable`1[T] entries) [0x0005d] in C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Assets\Scripts\InventoryModel.cs:133 
+  at GameMenuController+<ChangeSession>d__47.MoveNext () [0x003b6] in C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Assets\Scripts\GameMenuController.cs:323 
+  at NaknakBadSaveReview+<Guard>c__Iterator0.MoveNext () [0x0005c] in <4055a6813a9f42cbb70faecdb23719dc>:0 
+AFTER FAILED LOAD | menu.loading=True blocked=True restoring=True gameState=Gameplay
+FINISHED

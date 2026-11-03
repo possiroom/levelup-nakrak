@@ -1,0 +1,96 @@
+SURVEY | T2 cells=84 directional-rays=336
+PASS | T2 reachable Cabinet Number 2 at (5.00, 5.00, 0.00) approaches=1
+PASS | T2 reachable B at (4.00, 4.00, 0.00) approaches=1
+PASS | T2 reachable Unremembered Back Door at (-5.00, 5.00, 0.00) approaches=1
+PASS | T2 reachable phone at (-5.00, 0.00, 0.00) approaches=1
+PASS | T2 reachable Trash Can at (4.00, -4.00, 0.00) approaches=1
+PASS | T2 reachable Counter Watch at (-2.00, 3.00, 0.00) approaches=1
+PASS | T2 reachable Owner at (-3.00, 3.00, 0.00) approaches=2
+PASS | T2 reachable Memory Exit at (1.00, -5.00, 0.00) approaches=1
+PASS | T2 reachable Vase Toy at (-5.00, -1.00, 0.00) approaches=1
+PASS | T2 reachable A at (-4.00, 0.00, 0.00) approaches=2
+ISSUE | T2 cannot stand inside B
+PASS | T2 cannot stand inside Owner
+ISSUE | T2 cannot stand inside A
+SURVEY | Tutorial_T3_VaseBreak cells=84 directional-rays=336
+PASS | Tutorial_T3_VaseBreak reachable Memory Exit at (1.00, -5.00, 0.00) approaches=1
+PASS | Tutorial_T3_VaseBreak reachable Trash Can at (4.00, -4.00, 0.00) approaches=1
+PASS | Tutorial_T3_VaseBreak reachable Owner at (-3.00, 3.00, 0.00) approaches=2
+PASS | Tutorial_T3_VaseBreak reachable phone at (-5.00, 0.00, 0.00) approaches=1
+PASS | Tutorial_T3_VaseBreak reachable Unremembered Back Door at (-5.00, 5.00, 0.00) approaches=1
+PASS | Tutorial_T3_VaseBreak reachable A at (-4.00, 0.00, 0.00) approaches=2
+PASS | Tutorial_T3_VaseBreak reachable Cabinet Number 2 at (5.00, 5.00, 0.00) approaches=1
+PASS | Tutorial_T3_VaseBreak reachable B at (4.00, 4.00, 0.00) approaches=1
+PASS | Tutorial_T3_VaseBreak cannot stand inside Owner
+ISSUE | Tutorial_T3_VaseBreak cannot stand inside A
+ISSUE | Tutorial_T3_VaseBreak cannot stand inside B
+SURVEY | Tutorial_T4_BroochMissing cells=83 directional-rays=332
+PASS | Tutorial_T4_BroochMissing reachable Unremembered Back Door at (-5.00, 5.00, 0.00) approaches=1
+PASS | Tutorial_T4_BroochMissing reachable Trash Can at (4.00, -4.00, 0.00) approaches=1
+PASS | Tutorial_T4_BroochMissing reachable Memory Exit at (1.00, -5.00, 0.00) approaches=1
+PASS | Tutorial_T4_BroochMissing reachable phone at (-5.00, 0.00, 0.00) approaches=1
+PASS | Tutorial_T4_BroochMissing reachable Owner at (-3.00, 3.00, 0.00) approaches=2
+PASS | Tutorial_T4_BroochMissing reachable VaseBroken at (-4.00, -2.50, 0.00) approaches=3
+PASS | Tutorial_T4_BroochMissing reachable Cabinet Number 2 at (5.00, 5.00, 0.00) approaches=1
+PASS | Tutorial_T4_BroochMissing reachable A at (-4.00, 0.00, 0.00) approaches=2
+PASS | Tutorial_T4_BroochMissing reachable B at (4.00, 4.00, 0.00) approaches=1
+PASS | Tutorial_T4_BroochMissing cannot stand inside Owner
+ISSUE | Tutorial_T4_BroochMissing cannot stand inside A
+ISSUE | Tutorial_T4_BroochMissing cannot stand inside B
+SURVEY | S3 cells=79 directional-rays=316
+PASS | S3 reachable C at (-1.00, 1.00, 0.00) approaches=3
+PASS | S3 reachable B at (3.00, 2.00, 0.00) approaches=4
+PASS | S3 reachable A at (-3.00, 1.00, 0.00) approaches=3
+PASS | S3 reachable assist at (0.00, 3.00, 0.00) approaches=2
+PASS | S3 reachable S#3 at (1.30, 2.71, 0.00) approaches=4
+ISSUE | S3 cannot stand inside C
+ISSUE | S3 cannot stand inside B
+ISSUE | S3 cannot stand inside A
+ISSUE | S3 cannot stand inside assist
+PASS | S3 cannot stand inside S#3
+SURVEY | S#6 cells=80 directional-rays=320
+PASS | S#6 reachable assist at (-0.02, 3.00, 0.00) approaches=2
+PASS | S#6 reachable A at (-3.00, 1.00, 0.00) approaches=3
+PASS | S#6 reachable Owner at (-0.93, 1.31, 0.00) approaches=3
+CLIP | T2 A A는 쓰레기통에 반송된 편지를 버렸다. evidence=evidence-returned-letter,evidence-crumpled-letter required= conditions=
+CLIP | T2 A A는 카운터에서 회중시계를 팔았다. evidence=evidence-pocket-watch,evidence-watch-box required= conditions=
+CLIP | T2 A A는 전화기로 향했다. 비스듬하게 놓인 전화기는 그때 사용한 흔적이다. evidence=evidence-telephone-trace required= conditions=
+CASE ERROR | All presentable inventory x A/B x T2/T3/T4 | System.Exception: Missing selectable item sample-note
+  at NaknakExhaustive.SelectItem (System.String id) [0x0004c] in <55ee705e91fe425291e83d92a9e1a708>:0 
+  at NaknakExhaustive+<EvidenceMatrix>c__Iterator14.MoveNext () [0x00670] in <55ee705e91fe425291e83d92a9e1a708>:0 
+  at NaknakExhaustive+<Guard>c__Iterator0.MoveNext () [0x0005c] in <55ee705e91fe425291e83d92a9e1a708>:0 
+PASS | Completion state machine: 720 orders, premature=0 missed=0 (replay animation excluded)
+PASS | S3 isolated save read
+PASS | S3 restores correct content/position/facing (actual=S3)
+PASS | S3 restored controls unlocked
+PASS | S3 restored inventory matches
+PASS | T2 isolated save read
+PASS | T2 restores correct content/position/facing (actual=T2)
+PASS | T2 restored controls unlocked
+PASS | T2 restored inventory matches
+PASS | Tutorial_T3_VaseBreak isolated save read
+PASS | Tutorial_T3_VaseBreak restores correct content/position/facing (actual=Tutorial_T3_VaseBreak)
+PASS | Tutorial_T3_VaseBreak restored controls unlocked
+PASS | Tutorial_T3_VaseBreak restored inventory matches
+PASS | Tutorial_T4_BroochMissing isolated save read
+PASS | Tutorial_T4_BroochMissing restores correct content/position/facing (actual=Tutorial_T4_BroochMissing)
+PASS | Tutorial_T4_BroochMissing restored controls unlocked
+PASS | Tutorial_T4_BroochMissing restored inventory matches
+PASS | S#6 isolated save read
+PASS | S#6 restores correct content/position/facing (actual=S#6)
+PASS | S#6 restored controls unlocked
+PASS | S#6 restored inventory matches
+CASE ERROR | Save restore and corrupt saves | System.IO.IOException: 바꿀 파일을 제거할 수 없습니다
+  at System.IO.FileSystem.ReplaceFile (System.String sourceFullPath, System.String destFullPath, System.String destBackupFullPath, System.Boolean ignoreMetadataErrors) [0x0002c] in <152439c387994a8da523328132967f8d>:0 
+  at System.IO.File.Replace (System.String sourceFileName, System.String destinationFileName, System.String destinationBackupFileName, System.Boolean ignoreMetadataErrors) [0x00034] in <152439c387994a8da523328132967f8d>:0 
+  at System.IO.File.Replace (System.String sourceFileName, System.String destinationFileName, System.String destinationBackupFileName) [0x00000] in <152439c387994a8da523328132967f8d>:0 
+  at GameCheckpointStore.Write (GameCheckpoint data, System.String saveDirectory) [0x0007a] in C:\Users\LG\OneDrive\levelup-nakrak\Naknak\Assets\Scripts\GameCheckpointStore.cs:139 
+  at NaknakExhaustive+<SaveCases>c__Iterator17.MoveNext () [0x00451] in <55ee705e91fe425291e83d92a9e1a708>:0 
+  at NaknakExhaustive+<Guard>c__Iterator0.MoveNext () [0x0005c] in <55ee705e91fe425291e83d92a9e1a708>:0 
+PASS | Inventory catalog boundary checks=89 failures=0
+PASS | Memory-only cleanup tutorial-brooch
+PASS | Memory-only cleanup tutorial-packed-jewelry-box
+PASS | Memory-only cleanup tutorial-empty-jewelry-box
+PASS | Memory-only cleanup evidence-telephone-trace
+CHECKS=75
+FINISHED

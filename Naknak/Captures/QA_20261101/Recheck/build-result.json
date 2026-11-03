@@ -1,0 +1,10 @@
+﻿{
+  "target": "StandaloneWindows64",
+  "result": "succeeded",
+  "errors": 0,
+  "warnings": 3,
+  "durationSeconds": 192.1088795,
+  "sizeMB": 306.28,
+  "output": "Build/NaknakQA.exe",
+  "runtimeCheck": "Headless initialization observed; diagnostic process then terminated. No graphical playthrough validated."
+}

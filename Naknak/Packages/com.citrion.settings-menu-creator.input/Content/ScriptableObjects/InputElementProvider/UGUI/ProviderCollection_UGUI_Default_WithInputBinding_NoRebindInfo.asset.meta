@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 80edbf5f8b4fce94782bec888b95781d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 275525
+  packageName: Settings & Options Menu Creator - Input Rebinding Addon
+  packageVersion: 1.2.3
+  assetPath: Packages/com.citrion.settings-menu-creator.input/Content/ScriptableObjects/InputElementProvider/UGUI/ProviderCollection_UGUI_Default_WithInputBinding_NoRebindInfo.asset
+  uploadId: 988204

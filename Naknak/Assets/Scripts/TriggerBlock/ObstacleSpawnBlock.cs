@@ -11,6 +11,7 @@ public class ObstacleSpawnBlock : TriggerBlock
 
     protected override void OnTriggered()
     {
+        if (!TemporaryFeatureSwitches.ObstaclesEnabled) return;
         if (obstaclePrefab == null)
         {
             Debug.LogWarning("Obstacle Prefab is NULL of " + gameObject.name);

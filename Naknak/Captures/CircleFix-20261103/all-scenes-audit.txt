@@ -1,0 +1,7 @@
+Scenes inspected=24
+Additional placeholders hidden=5
+Assets/Scenes/S3.unity | S#3 | enabled=False | active=False | HIDE PLACEHOLDER
+Assets/Scenes/T1.unity | Grid/phone | enabled=False | active=True | HIDE PLACEHOLDER
+Assets/Scenes/T2.unity | phone | enabled=False | active=True | HIDE PLACEHOLDER
+Assets/Scenes/Tutorial_T3_VaseBreak.unity | phone | enabled=False | active=True | HIDE PLACEHOLDER
+Assets/Scenes/Tutorial_T4_BroochMissing.unity | phone | enabled=False | active=True | HIDE PLACEHOLDER

@@ -1,0 +1,610 @@
+﻿[
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\AlterChaserAI.cs",
+        "Hash":  "7091634AE55E6C0DCE137D059E811FB3BF9D82487920DBC9A22710E2C00E37F8"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\AlterSpawnManager.cs",
+        "Hash":  "1519B9AD3D51784F83EAC3ED86794B3ACBA0D1BA602C2F7A709683718113F21B"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\AlterSpawnTestInput.cs",
+        "Hash":  "919CB3C2FB2E00767FB14B66F90F6C856A906FD3149C1C73F8633E1EFE589E8C"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Colider Manager.cs",
+        "Hash":  "8FE583BF24F750907EEBB7F86B1F57B96EAADB256301E1912CD19BF08938F5A2"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\ConditionManager.cs",
+        "Hash":  "1C4FC03887A2C4ADC292B99B8036C1DC741E8642230FDF7F6369D43F633C3024"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\ConditionToEvent.cs",
+        "Hash":  "E66E629179062791A4A917E1BB6A82F29940B69E960E067AAE2312CEFAB1BE46"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\DialogManager.cs",
+        "Hash":  "A610003CC4E186063431FBD2A344062EF0E9EF50DE03FDC29CD4D389AA9FD003"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\EvidenceReconstruction.cs",
+        "Hash":  "52C6059012AB7FFD95681F63D272103B84EADFC103132BE1A1ADA7115C4289B5"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameCheckpointStore.cs",
+        "Hash":  "770B8FEC9E18E809B9A0CBC6F8AC7911012CD92583A63195643DB288687051DD"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameEventFactory.cs",
+        "Hash":  "08613BD98BEB5679ECD5F14264EA0F4B4CDE19A7F614938CC2E177D796C1AD94"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameEventManager.cs",
+        "Hash":  "4FD06BA00AEB92940302190B08A3E919926E90D8267711D0A841BC571F20CE9D"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameMenuConfiguration.cs",
+        "Hash":  "967F7500BF88E742888C71B9A3E7B74F81D10BFB349A40780F5E08B30FC08F06"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameMenuController.cs",
+        "Hash":  "0E996CC17BEF7FEC4C5F773BD8F11459EB8F18572469BC6F407BE6FCE48DE21C"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameMenuController.InventoryUI.cs",
+        "Hash":  "92819C2CFB9A933197E8E7D04C014D91479919FCEFA71D163CFA617955C76439"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameMenuController.ItemSelection.cs",
+        "Hash":  "4202306BEE0A9B8FCEEBC4E4DE2BB232E9B5A0E6A1620C06A112A223A3D9E0C2"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameMenuController.UI.cs",
+        "Hash":  "E2F8BB442041B0E17AF27F9577290A9BB351598F16EA35AF079D59405D38FEAF"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameMenuOptions.cs",
+        "Hash":  "123B33978FDF2464C575AE55E9E848C81ED0113A534FDD18DC604E1031FF2526"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameStateManager.cs",
+        "Hash":  "7BA6B5A950C97500BC1D0A1D5D31FDCBC01F8F3980B7C4A1D9F379A20A88B09E"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\HideColliders.cs",
+        "Hash":  "54F9485262C59AB7D8DFFBD8D0A1D80F5A056C20EBDA24947A0342505A343448"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\InteractionInput.cs",
+        "Hash":  "03FBA23A363172AA78B923E0943DAE04836FCF2EE2C6619F038D5E4E20B7D95D"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\InventoryItem.cs",
+        "Hash":  "27434CDC8FF74F63F345927366B2A948AE84E8CCADDA55F169AF7B8DE25708F5"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\InventoryModel.cs",
+        "Hash":  "21E325DED99B9DE34246C5C4D446FA123E933FEF9825882B19CEE7DF80D49A44"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\InventoryPickup.cs",
+        "Hash":  "7867979FE3A83766FF66FD7E932A60D8680EAE1ABE9F3CCD72B83DF8025FCC4D"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\InvestigationPoint.cs",
+        "Hash":  "9BD16905030BC69EEA36F960D7135F49475092B62BA00DD1EBB44A407E4AE376"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\LastInputManager.cs",
+        "Hash":  "9FC39F1EC88ABCC2D28690CF77EF97E1F356C3FF9D8F745FDC84B3B2C6BD09B5"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\MansionRoom.cs",
+        "Hash":  "69DB2F739F1F6DBB926B510F60FE3921BC7A10FEE3911947FEB02135EB0D2B89"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\MansionRoomSystem.cs",
+        "Hash":  "09B1CC55C3B7B033C09A35FADD470D5F379E9C808DA45F0BFA041E3B26BE25BE"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\MapContainer.cs",
+        "Hash":  "233A0980DFB3E91F2D50520671E1FCC41FE7C75E5DF3A7B75D841EBF36F670AC"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\MapManager.cs",
+        "Hash":  "ED94B094D92BE054E2476C177DDA59EC2B51990836DE6B741917CEE9B66E72B6"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\MapStreamingManager.cs",
+        "Hash":  "6426606A22326F558769F27855BB92210932F1E922407AF438C7ECCE9634B95D"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\MemoryInvestigationPoint.cs",
+        "Hash":  "14465590B32BD39ADDFFF41F79FA1AAFAC273778385717CF7F8AB33730453499"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\MenuEventSystemOwner.cs",
+        "Hash":  "401427F210E161BFF3F3CB869B5D3832DF1C1968D70B25BD6548B2E97C09DED7"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\MenuPointerFocus.cs",
+        "Hash":  "653F87CC63570FB78EFB98508590810A6368E958BDBA9F8DC34737BEF5170130"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\NPC.cs",
+        "Hash":  "9D837B585A1D24524CCDBBD866F8E118917CD8091CCBDAC74CC5B3966D7415FA"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\PatienceAngerBreathRunSystem.cs",
+        "Hash":  "965B509D909D3017217771810462C327CC6F20DF193D9AFA26C792A2C9C121EF"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\PlayerMoveController.cs",
+        "Hash":  "D86C7FE6B2794547FF20C84FC1A6913D90E5458B0D6A01D9FE870B974C815A6B"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\PlayerMoveController2.cs",
+        "Hash":  "A94C339C8C609D97DF90268B3405CC13AE7A0012C5E3B807876785BBC99563B0"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\PlayerMoveController3.cs",
+        "Hash":  "9346447423B35003C51DA25C1D1F38102A73A37C55083CBED7ABA65B3CF1F667"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\PlayerStatus.cs",
+        "Hash":  "4050A21125D105A9D16873DCF33C8B4477C0AB6E6C5F46FC67ECADA5374F20C8"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\RoomDoorTrigger.cs",
+        "Hash":  "7B86CA5D279EAED67E5F83DFD4F39501E1EF5E2A8F533D876DFB2DC8E6CBEDD9"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\RoomTransitionTestEffects.cs",
+        "Hash":  "EB337B7413A5B0FE2A5957745ACC83E533A499A690EE90C19D677AA6EFE0452F"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\SceneController.cs",
+        "Hash":  "ED63D509F6D74947FB37FD7E16104BD2140C50A97C21AED87ED0DCD602A2506A"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\SceneFlowContainer.cs",
+        "Hash":  "ACBF8E7693E6FC4D0781773AE6912EE62A909C29CE99F79FE4A035543408AB12"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\SceneLoadManager.cs",
+        "Hash":  "3E30D8B999BB4B7C7126590267EDA53885FC2F95EA82EAE697900F8CC6B87B55"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\SceneTransitionPoint.cs",
+        "Hash":  "533439B7C1F5D3E912CDC0FE616F2532287DD8434A6EB48D1929458EC36D2F36"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\StairManager.cs",
+        "Hash":  "EB8A51BBCB8AE10BFA63A9222CC7257956104CDF7691F0362578152B3CA4363E"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\StorySelectData.cs",
+        "Hash":  "AA0A8A951A735D304F41604FE716363AECF7ACE1DB7CD0BEFF5660363D211ECC"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\StoryTextData.cs",
+        "Hash":  "F6818817979253E24B0402F02E694A91C7718D877643D9433B21F936838F6906"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\StraightEvent.cs",
+        "Hash":  "2C0D42B368F16AE3F7E6CCBE6452184990688DF52E217E5B23E47FAE79B18056"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TemporaryFeatureSwitches.cs",
+        "Hash":  "D3DEC28D07A9E527812117E5E1BD139776FD22029EB64B8632461CEE2B76B74A"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TriggerExecutor.cs",
+        "Hash":  "A94D070FEA0982EEFAB1DA3800F670A96A4B3EA8F41A0490E534690942EA5511"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialAttentionMarker.cs",
+        "Hash":  "8FE85D3C5600ED736568DCC375DC48DF92093C4CF2768BC5E8DD05DDA267F04A"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialCaseDefinition.cs",
+        "Hash":  "22048173E0DAB1AA2C3BD046938785AF4647FA09D7032B8743CC223EBA7BCC26"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialDeductionTrack.cs",
+        "Hash":  "025B4509A18B9416E3D4FB66C3C2812FF1532E5DC512608F879250072E237600"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialEntranceAudio.cs",
+        "Hash":  "965C45FF251BB70AFE470AE64DA9FFC3E674812AC594E297DD8A565705A7F6DA"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialEvidenceConclusion.cs",
+        "Hash":  "AFCC1D3D330AE0B3D8F6E823510C9F55AA62CAE3A9416B80C07518FB0775F03A"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialObjectiveController.cs",
+        "Hash":  "E577659C0CA1FD597E5A416B08BFD2206CAB705BE56EAE57F323B03079543D03"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialRoom0.cs",
+        "Hash":  "FF82E40873A29D8B94BEA74AC55997BBA68C3D3ACD39369D5E7EF9E5BB48B4F1"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialRoom0Point.cs",
+        "Hash":  "E58DF13A9CD24E6FA2FA62D211E1B981F465F73A99BC5CC24DB242BFD0FF7848"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialS6EventController.cs",
+        "Hash":  "2B904FE0FAE65B24F57DAA820A3669FD38943444F6875545B8723D886242FCF7"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialScene1Cutscene.cs",
+        "Hash":  "96CC0A82859610DEC4F27F07C05C27908BE6C2BD61044DDC2034A19A4D24529E"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialScenePresentation.cs",
+        "Hash":  "CC61CB06A5C64E96D757AB65C80D115521C987D65CB6D09686507136FD7C1016"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialT2Appraisal.cs",
+        "Hash":  "2FAAFD1C4432728678BDA9BDACC7009B9F7C653F4597CA0190EA7E68091FE13B"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialT35BoxPoint.cs",
+        "Hash":  "D21F786B447EFBF9F956374A8A3DD903F40186CA06C46913DD6FF2AE13184FA2"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialT35EventController.cs",
+        "Hash":  "BE347BD1A422BBFCF1D0B5410917DB48F7ACAD2E082648E336E54A9D7531342F"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialT3T4SceneController.cs",
+        "Hash":  "D0431B8FE6F9F2FA41CE4D7A81A3161BA4BE388D288BB3BFAC853C621BA2EC08"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialT4Controller.cs",
+        "Hash":  "63423D80CF891CD0F9FB93DD3D448EF7B961E5771821D812163907BF7932EFF6"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialWalkingRoute.cs",
+        "Hash":  "41B2DF859DCFB4F85FB7668BA21D3B1740326ECCBEA33318AFF7D8868198D8C7"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TutorialWitnessStaging.cs",
+        "Hash":  "8EC9521A4D2BAC1E9317665260207DEE44F11AFB337E627584EE057707B7F70C"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\UIFadeInOut.cs",
+        "Hash":  "7092D4FD4634C3E100528044B7C176758D1884419C6A4511559B83A9259CC46F"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\VisionCircleOverlayController.cs",
+        "Hash":  "852D1D0AFC09C1F19822992475F293578FDFCE7EFC82EDCA6D4126B90E340B2D"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\WorldDepthSort.cs",
+        "Hash":  "6500846718A95EFC46D50C93D3C8E9AF0A2ADBC02013D6BCD57D34A5159EE840"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Base\\GameEventBase.cs",
+        "Hash":  "A659E13B85CB94F44CA5A98C77F3D5CE6F882558F5759C287E2F5A046BBCEF96"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Editor\\DialogDashboard.cs",
+        "Hash":  "DECFF3BFB9C1CB7373E2C93B7895F2A595B439A7805D90BA818C46BD44A16E8F"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Editor\\DialogDataManager.cs",
+        "Hash":  "B5F12916E033951FF846EE684D093FCCD94091885819F68A75B254DE1A721679"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Editor\\DialogEditorUtils.cs",
+        "Hash":  "01E05E67FF889270808EA0D5E7836B6B0BEDB4B18BFCF94072E5B403EC333E07"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Editor\\DialogStoryLeftPanel.cs",
+        "Hash":  "5BE78FA9345C6AD65589CF16A48C50D4F29915CD84BDD67DCE007CFF5FB34835"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Editor\\DialogStoryRightPanel.cs",
+        "Hash":  "B7882DB60DEBF3F348DCBA3E8E356864F7992DF77D19474CAF64700DA81B5AC0"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Editor\\DialogStoryView.cs",
+        "Hash":  "9B74E5DBCA51F9DBE01319904822641A1AFD90E4FAE0165518E8897F09087EC9"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Editor\\DialogTriggerView.cs",
+        "Hash":  "41C78CF1914FB396C6A7380C13EE655A77E0B2EF9EA75850707A2B970D9545FE"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Editor\\InventoryTools.cs",
+        "Hash":  "391DE237EE2CB923B516CCB9DBB8A7F917AB9002D0E8334336388321562FED8A"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Editor\\ReadOnlyDrawer.cs",
+        "Hash":  "DB92AB60F0A993DDCF31ED391F414E5AFF3C9DB319A4DD3E4834E0DDFB9E8F28"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Editor\\TutorialDepthSetup.cs",
+        "Hash":  "4B5437FDD796B72718BF85A5941F9BA821EBF362DC3797E3E0BC6E7C9120CAF9"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Editor\\TutorialRevisionPlaytest.cs",
+        "Hash":  "AA34F0A0C781DC412649A5AE43794B7351E81828252DE91FC21BEDCDC6DFCAB7"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Editor\\TutorialRevisionSetup.cs",
+        "Hash":  "75CF29E52385B35E5B06A2E87780929E35EBE866B8367AE60E92CB31CB9C28C3"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Editor\\TutorialRouteSetup.cs",
+        "Hash":  "FCD3F8C090519F6BD8A08DD7FE57E2EC6ADD5CB9D687FB3870B99B358BF50A72"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\FlashlightSystem\\FlashlightController.cs",
+        "Hash":  "7ECD2A6256215360020AB53FB59553BD9C9F8C1BB146922BF673780FF976F49D"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\FlashlightSystem\\FlashlightFreeSightOverlay.cs",
+        "Hash":  "B57C3049795E44AF09050854CF745CBE2B7318E2FC4A8FD1063723C4A761BD8E"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\FlashlightSystem\\FlashlightOccluder.cs",
+        "Hash":  "906453E86CF968DA24BFA082A9A2D4B1B3025387B59159E44A0B0528B907D820"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\FlashlightSystem\\FlashlightWorldDesaturateEffect.cs",
+        "Hash":  "E13B935962783FA5B7C230539D2A21C4A2DE3ABFB03C6F61B8658A6993B3F23A"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameEvent\\AdjustHealthEvent.cs",
+        "Hash":  "AF8EF7DCD805771B2C29E8D0026FFA7B3E48E3CDC43E259FF489144962F105B8"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameEvent\\DialogEvent.cs",
+        "Hash":  "17970C329403D7AD0FDBEA49754C23915E81C159DE17C2224212439FA434E1E3"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameEvent\\GameStateChangeEvent.cs",
+        "Hash":  "1BF0BDD2E501885C63E51256C9165EC84E8684A82B473A25D826C493B112C151"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\GameEvent\\NextDialogEvent.cs",
+        "Hash":  "EE330EC35E20485FF7510EA2EF9FBD6A89991A1856E3957A178812FC8B3DE24A"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Interfaces\\IInteractable.cs",
+        "Hash":  "E3F01CBA41EB1A2DFBC117E926D36FE9F9D6156F1CB5ED563EAAAA502D137948"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\AIManager.cs",
+        "Hash":  "433FFEF044A32718628A8114628223A29659FFAE03D1E5C21E8D12E7B91F29AD"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\AIPathfinder.cs",
+        "Hash":  "9F7D9C30C523EE1FAAE6CC74D264629A188A0669DB873D08259E467C04836FB9"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\AIState.cs",
+        "Hash":  "4E411F7E4E31AC5376020C5EEE108C50E3F47CAA8EBD9E57FF4CFB713D188CFE"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\Closet.cs",
+        "Hash":  "EA1DD32D8D9B32DFC82DC2E72D0087076866F9B25CAE47529C0407BD76C0E230"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\DoorDirection.cs",
+        "Hash":  "D6EFB2ADF8FA678D14DD4B46EE4A4196502E2D053DD199FE84E2045880B9B171"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\DoorTrigger.cs",
+        "Hash":  "205750B600281501559B21DD7BFEBC31D57324D31522630483D75A56E8A9298D"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\EnemyController.cs",
+        "Hash":  "2910E1EF5D3EDCD190C43C918648A7632BB63C91884E5C2CF405F2089B7F4FC3"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\EnemyEventCollider.cs",
+        "Hash":  "7FA3B0DF350E3341658F5AA4B0C0DD01A96BC6C2C72D8C317626F397D8D58A14"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\GridPathfinder.cs",
+        "Hash":  "69ACA0DF20644CDC1BB0A4C8840A56AE54DFFAFBAF865A8F57FC6AF6838221A6"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\Map_Manager.cs",
+        "Hash":  "76F06F87778F3070E721451981AA56AD7FB4F34FB4D388ACD5D0ED51E13DD407"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\RoomData.cs",
+        "Hash":  "AE72241E20E290C94B6E5EC97CF29004BE157BE1CEEAE5FECADF181F8CC5E045"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\RoomDoorData.cs",
+        "Hash":  "EE3D853E9A0324DC06784580E8BAD9A006F7CCBCB036A4CE32B67229FB857427"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\RoomGraph.cs",
+        "Hash":  "E64BE85B80027717BE25243E08F476D7D3F5374A69206A8646EB3313D936548C"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\RoomInstance.cs",
+        "Hash":  "603C773B7843098B1593F8A2784AA8CA6A92641BA7F352AC93E95090AEF808F8"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\RoomMoveInfo.cs",
+        "Hash":  "2A091714671F52B2B7821E36A3DFC51DA633211998F051EF4A9ABB70FC875B8D"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\RoomNode.cs",
+        "Hash":  "4F721A83117A7596F7A7DF87BDE7EB82B7276D178C61F1D122AC057FB431E577"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\New Folder\\Test1.cs",
+        "Hash":  "9A019321067DD38DBFF7627DB4D0775C3FC29C449F883FAD4102CAC6E2D2462A"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Obstacles\\ObsDynamite.cs",
+        "Hash":  "1A846D3411B1DFD05D3796F63F5407BBA7475617EBA02968E71A8BB661F77197"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Obstacles\\ObsStone.cs",
+        "Hash":  "361CB17784AD67278E0A8AA00ACCA1B4B3EF6BAB2CD33522C84829F0476E8062"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Obstacles\\ObstacleBlock.cs",
+        "Hash":  "8D5F264035807990C9781CAA87498EF16A2EA869879E77B3431E59DAD619EF8B"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Obstacles\\ObstacleExecution.cs",
+        "Hash":  "7DEDABF3E40F6B66210EFD38A709D5039F07CD521A3231AA7EC61C322205FFB5"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Obstacles\\ObsThornyVine.cs",
+        "Hash":  "7A2AAE6C5D7279ABAFE5F4D027DB60E1BCEC54F812EF5598D357B399B2893BB4"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Obstacles\\ObsWarning.cs",
+        "Hash":  "23CA172C46C981E35488E8FB77D22FDC087D2777AAC69A87E98D1203F6B09F5F"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\Obstacles\\ObsWater.cs",
+        "Hash":  "51B60E359D87D1862C24B4EC877658B4F484BD28650D00B8E968B4A6EDF84FAC"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TriggerBlock\\ConditionBlock.cs",
+        "Hash":  "6C54AC1DDBA4A48F5773CEAE71EC5E9262BE524C25ED6000BC048A924E53F01E"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TriggerBlock\\DebugLogBlock.cs",
+        "Hash":  "84A94FB19D838D760720A44592E216A345D6238A336F7E5CAB0CEC4DCB25B919"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TriggerBlock\\DialogBlock.cs",
+        "Hash":  "EE269350889EFF6E08F777BF9DA608CB8203049DD9E55A1081D27BAF672E4115"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TriggerBlock\\ObstacleDestroyBlock.cs",
+        "Hash":  "B6B387FAE375CB6B2FD5457E0493D2028855FB8011A1DF086FAA57D52DC451E8"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TriggerBlock\\ObstacleSpawnBlock.cs",
+        "Hash":  "373702FBEA1FC145585826FF3E2AEDD57E697A82845B05C434BCCA7D21F0F049"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TriggerBlock\\PortalBlock.cs",
+        "Hash":  "6433183220EC7224F9022147428CD2E7F6B4D5FAFB492756C5EC4DC515B753E0"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TriggerBlock\\StairBlock.cs",
+        "Hash":  "F19C79CEA450E325E931F92E1C7642A862B4BD45661B7003774FFB9E08EC21CE"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\TriggerBlock\\TriggerBlock.cs",
+        "Hash":  "F07E67AE335CCD4E63192C87D0D0BC469B1B6D1922966328D58EB272F2CA704F"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\UI\\DialogSelectViewer.cs",
+        "Hash":  "400C2B674F7BC262E56911955B4EB16F67F5FF98BA509F15102EA831BC59E748"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scripts\\UI\\DialogViewer.cs",
+        "Hash":  "95813F00834A1F6B7329CF57FC81E7309BD793523FD7CAD6F90924C63AF1029C"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\Map_01.unity",
+        "Hash":  "6E91EB550C57831BED923A8E93A4E4DDD8967381F2C6A5575F9158D910A855E5"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\PrototypeScene.unity",
+        "Hash":  "7CB76EB90F767D1FB4EAA51B25DFB3C54A5403FECCB855B6A7652C99A746C8E8"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\S#6.unity",
+        "Hash":  "D94108918111D7DD16398DCE39BC246CBD6577CB84946535A55B679EAAA5564B"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\S1.unity",
+        "Hash":  "753E54257699AEAA6917040E912478C80C91493B4CCAE3DDA8821775E717222B"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\S2.unity",
+        "Hash":  "D06F26B9D59CDFF9E5E5417ADD50876386192DE32E4919A0BFDCD9784A280C5C"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\S3.5.unity",
+        "Hash":  "B620CD592F2C760CFED918BF6633723916EB613F76D6395AF703C56D9B05EA9F"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\S3.unity",
+        "Hash":  "8F7C315BF01F6798AE36F3C7DCB6A7F8FD2B8F9D98D0367CB1B01836A2758DFD"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\S4.unity",
+        "Hash":  "DF9539BE9427F55271D4DBC8A849B201C1EFDC0DC0BFDE74FB46BEF0D48F48E7"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\S6.unity",
+        "Hash":  "86F66A3CC9291A35AC28EE9C80D966D26DF421BBD7D62C4A5B829DB158AE7534"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\SampleScene.unity",
+        "Hash":  "2CA7EDB4DEB4E19474EC5049969EC4A6AA9618DF6DA4EFE398755927C7BF0456"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\S_3.unity",
+        "Hash":  "8A21934AA0ABFCD782457811AE8B6B90E9563EAE9A4C26ADC2D42126DBC4F330"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\T0.unity",
+        "Hash":  "723BD7771558276C760EB5A3AAE824ED8572B476B6398DE30E8938B4764B9958"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\T1.unity",
+        "Hash":  "354861F8F7196324BBA7EA78EB6A17858C89954D46D0BD24CBA4018AB119A9E4"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\T2.unity",
+        "Hash":  "417BC41C34F56B502DC8EE16B32A0DD8731E9AF44998A2017ECF3183854F29E4"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\Title.unity",
+        "Hash":  "2452DE298A85A78F8883E0A424BB593E2F54B0901B4B862C036CCDC18CD33C53"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\Tutorial_PA_Alibi.unity",
+        "Hash":  "C79B31129177406EB748186E92C5EC90E6FE56DC50DCDF12F2C03D42B5E8FBC7"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\Tutorial_PB_Alibi.unity",
+        "Hash":  "97CE6821162E15B8243206BBC89710083DC1C34602095D7B056C6A0126CBFADB"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\Tutorial_Prologue.unity",
+        "Hash":  "4DEDA7DC0511B8B72D35531E14651D80D1E04391AEF90FC8198A6F8A9AE9E9B3"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\Tutorial_S6_OwnerConfession.unity",
+        "Hash":  "5E74FAD7F39F29704112A3016617415151BF91D4B061774338B164480298B66A"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\Tutorial_T35_BlackoutSearch.unity",
+        "Hash":  "742DA61364E1B089529F7676E542838692499C4AE5DC58A4C2B088960B849D7A"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\Tutorial_T3_VaseBreak.unity",
+        "Hash":  "A6E878AFFE0B87E893934E54BC8308DD5DD5736D501136AC71CECC3A2BA1987E"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Scenes\\Tutorial_T4_BroochMissing.unity",
+        "Hash":  "B9D0E074FF73A79857866DDA7BF5DAF2459DDFFB6C351349D0EEB612867843BC"
+    },
+    {
+        "Path":  "C:\\Users\\LG\\OneDrive\\levelup-nakrak\\Naknak\\Assets\\Resources\\TutorialSceneFlow.asset",
+        "Hash":  "C2172367769387405A040E659E0E48FCC877E76BCA0D218A9A3EED893F595589"
+    }
+]

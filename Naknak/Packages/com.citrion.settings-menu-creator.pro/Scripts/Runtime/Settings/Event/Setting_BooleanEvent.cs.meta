@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 3275a967c11011a4fad04c2a7da2b757
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator.pro/Scripts/Runtime/Settings/Event/Setting_BooleanEvent.cs
+  uploadId: 988202

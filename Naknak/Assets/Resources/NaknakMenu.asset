@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5de83a2e7ea46b7bb53f8c39c4db221, type: 3}
+  m_Name: NaknakMenu
+  m_EditorClassIdentifier: 
+  gameTitle: "\uB099\uB099"
+  titleScene: Title
+  startScene: Tutorial_Prologue
+  font: {fileID: 12800000, guid: a8424ddb2ff7b491ca1440f68ae55334, type: 3}
+  itemAcquiredSound: {fileID: 0}
+  itemAcquiredVolume: 0.6
+  items:
+  - {fileID: 11400000, guid: 641867a14d1043de9dce5218736a21e0, type: 2}
+  - {fileID: 11400000, guid: 641867a14d1043de9dce5218736a21e1, type: 2}
+  - {fileID: 11400000, guid: 41c3022a00f64cbe944aca5cad9e5b99, type: 2}
+  - {fileID: 11400000, guid: cd517998cd2b4ed495d8853dc783ab30, type: 2}
+  - {fileID: 11400000, guid: c6df5f7d4956486db11ab24a5ea2bbb0, type: 2}
+  - {fileID: 11400000, guid: 62aa85b0d70c4baebd604bba55c1e8fc, type: 2}
+  - {fileID: 11400000, guid: faee4474e35f4f8d90cc4efc779ce300, type: 2}
+  - {fileID: 11400000, guid: 5f5ca788c83589046beea52d4235571c, type: 2}
+  - {fileID: 11400000, guid: 0984f2304b9e22b43b803045302592cf, type: 2}
+  - {fileID: 11400000, guid: 89120c539a5f9cc4c8ffc865ef34c602, type: 2}
+  - {fileID: 11400000, guid: 3e28aad854e76ee448d002dc45148ae9, type: 2}
+  - {fileID: 11400000, guid: 94500d62bdf36884788784089179e8b7, type: 2}
+  - {fileID: 11400000, guid: cccbcdb9b0cf31148a60a59bedaa3a83, type: 2}
+  - {fileID: 11400000, guid: 5d30d8fa937490f4faf32bf075c2e072, type: 2}
+  - {fileID: 11400000, guid: 8d88d0a2e88b8764181072e52bb6964b, type: 2}
+  - {fileID: 11400000, guid: cd6f4c546e14eaf4eb401edd5cc26e1b, type: 2}
+  - {fileID: 11400000, guid: 4f3381a53ad2d78468212fcf772d50ab, type: 2}
+  - {fileID: 11400000, guid: 5ea6ae53b7ac1404b98d61018dd8eb33, type: 2}

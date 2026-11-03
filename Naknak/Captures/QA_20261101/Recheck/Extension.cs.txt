@@ -1,0 +1,81 @@
+    static IEnumerator ReplayOne(string who,string item,int count)
+    {
+        Find<InvestigationPoint>(who).Interact();yield return null;SelectItem(item);yield return Close();
+        yield return Wait(()=>!Find<EvidenceReconstruction>(who).IsReplaying,"replay restore");yield return null;
+        Verify(Find<EvidenceReconstruction>(who).CompletedEvidence.Length==count,who+" successful count "+count);
+    }
+    static IEnumerator PartialProgress()
+    {
+        yield return Reset("T2",true);yield return Close();
+        Find<InvestigationPoint>("Trash Can").Interact();yield return Close();Find<InvestigationPoint>("phone").Interact();yield return Close();
+        yield return ReplayOne("A","evidence-returned-letter",1);yield return ReplayOne("A","evidence-telephone-trace",2);
+        for(int i=0;i<12;i++){Find<InvestigationPoint>("A").Interact();yield return null;Call(M,"ReturnFromItems");yield return null;}
+        Verify(Find<EvidenceReconstruction>("A").CompletedEvidence.Length==2&&!GameMenuController.IsBlockingGameplay,"12 presentation cancellations preserve 2/3 progress and control");
+        var cp=(GameCheckpoint)Call(M,"CaptureCheckpoint",Player);var dir=Path.GetFullPath(Root+"partial-save");GameCheckpointStore.WriteManual(1,cp,dir);
+        GameCheckpoint saved;string error;Verify(GameCheckpointStore.TryReadManual(1,out saved,out error,dir),"Partial evidence save reads");
+        yield return (IEnumerator)Call(M,"ChangeSession",saved.scene,saved);yield return Wait(()=>!SceneLoadManager.IsLoading&&!SceneLoadManager.IsRestoringSession,"partial restored");yield return null;
+        Verify(Find<EvidenceReconstruction>("A").CompletedEvidence.Length==2,"Save restores A evidence progress 2/3");
+        Find<InvestigationPoint>("Memory Exit").Interact();yield return Choose(1);yield return Close();yield return Wait(()=>Scene=="S3"&&!SceneLoadManager.IsLoading,"partial exit");yield return null;
+        Verify(!GameMenuController.Inventory.Has("evidence-telephone-trace")&&GameMenuController.Inventory.Has("evidence-returned-letter"),"Reality removes memory-only clue and retains physical letter");
+        var assistant=Find<NPC>("assist");if(assistant!=null)assistant.Interact();else Find<InvestigationPoint>("assist").Interact();
+        float until=Time.realtimeSinceStartup+35;
+        while(Scene!="T2"||SceneLoadManager.IsLoading){if(Time.realtimeSinceStartup>until)throw new Exception("Partial progress reentry timed out");if(D.IsDialogOpen)D.NextDialog();yield return null;}
+        yield return null;Verify(Find<EvidenceReconstruction>("A").CompletedEvidence.Length==2,"Natural memory reentry preserves A progress 2/3");
+        yield return ReplayOne("A","evidence-watch-box",3);Find<InvestigationPoint>("A").Interact();yield return null;
+        Verify(D.IsDialogOpen&&D.CurrentStory.text=="A의 동선을 전부 파악했다.","Completed A shows summary after saved/reentered partial progress");yield return Close();
+    }
+    static IEnumerator Motion()
+    {
+        yield return Reset("T2",true);yield return Close();var paths=Reach();
+        var start=paths.Keys.First(c=>paths.ContainsKey(c+Vector2Int.right)&&paths.ContainsKey(c+Vector2Int.up)&&paths.ContainsKey(c+Vector2Int.right+Vector2Int.up));
+        Player.TeleportToWorld(start);Set(Player,"_queuedDirectionX",Vector2.right);Call(Player,"StartMoveX");yield return null;
+        var pos=Player.transform.position;Call(M,"Pause");Page("Menu");yield return new WaitForSecondsRealtime(.3f);
+        Verify(Vector3.Distance(pos,Player.transform.position)<.01f,"Pausing during movement freezes position");Call(M,"Resume");yield return Wait(()=>!Player.isMoving,"paused step ends");
+        Verify(Vector2.Distance(Player.transform.position,start+Vector2Int.right)<.01f,"Resuming completes movement without tile drift");
+        foreach(var dirs in new[]{new[]{Vector2.right,Vector2.up},new[]{Vector2.up,Vector2.right}})
+        {
+            Player.TeleportToWorld(start);
+            foreach(var d in dirs){if(d.x!=0){Set(Player,"_queuedDirectionX",d);Call(Player,"StartMoveX");}else{Set(Player,"_queuedDirectionY",d);Call(Player,"StartMoveY");}}
+            yield return null;yield return Wait(()=>!Player.isMoving,"diagonal settles");
+            Verify(Vector2.Distance(Player.transform.position,start+Vector2Int.right+Vector2Int.up)<.01f,"Simultaneous axes reach correct diagonal tile; first="+dirs[0]);
+        }
+        var wall=paths.Keys.SelectMany(p=>Dirs.Select(d=>new{p=p,d=d})).First(v=>(bool)Call(Player,"checkCollider",new Vector3(v.p.x,v.p.y,0),new Vector3(v.d.x,v.d.y,0)));
+        Player.TeleportToWorld(wall.p);if(wall.d.x!=0){Set(Player,"_queuedDirectionX",wall.d);Call(Player,"StartMoveX");}else{Set(Player,"_queuedDirectionY",wall.d);Call(Player,"StartMoveY");}
+        yield return null;Verify(Vector2.Distance(Player.transform.position,wall.p)<.01f,"Wall collision blocks movement");
+    }
+    static IEnumerator Reconfirm()
+    {
+        yield return Reset("T2",true);yield return Close();
+        Player.TeleportToWorld(new Vector2(-2,2));Player.SetFacingDirection(Vector2.up);Physics2D.SyncTransforms();Call(Player,"TryInteract");yield return null;
+        Note("RECONFIRMED | counter targeted="+(Hit(new Vector2(-2,2),Vector2.up)==null?"none":Hit(new Vector2(-2,2),Vector2.up).name)+" response="+D.IsDialogOpen);yield return Close();
+        foreach(var pos in new[]{new Vector2(4,3),new Vector2(4,4)})
+        {Player.TeleportToWorld(pos);Player.SetFacingDirection(Vector2.up);Physics2D.SyncTransforms();Call(Player,"TryInteract");yield return null;Note("B PHYSICAL | pos="+pos+" page="+Get(M,"page"));if(Get(M,"itemSelected")!=null)Call(M,"ReturnFromItems");yield return Close();}
+        foreach(var scene in new[]{"Tutorial_T3_VaseBreak","Tutorial_T4_BroochMissing"})
+        {yield return Reset(scene,true);yield return Close();yield return Wait(()=>!SceneLoadManager.IsCutscene,"fragment ready");Player.TeleportToWorld(new Vector2(-4,-1));Player.SetFacingDirection(Vector2.down);Physics2D.SyncTransforms();Call(Player,"TryInteract");yield return null;Note("FRAGMENTS | "+scene+" response="+D.IsDialogOpen+" story="+(D.CurrentStory==null?"none":D.CurrentStory.name));yield return Capture(scene+"-fragments-confirm");yield return Close();}
+        yield return Reset("S3",true);yield return Close();
+        foreach(var renderer in UnityEngine.Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None).Where(r=>r.gameObject.scene.path==SceneLoadManager.CurrentScenePath&&r.sprite!=null&&r.sprite.name.ToLower().Contains("circle")))
+            Note("CIRCLE OBJECT | "+renderer.name+" sprite="+renderer.sprite.name+" position="+renderer.transform.position);
+    }
+    static void SaveRobustness()
+    {
+        var cp=(GameCheckpoint)Call(M,"CaptureCheckpoint",Player);var dir=Path.GetFullPath(Root+"save-robustness");Directory.CreateDirectory(dir);
+        for(int i=1;i<=5;i++){cp.playSeconds=i;GameCheckpointStore.Write(cp,dir);}
+        for(int i=1;i<=3;i++){GameCheckpoint saved;string error;Verify(GameCheckpointStore.TryRead(i,out saved,out error,dir)&&saved.playSeconds==6-i,"Autosave rotation slot "+i);}
+        for(int i=1;i<=3;i++){cp.playSeconds=i+10;GameCheckpointStore.WriteManual(i,cp,dir);}cp.playSeconds=99;GameCheckpointStore.WriteManual(2,cp,dir);
+        for(int i=1;i<=3;i++){GameCheckpoint saved;string error;Verify(GameCheckpointStore.TryReadManual(i,out saved,out error,dir)&&saved.playSeconds==(i==2?99:i+10),"Independent manual slot "+i);}
+        foreach(var value in new[]{"{\"version\":1,","null","{}","{broken"})
+        {File.WriteAllText(GameCheckpointStore.ManualSlotPath(3,dir),value);GameCheckpoint saved;string error;Verify(!GameCheckpointStore.TryReadManual(3,out saved,out error,dir),"Malformed save rejected: "+value);}
+        GameCheckpointStore.WriteManual(1,cp,dir);File.WriteAllText(GameCheckpointStore.ManualSlotPath(1,dir),"broken");GameCheckpoint fallback;string problem;
+        Note("SAVE BACKUP | valid .bak exists="+File.Exists(GameCheckpointStore.ManualSlotPath(1,dir)+".bak")+" auto-recovered="+GameCheckpointStore.TryReadManual(1,out fallback,out problem,dir));
+        cp.inventory=new List<InventoryEntry>{new InventoryEntry("missing-item-qa",1)};GameCheckpointStore.WriteManual(2,cp,dir);GameCheckpoint bad;string error2;
+        Note("SEMANTIC SAVE | unknown item accepted="+GameCheckpointStore.TryReadManual(2,out bad,out error2,dir));
+        try{new InventoryModel(Catalog).Restore(bad.inventory);Note("SEMANTIC SAVE | unknown item restored");}catch(Exception e){Note("SEMANTIC SAVE | restore throws "+e.GetType().Name+": "+e.Message);}
+    }
+    static IEnumerator Run()
+    {
+        Phase="Partial progress, save and natural reentry";yield return Guard(PartialProgress(),Phase);
+        Phase="Movement, pause and simultaneous axes";yield return Guard(Motion(),Phase);
+        Phase="Reconfirm reported findings";yield return Guard(Reconfirm(),Phase);
+        Phase="Save edge cases";SaveRobustness();yield return null;Note("CHECKS="+checks);
+    }
+}

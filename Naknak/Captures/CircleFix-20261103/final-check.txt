@@ -1,0 +1,2 @@
+PASS: 24 scenes inspected, 0 SpriteRenderers with Circle sprite.
+S#6 Owner/B dialogue rule verified; actual walking interaction not replayed.

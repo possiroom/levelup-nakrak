@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 639a74eb8f1f83746b52c54e339e6b0e
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 269528
+  packageName: Settings & Options Menu Creator Pro
+  packageVersion: 1.6.8
+  assetPath: Packages/com.citrion.settings-menu-creator/UnityPackages/Integrations/Packages/Link_Core.unitypackage
+  uploadId: 988202

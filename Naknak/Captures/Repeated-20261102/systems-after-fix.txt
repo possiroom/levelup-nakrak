@@ -1,0 +1,50 @@
+PASS
+T0 camera follows controlled player
+T0 has no generated room bounds
+T0 has a finite positive camera size
+First-memory controlled actor uses assistant animation
+Camera keeps moving assistant on screen
+Walking does not change gameplay zoom
+Releasing cutscene restores player camera follow
+T1 camera follows controlled player
+T1 has no generated room bounds
+T1 has a finite positive camera size
+T2 camera follows controlled player
+T2 has no generated room bounds
+T2 has a finite positive camera size
+S3 camera follows controlled player
+S3 has no generated room bounds
+S3 has a finite positive camera size
+Title page preserves persistent window border
+Title loads requested artwork
+Title has four horizontally arranged commands
+Options page preserves persistent window border
+Title page preserves persistent window border
+Title loads requested artwork
+Title has four horizontally arranged commands
+Load page preserves persistent window border
+Title page preserves persistent window border
+Title loads requested artwork
+Title has four horizontally arranged commands
+Menu page preserves persistent window border
+Items page preserves persistent window border
+Save page preserves persistent window border
+Menu page preserves persistent window border
+Options page preserves persistent window border
+Title page preserves persistent window border
+Title loads requested artwork
+Title has four horizontally arranged commands
+Closing menu restores gameplay and time
+Temporary file failure is retried until success
+Persistent file failure stops after bounded retries
+Manual save roundtrip slot 1
+Manual save roundtrip slot 2
+Manual save roundtrip slot 3
+Manual save succeeds after a real exclusive file lock is released
+Autosave rotation slot 1
+Autosave rotation slot 2
+Autosave rotation slot 3
+Corrupted primary recovers manual backup
+Corrupted save is rejected without crashing
+Session load restores player position
+Session load restores additive story scene
